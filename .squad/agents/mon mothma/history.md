@@ -48,3 +48,23 @@
 **Decision recorded in:** `.squad/decisions.md` (merged from inbox as "Landing Page Information Architecture")
 
 Both recommendations consolidated into unified IA proposal awaiting implementation prioritization.
+
+### Landing Page Redesign Implementation Status (2026-03-16)
+
+**Status:** Completed  
+**Owner:** Poe (UX Engineer)
+
+Poe delivered landing redesign in existing static stack with:
+- Discovery-first hero and information architecture (hero → directory → quickstart)
+- Multi-select searchable focus filter with facet counts and inline search
+- Cards optimized to 1–2 tags + "+N more" indicator; detail pane with grouped clickable tags
+- Quickstart section collapsed below fold
+- Bradygaster-inspired visual polish: glassmorphic panels, dark theme, subtle animations (0.18s transforms), `prefers-reduced-motion` respected
+- Validation passed; all criteria met
+
+**Artifacts:**
+- `.squad/orchestration-log/2026-03-16T19:20:29Z-poe.md` — Orchestration log
+- `.squad/log/2026-03-16T19:20:29Z-landing-redesign.md` — Session log
+- `.squad/decisions.md` — Merged decision record
+
+**Impact:** IA recommendation now live. Ready for team feedback and next phase prioritization (accordion quickstart, category browsing, mobile filter drawer).

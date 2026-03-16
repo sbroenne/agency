@@ -6,7 +6,7 @@
 
 **Owner:** Mon Mothma (Lead) + Poe (UX Engineer)  
 **Date:** 2026-03-16  
-**Status:** Proposed — awaiting implementation prioritization
+**Status:** Implemented
 
 #### Problem
 
@@ -119,8 +119,7 @@ This convergence validates confidence for team implementation.
 #### Artifacts & Decision Records
 
 - **Wireframe spec:** `.squad/artifacts/poe-landing-wireframe.md`
-- **Poe's summary:** `.squad/decisions/inbox/poe-wireframe-outline.md`
-- **Mon Mothma's IA proposal:** `.squad/decisions/inbox/mon-mothma-ia-review.md`
+- **Implementation notes:** `.squad/decisions/poe-landing-redesign.md`
 - **Success criteria:** Phase 1: time to first card click ↓, directory scroll depth ↑, filter usage ↑
 
 ---

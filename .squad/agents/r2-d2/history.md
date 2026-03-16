@@ -21,3 +21,16 @@ Key findings:
 - **Timeline:** Post-Phase 1 of IA reorder, not blocking.
 
 Mitigations documented in inbox decision record.
+
+### Landing Page Redesign Implementation Status (2026-03-16)
+
+**Status:** Completed  
+**Owner:** Poe (UX Engineer)
+
+Landing redesign implemented in existing static stack with discovery-first hierarchy, multi-select searchable focus filter with facet counts, Bradygaster visual polish (glassmorphic panels, subtle animations, dark theme), and collapsed quickstart below fold. Validation passed.
+
+**Key alignment:** IA recommendation now live; IA Phase 1 complete. Astro + Tailwind adoption (your recommendation) ready for post-implementation prioritization.
+
+**Artifacts:**
+- `.squad/orchestration-log/2026-03-16T19:20:29Z-poe.md` — Orchestration log
+- `.squad/decisions.md` — Merged decision record

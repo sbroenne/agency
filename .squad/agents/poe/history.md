@@ -28,6 +28,23 @@
 
 **Team alignment:** Mon Mothma (Lead) provided complementary strategic framing on the same UX direction:
 - Both recommend Directory above Quickstart (discovery-first)
+
+### Landing Page Redesign Implementation (2026-03-16)
+
+**Status:** Implemented  
+**Owner:** Poe  
+
+Landing redesign delivered in existing static stack with:
+- Hero → Directory → Quickstart hierarchy (discovery-first)
+- Multi-select searchable focus filter with facet counts
+- Hero search synced with directory search
+- Cards show 1–2 tags + "+N more"; detail pane has grouped clickable tags
+- Quickstart collapsed below fold
+- Bradygaster visual polish: glassmorphic panels, dark theme, subtle animations (0.18s hover), `prefers-reduced-motion` respect
+- Validation passed; ready for team notification
+
+**Decision merged to:** `.squad/decisions.md`  
+**Session log:** `.squad/log/2026-03-16T19:20:29Z-landing-redesign.md`
 - Both recommend multi-select + search-based filtering
 - Both emphasize progressive disclosure to handle catalog growth
 
@@ -138,3 +155,19 @@
 
 **Status:** Ready for Phase 1/Phase 2 dev prioritization. Copy refinements and scroll-to-active behavior are specification-ready.
 
+
+---
+
+### Landing Page Redesign Implementation (2026-03-16)
+
+**Status:** Implemented in the static public site.
+
+**What I changed:**
+1. Reordered the landing page to make discovery lead: hero → directory/detail experience → secondary quickstart.
+2. Added a discovery-first hero with synced search, supporting callouts, and lighter install emphasis.
+3. Replaced the focus chip wall with a collapsible, searchable multi-select focus filter that shows facet counts and selected-filter chips.
+4. Reduced card density by showing two focus chips plus a "+N more" indicator while keeping full focus data in the detail pane.
+5. Applied a Bradygaster-inspired polish layer: dark glass panels, cyan glow accents, consistent hover lift, and reduced-motion-safe background motion.
+6. Preserved hash-based deep links, card selection, copy-link behavior, and clickable focus tags from the detail panel back into the directory.
+
+**Implementation note:** I kept the current static HTML/CSS/JS stack and used lightweight DOM updates rather than introducing a framework or routing layer.
