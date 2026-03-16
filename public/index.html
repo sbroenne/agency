@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Agency</title>
+    <meta
+      name="description"
+      content="Agency is a GitHub-native registry for Squad manifests, published through pull requests and surfaced on GitHub Pages."
+    />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <a class="skip-link" href="#directory">Skip to squad directory</a>
+
+    <div class="shell">
+      <header class="hero">
+        <div class="hero__copy">
+          <p class="eyebrow">GitHub-native squad registry</p>
+          <h1>Publish squads with pull requests.</h1>
+          <p class="hero__lede">
+            Agency validates `squad.json`, publishes a static feed, and turns approved squads
+            into a searchable Pages directory.
+          </p>
+          <div class="hero__actions">
+            <a class="button button--primary" href="#directory">Browse squads</a>
+            <a class="button button--ghost" href="https://github.com/sbroenne/agency">Open repository</a>
+            <a class="button button--ghost" href="https://github.com/sbroenne/agency/pulls">Submit via PR</a>
+          </div>
+        </div>
+
+        <dl class="hero__stats" aria-label="Directory statistics">
+          <div>
+            <dt>Squads listed</dt>
+            <dd id="stat-squads">0</dd>
+          </div>
+          <div>
+            <dt>Members visible</dt>
+            <dd id="stat-members">0</dd>
+          </div>
+          <div>
+            <dt>Focus areas</dt>
+            <dd id="stat-domains">0</dd>
+          </div>
+        </dl>
+      </header>
+
+      <main class="layout">
+        <section class="directory-panel" id="directory" aria-labelledby="directory-title">
+          <div class="panel-header">
+            <div>
+              <p class="eyebrow">Directory</p>
+              <h2 id="directory-title">Find the right squad fast</h2>
+            </div>
+            <p class="panel-header__meta" id="results-summary">Loading squads…</p>
+          </div>
+
+          <form class="controls" id="filters" role="search">
+            <label class="search-field">
+              <span class="search-field__label">Search squads</span>
+              <input
+                id="search-input"
+                name="query"
+                type="search"
+                placeholder="Search by squad, focus, or member"
+                autocomplete="off"
+              />
+            </label>
+
+            <div class="filter-group">
+              <span class="filter-group__label">Status</span>
+              <div class="chip-row" id="status-filters" aria-label="Filter squads by status"></div>
+            </div>
+
+            <div class="filter-group">
+              <span class="filter-group__label">Focus</span>
+              <div class="chip-row" id="focus-filters" aria-label="Filter squads by focus"></div>
+            </div>
+          </form>
+
+          <div class="empty-state" id="empty-state" hidden>
+            <h3>No squads match those filters.</h3>
+            <p>Try clearing a filter or broadening the search query.</p>
+            <button class="button button--ghost" id="reset-filters" type="button">
+              Reset filters
+            </button>
+          </div>
+
+          <div class="card-grid" id="card-grid" aria-live="polite"></div>
+        </section>
+
+        <aside class="detail-panel" id="detail" aria-labelledby="detail-title">
+          <div class="panel-header">
+            <div>
+              <p class="eyebrow">Selected squad</p>
+              <h2 id="detail-title">Choose a squad</h2>
+            </div>
+            <button class="button button--ghost button--small" id="copy-link" type="button">
+              Copy link
+            </button>
+          </div>
+
+          <div class="detail-empty" id="detail-empty">
+            <p>Select any squad card to inspect its mission, roster, and source links.</p>
+          </div>
+
+          <article class="detail" id="detail-content" hidden></article>
+        </aside>
+      </main>
+    </div>
+
+    <template id="card-template">
+      <article class="squad-card">
+        <button class="squad-card__button" type="button">
+          <div class="squad-card__header">
+            <div>
+              <p class="squad-card__eyebrow"></p>
+              <h3 class="squad-card__title"></h3>
+            </div>
+            <span class="badge"></span>
+          </div>
+          <p class="squad-card__tagline"></p>
+          <div class="chip-row squad-card__chips"></div>
+          <dl class="squad-card__meta">
+            <div>
+              <dt>Members</dt>
+              <dd class="meta-members"></dd>
+            </div>
+            <div>
+              <dt>Manifest</dt>
+              <dd class="meta-source"></dd>
+            </div>
+          </dl>
+          <ul class="member-preview"></ul>
+        </button>
+      </article>
+    </template>
+
+    <script src="./app.js" type="module"></script>
+  </body>
+</html>

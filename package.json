@@ -1,0 +1,19 @@
+{
+  "name": "agency",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "GitHub-native registry for Squad manifests.",
+  "scripts": {
+    "build": "node scripts/build-registry.mjs",
+    "validate": "node scripts/validate-squads.mjs",
+    "test": "node --test"
+  },
+  "dependencies": {
+    "ajv": "^8.17.1",
+    "ajv-formats": "^3.0.1"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  }
+}

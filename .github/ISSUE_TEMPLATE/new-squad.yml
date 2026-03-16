@@ -1,0 +1,39 @@
+name: Request a squad listing
+description: Propose a new squad for the registry.
+title: "[Squad]: "
+labels:
+  - squad-submission
+body:
+  - type: textarea
+    id: summary
+    attributes:
+      label: Squad summary
+      description: What is this squad for and why should it be listed?
+      placeholder: A reusable squad for GitHub Pages and repository automation.
+    validations:
+      required: true
+  - type: input
+    id: repo
+    attributes:
+      label: Source repository
+      placeholder: https://github.com/owner/repo
+    validations:
+      required: true
+  - type: textarea
+    id: members
+    attributes:
+      label: Key members
+      description: List the team members and responsibilities.
+      placeholder: |
+        - Lead: product direction
+        - Platform Engineer: CI/CD and Pages
+    validations:
+      required: true
+  - type: textarea
+    id: import
+    attributes:
+      label: Import context
+      description: If this squad already exists elsewhere, explain where the manifest should come from.
+      placeholder: The canonical manifest lives at .squad/squad.json on the main branch.
+    validations:
+      required: false

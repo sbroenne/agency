@@ -1,0 +1,10 @@
+node_modules/
+.copilot/
+
+# Squad runtime state
+.squad/config.json
+.squad/orchestration-log/
+.squad/log/
+.squad/decisions/inbox/
+.squad/sessions/
+.squad-workstream

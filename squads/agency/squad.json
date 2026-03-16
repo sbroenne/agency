@@ -1,0 +1,67 @@
+{
+  "$schema": "../../schema/squad.schema.json",
+  "specVersion": "1.0",
+  "id": "agency",
+  "slug": "agency",
+  "name": "Agency",
+  "status": "live",
+  "tagline": "GitHub-native squad registry and publishing team.",
+  "summary": "Agency is a public registry for Squad manifests, using pull requests for submissions and GitHub Pages for discovery.",
+  "mission": "Collect, validate, and publish high-signal Squad manifests so teams can discover reusable squads and adopt them with confidence.",
+  "focus": [
+    "GitHub Pages",
+    "pull requests",
+    "registry",
+    "squad.json"
+  ],
+  "source": {
+    "repository": "https://github.com/sbroenne/agency",
+    "directory": "squads/agency",
+    "homepage": "https://sbroenne.github.io/agency/",
+    "import": {
+      "type": "manual",
+      "path": "squads/agency/squad.json",
+      "ref": "main"
+    }
+  },
+  "links": [
+    {
+      "label": "Repository",
+      "url": "https://github.com/sbroenne/agency"
+    },
+    {
+      "label": "Pages",
+      "url": "https://sbroenne.github.io/agency/"
+    }
+  ],
+  "team": {
+    "name": "Agency",
+    "members": [
+      {
+        "name": "Mon Mothma",
+        "role": "Lead",
+        "expertise": ["architecture", "product direction"]
+      },
+      {
+        "name": "Leia",
+        "role": "GitHub Integrator",
+        "expertise": ["PR workflows", "repo automation"]
+      },
+      {
+        "name": "R2-D2",
+        "role": "Platform Engineer",
+        "expertise": ["CI/CD", "Pages deployment"]
+      },
+      {
+        "name": "C-3PO",
+        "role": "Schema Engineer",
+        "expertise": ["schema validation", "squad.json"]
+      },
+      {
+        "name": "Poe",
+        "role": "UX Engineer",
+        "expertise": ["directory UX", "site experience"]
+      }
+    ]
+  }
+}
