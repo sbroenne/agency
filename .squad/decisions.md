@@ -288,6 +288,70 @@ The blog post adds *detail-level validation* (scroll-to-active, callout patterns
 
 ---
 
+### Technology Stack: Astro + Tailwind Adoption
+
+**Owner:** R2-D2 (Platform Engineer)  
+**Date:** 2026-03-16  
+**Status:** Recommendation — Ready for Implementation Prioritization
+
+#### Decision
+
+Adopt Astro 5.7 and Tailwind CSS 4.1 from Bradygaster's docs stack. Defer Pagefind.
+
+#### Rationale
+
+1. **Astro reduces maintenance debt:** 80% less HTML boilerplate via `.astro` components. Current custom build script replaced by industry-standard static generator. Minimal deployment risk (Pages still gets identical static output).
+
+2. **Tailwind improves DX:** 70% smaller CSS footprint via tree-shaking. Dark mode built-in; responsive utilities free. Single source of truth in `tailwind.config.ts`.
+
+3. **Pagefind is premature:** Adds 60KB+ JS bundle for a problem not yet real. Multi-select filters + search-first UX (already decided, Phase 1) is the primary discovery entry. Revisit when squad count ≥ 20 or user feedback surfaces "I can't find X."
+
+#### What to Adopt
+
+**Astro 5.7 (Phase 0)**
+- Migration: ~2 days
+- Risk: Low (drop-in replacement; revert is single git commit)
+- Output: Visually identical site, cleaner codebase
+
+**Tailwind CSS 4.1 (Phase 1)**
+- Migration: ~4 hours
+- Risk: Low (tool-assisted; integrate with Astro work)
+- Outcome: Smaller bundle, faster responsive iterations, visual alignment with Bradygaster ecosystem
+
+#### What to Skip
+
+**Pagefind (Phase 3, conditional)**
+- Current IA provides search-first UX through multi-select filters
+- Bundle cost not justified until catalog explodes or feedback demands full-text search
+- Timeline: 8–12 weeks out; revisit at squad count ≥ 20
+
+**Content Collections (future)**
+- Not applicable to current data-driven site (squads.json + hash routing)
+- Valuable when you own guides, contributing workflows, or architectural docs
+
+#### Success Criteria
+
+- [ ] Site renders identically at GitHub Pages
+- [ ] Build time ≤ 5s on M1 Mac
+- [ ] Bundle size unchanged or smaller
+- [ ] No Pages deployment friction
+- [ ] At least one team member owns Astro documentation
+
+#### Dependencies & Sequencing
+
+**Can run in parallel with:**
+- IA Phase 1 (reorder Directory above Quickstart, multi-select filters)
+- Bradygaster motion refinements (optional visual style alignment)
+
+**Blocks:** None. Pure refactor.
+
+#### Timeline
+
+If prioritized next: 2.5 days (Astro + Tailwind combined)  
+If after IA Phase 1: 3 days (buffer for parallel work)
+
+---
+
 ## Governance
 
 - All meaningful changes require team consensus
