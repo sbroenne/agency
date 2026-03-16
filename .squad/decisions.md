@@ -156,6 +156,138 @@ Shape the public directory as a static, data-driven browser in `public/` with se
 3. **PR review state mirroring** — `squad-pr-review.yml` mirrors PR state into `status:*` and `review:*` labels for queue visibility
 4. **Upstream sync automation** — `squad-upstream-sync.yml` fast-forwards automatically or opens `sync:upstream` PR when review needed
 
+### Bradygaster Squad Style Alignment
+
+**Owner:** Poe (UX Engineer)  
+**Date:** 2026-03-16  
+**Status:** Recommendation — Ready for Implementation Prioritization
+
+#### Decision
+
+Adopt Bradygaster Squad's **visual/motion language** while preserving our **discovery-first architecture**.
+
+#### Rationale
+
+1. **Structural already aligned:** Both Bradygaster and our prior IA recommendation follow a discovery-first pattern (hero → main content → supporting content). No rework needed.
+
+2. **Visual polish is additive:** Bradygaster's signature traits—floating animations, 0.18s hover transforms, glowing backgrounds—are refinement, not replacement. Our site already has the foundation (glassmorphic panels, dark theme, grid layouts).
+
+3. **Motion improves UX:** Subtle animations (2-3px hover lift, floating glows) signal interactivity without adding cognitive load.
+
+#### What Changes
+
+**Phase 1: Motion (1-2 hrs, low risk)**
+- Add `@keyframes float-slow` animation (8s cycle) to background gradient orbs
+- Add `transition: transform 0.18s ease;` to all buttons, cards, links
+- Add `transform: translateY(-2px)` hover state to interactive elements
+- Respect `prefers-reduced-motion` media query
+
+**Phase 2: Already Decided**
+- Reorder: Directory above Quickstart (discovery-first)
+- Scalable filters: Search-first + collapsible groups
+- Card UI: Refined density with progressive tag disclosure
+
+**Phase 3: Optional**
+- Category browsing cards ("Browse by Focus")
+- Animated hero stats counters
+- Faceted search syntax
+
+#### What Stays
+
+- Two-column layout (Directory + Detail panel)
+- Card grid browsing experience
+- Multi-select filter model
+- Hero → Directory → Quickstart hierarchy
+- Existing color scheme (dark + cyan accent)
+
+#### Risks & Mitigations
+
+| Risk | Mitigation |
+|------|-----------|
+| Animation fatigue on low-spec devices | Use `prefers-reduced-motion`; limit to 1-2 animations per viewport |
+| Mobile responsive issues | Test 320px+; use clamp() for sizing; relative positioning for glows |
+| GPU load with backdrop-filter + animations | Profile on real devices; consider `@supports` fallback for blur |
+| Brand feels derivative | Keep our specific directory content; only borrow motion aesthetics |
+| Color contrast on new elements | Verify WCAG AA on all text/buttons |
+
+#### Success Metrics
+
+- Users perceive site as polished and modern (qualitative)
+- No performance regression on mobile (page load < 2s)
+- All interactive elements have consistent hover feedback
+- Animation respects accessibility preferences
+
+#### Next Step
+
+When team prioritizes Phase 1, assign to dev for CSS enhancement (no JS required).
+
+---
+
+### Bradygaster Docs Site Addendum
+
+**Owner:** Poe (UX Engineer)  
+**Date:** 2026-03-16  
+**Reviewed:** https://bradygaster.github.io/squad/blog/028-new-docs-site/  
+**Status:** Reinforces current recommendation; refinements identified
+
+#### Summary
+
+The Bradygaster blog post validates and refines our discovery-first recommendation. No architectural changes; three refinement opportunities identified.
+
+#### What the Post Reinforces
+
+**Layout & Navigation Clarity**
+- Bradygaster's complete Astro rewrite prioritizes **navigation context** over visual polish
+- PR #298 specifically added "active link highlighting" and "scroll-to-active sidebar"—proving that users value *knowing where they are*
+- Our discovery-first IA + progressive disclosure aligns perfectly with this principle
+
+**Content Hierarchy**
+- The post emphasizes "complete rewrite" and "docs as primary destination," not installation instructions
+- Mirrors our recommendation: Directory (discovery) above fold; Quickstart (adoption) below fold
+- Validates that browsing >> installing in the user's mental model
+
+#### Copy Patterns Worth Borrowing
+
+1. **"Recommended way" callouts**
+   - Quote: "The recommended way to use Squad is through GitHub Copilot CLI: `copilot --agent squad`"
+   - Applies to us: Add explicit callout in Directory hero copy, e.g., "Browse squads by focus area or search—the fastest way to find what you need."
+
+2. **Safety callouts for power-user actions**
+   - Quote: CI/CD page now ships with cron schedule "commented out by default" + warning about GitHub Actions minutes consumption
+   - Applies to us: Frame "Submit a squad" CTA with safety-first copy and link to CONTRIBUTING.md
+
+3. **Contributor/community framing**
+   - Credits contributors prominently; treats squad submissions as community co-creation
+   - Future path: Link squad authors and repos in detail view; frame discovery as a gateway to contribution
+
+#### Does This Change Our Recommendation?
+
+**No.** The post reinforces the direction already decided:
+- Discovery-first IA ✓
+- Scalable filtering ✓
+- Bradygaster visual style as refinement layer ✓
+
+The blog post adds *detail-level validation* (scroll-to-active, callout patterns, contributor framing), not strategic changes.
+
+#### Strongest Takeaway: Scroll-to-Active for Detail Context
+
+**Implementation idea:** When a user clicks a squad card or selects a tag filter, the detail pane should:
+1. Open with the relevant section visible (e.g., filtered by "AI" tag → scroll to "Focus Areas" section)
+2. Highlight the clicked tag in its group
+
+**Why it matters:** Borrowed from Bradygaster's docs sidebar behavior. Small detail, outsized UX impact—reduces cognitive load and reinforces navigation context.
+
+**Phase:** Phase 2 enhancement (after reorder + multi-select filter delivery).
+
+#### Recommendations for Implementation
+
+1. Update hero copy to include "recommended way" callout (Phase 1)
+2. Add safety/framing callout to "Submit a squad" button (Phase 1)
+3. Implement scroll-to-active in detail pane (Phase 2)
+4. Plan contributor/author linking as future feature (Phase 3)
+
+---
+
 ## Governance
 
 - All meaningful changes require team consensus
