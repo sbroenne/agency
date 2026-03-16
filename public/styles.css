@@ -73,6 +73,7 @@ body::before {
 }
 
 .hero,
+.quickstart,
 .directory-panel,
 .detail-panel {
   border: 1px solid var(--border);
@@ -86,6 +87,12 @@ body::before {
   gap: 2rem;
   padding: clamp(1.5rem, 4vw, 3rem);
   border-radius: 28px;
+}
+
+.quickstart {
+  margin-top: 1.5rem;
+  padding: 1.5rem;
+  border-radius: 24px;
 }
 
 .eyebrow,
@@ -220,6 +227,60 @@ body::before {
 .detail-panel {
   border-radius: 24px;
   padding: 1.5rem;
+}
+
+.quickstart__lede {
+  margin: 1rem 0 0;
+  color: var(--muted);
+  max-width: 70ch;
+}
+
+.quickstart__grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+  margin-top: 1.25rem;
+}
+
+.quickstart__card {
+  padding: 1rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: rgba(148, 163, 184, 0.05);
+}
+
+.quickstart__card h3 {
+  margin: 0.75rem 0 0.35rem;
+}
+
+.quickstart__card p {
+  margin: 0;
+  color: var(--muted);
+}
+
+.quickstart__step {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 999px;
+  color: #04111d;
+  background: linear-gradient(135deg, var(--accent), var(--accent-strong));
+  font-weight: 700;
+}
+
+.quickstart pre {
+  overflow-x: auto;
+  margin: 0.9rem 0 0;
+  padding: 0.9rem 1rem;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: rgba(4, 17, 29, 0.7);
+}
+
+.quickstart code {
+  font-family: ui-monospace, SFMono-Regular, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 }
 
 .panel-header {
@@ -478,6 +539,7 @@ body::before {
 }
 
 @media (max-width: 900px) {
+  .quickstart__grid,
   .layout {
     grid-template-columns: 1fr;
   }

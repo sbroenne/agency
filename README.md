@@ -1,8 +1,19 @@
-# agency
+# Awesome Squads
 
-`agency` is a GitHub-native registry for Squad manifests.
+Awesome Squads is a curated directory of squads built with Bradygaster's Squad for GitHub Copilot.
 
 Squads are published as `squad.json`, reviewed through pull requests, validated in CI, and rendered as a public directory on GitHub Pages.
+
+## Quickstart: install Bradygaster Squad
+
+```bash
+npm install -g @bradygaster/squad-cli
+mkdir my-project && cd my-project
+git init
+squad init
+```
+
+After that, browse a listing in Awesome Squads, open its source repository, and either copy/adapt the squad files or use `squad import <file>` when the source publishes an export snapshot.
 
 ## What ships in v1
 
