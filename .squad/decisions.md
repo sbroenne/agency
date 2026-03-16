@@ -462,6 +462,36 @@ User rejected landing page redesign as "over-engineered for premature scale." Im
 
 ---
 
+### Model Override: GPT-5.4 for Landing Page Rebuild
+
+**Owner:** User (Stefan Broenner)  
+**Date:** 2026-03-16  
+**Status:** Active  
+**Scope:** R2-D2 rebuild pass
+
+#### Decision
+
+Override default model (Codex) to **GPT-5.4** for the landing page rebuild task.
+
+#### Rationale
+
+- Improved reasoning and code quality on complex rebuild task
+- Signal of confidence in the Awesome Copilot + Bradygaster brief
+- Short-term investment for higher-fidelity output
+
+#### Constraints Preserved
+
+- Brief unchanged: Awesome Copilot UX + Bradygaster style
+- Acceptance rubric applies: `.squad/decisions/inbox/mon-mothma-acceptance-rubric.md`
+- Discovery-first IA; no install wall above fold
+- Glassmorphic dark theme + cyan accent; subtle motion
+
+#### Next Step
+
+R2-D2 executes rebuild with GPT-5.4. Pre-ship validation against acceptance rubric before merge.
+
+---
+
 ## Governance
 
 - All meaningful changes require team consensus
