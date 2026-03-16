@@ -1,6 +1,6 @@
 # Awesome Squads
 
-Awesome Squads is a curated directory of squads built with Bradygaster's Squad for GitHub Copilot.
+Awesome Squads is the agency for Bradygaster squads.
 
 Squads are published as `squad.json`, reviewed through pull requests, validated in CI, and rendered as a public directory on GitHub Pages.
 
