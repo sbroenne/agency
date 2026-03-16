@@ -351,6 +351,117 @@ If after IA Phase 1: 3 days (buffer for parallel work)
 
 ---
 
+### Landing Page Redesign — MVP Reset (Revision Direction)
+
+**Owner:** Mon Mothma (Lead)  
+**Date:** 2026-03-16  
+**Status:** Direction provided; awaiting revision & team review  
+**Related:** Landing Page Information Architecture (superseded version), Bradygaster Squad Style Alignment
+
+#### Problem
+
+User rejected landing page redesign as "over-engineered for premature scale." Implementation correctly executed discovery-first IA specification, but specification was designed for 50+ squad catalog. Actual catalog: 1 squad. Result: complex filtering UI, hero bloat, and discovery-first tone felt inappropriate for early-stage registry where submission-first messaging is needed.
+
+#### Root Cause
+
+**Hypothesis mismatch:** Specification identified filter complexity as the bottleneck. Actual bottleneck is contributions. Over-engineering before problem manifests creates friction and intimidates potential contributors.
+
+**Scale mismatch:** Built for anticipated growth; deployed too early.
+
+**Tone mismatch:** Led with discovery ("Discover our squads") when early stage needs clarity on submission ("Submit your squad via PR").
+
+#### Strategic Pivot: Build for Today, Not Tomorrow
+
+**Philosophy:** Iterate with catalog growth. Add filter complexity only when users report "I can't find X" or catalog exceeds 5-10 squads.
+
+**Scope Reset:** MVP simplification focusing on:
+1. Reduce interaction complexity (remove app-like state management)
+2. Reorder for contribution (Quickstart above Directory)
+3. Reduce visual noise (simplify CSS, remove stats/callouts/animations)
+4. Clarify submission pathway (primary CTA, clear language)
+
+#### Concrete Changes
+
+**Hero (Drastically Reduced)**
+- Remove stats boxes, callout sections, hero search form
+- Reduce to: logo + tagline + 2 CTAs ("Submit a Squad", "Browse what's here")
+- Estimate: -40 lines HTML, -100 lines CSS
+
+**Quickstart (Moved Up, Expanded)**
+- Move from below fold to immediately after hero
+- Expand from collapsed detail to always-visible section
+- Add "Why submit?" and "How to submit" copy
+- New role: Primary submission pathway (not secondary detail)
+
+**Directory (Simplified)**
+- Remove: Focus filter drawer, facet counts, multi-select state mgmt, progressive tag disclosure
+- Keep: One search input, basic status filter (All/Live), hash routing
+- Reduce card template: Remove "+N more" logic, show name + tagline + roster count
+
+**Detail Panel (Minimal)**
+- Remove: Tag grouping by category, tag-based filtering, interactive affordances
+- Simplify to: Squad name + source link + mission + members + resource links
+- Reduce CSS: Remove section styling complexity
+
+**Visual Design (Tone Down)**
+- Remove body float animations, hero stats/callouts styling
+- Reduce shadow depth, simplify panel chrome
+- Keep dark theme + cyan accents, glassmorphic panels (if perf-neutral)
+- CSS target: ~400 lines (from ~900)
+
+#### Must-Keep Preservation
+
+- ✓ Dark theme (dark navy + cyan accent)
+- ✓ Hash-based deep linking (`#squad/{id}`)
+- ✓ Responsive breakpoints (960px, 720px)
+- ✓ Accessibility: skip link, ARIA, heading hierarchy, focus management
+- ✓ squads.json as data source
+- ✓ Glassmorphic panels (if no performance regression)
+
+#### Success Criteria
+
+1. **Clarity:** User immediately sees "This is a registry; submit via PR"
+2. **Simplicity:** <400 lines CSS, <150 lines effective JS (no filter state mgmt)
+3. **Performance:** Page loads <1s, no mobile jank
+4. **Accessibility:** WCAG AA pass, focus visible, skip link functional
+5. **Scalability (Future):** Can grow 1→5→50 squads without redesign; filter complexity added only when justified by content
+
+#### Implementation Assignment
+
+**Revision Author:** R2-D2 (Platform Engineer)  
+**Timeline:** 4-5 hours (HTML + JS + CSS cleanup + test + deploy)  
+**Guidance:** Detailed spec in `.squad/decisions/inbox/mon-mothma-redesign-direction.md` (will be archived after execution)
+
+#### Scaling Philosophy for Future
+
+**Original decision** (Landing Page Information Architecture) was architecturally sound but temporally premature:
+- IA recommendation: correct for mature registry
+- Timing: should execute after 5-10 squads submitted, not before launch
+
+**New principle:** 
+- **Phase 1 (MVP, now):** Simplicity. Submission-first tone. One search input. Minimal filtering.
+- **Phase 2 (5-10 squads):** Add tier-2 collapsible filters *only if users ask*.
+- **Phase 3 (20+ squads):** Faceted search, category browsing, advanced UX.
+
+**Key Learning:** Don't solve problems that don't exist yet. Premature complexity defers value delivery.
+
+#### Artifacts & Decision Records
+
+- **Orchestration log:** `.squad/orchestration-log/2026-03-16T20:45:00Z-mon-mothma.md` (rejection analysis + direction)
+- **Revision sprint:** `.squad/orchestration-log/2026-03-16T20:45:30Z-r2-d2.md` (R2-D2 task initiation)
+- **Session log:** `.squad/log/2026-03-16T20:45:00Z-redesign-rejection-pivot.md` (detailed context for team)
+- **Implementation guidance:** `.squad/decisions/inbox/mon-mothma-redesign-direction.md` (detailed spec for changes, to be archived post-completion)
+
+#### Related Decisions (Context)
+
+**Landing Page Information Architecture** (Superseded version) — The IA was sound; timing was wrong. Architecture concepts (discovery-first, tier-2 collapsible filters, progressive disclosure) will be valuable when catalog justifies them.
+
+**Bradygaster Squad Style Alignment** — Visual polish concepts (subtle animations, glowing backgrounds) deferred; focus on interaction simplification first, styling can layer back later.
+
+**Technology Stack: Astro + Tailwind Adoption** — Deferred; current static stack sufficient for simplified MVP. Revisit after redesign ships.
+
+---
+
 ## Governance
 
 - All meaningful changes require team consensus
