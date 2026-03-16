@@ -492,6 +492,71 @@ R2-D2 executes rebuild with GPT-5.4. Pre-ship validation against acceptance rubr
 
 ---
 
+### Landing Page Rebuild — Approved & Deployed
+
+**Owner:** R2-D2 (Platform Engineer) + Mon Mothma (Lead)  
+**Date:** 2026-03-16  
+**Status:** Complete — Live on GitHub Pages  
+**Commit:** e13ebfb  
+**GitHub Pages Run:** 23162488700
+
+#### Decision
+
+**APPROVED.** Landing page rebuild using Awesome Copilot as primary UX/IA reference and Bradygaster Squad as primary visual reference passes all acceptance criteria. Committed to `main` and deployed successfully.
+
+#### What Was Built
+
+R2-D2 rebuilt the public landing page around:
+
+1. **Awesome Copilot UX Pattern** — Hero → search → browse cards
+   - Single search input, flat card grid
+   - Zero facets, zero filter drawers, zero multi-select complexity
+   - Discovery-first IA with primary CTA: "Browse squads"
+
+2. **Bradygaster Squad Visual Language**
+   - Dark gradient backdrop (#07111b)
+   - Cyan accents (#78d4ff)
+   - Pill-shaped buttons
+   - Glassmorphic panels with restrained glow
+   - No heavy motion; subtle visual polish only
+
+3. **Static, Data-Driven Implementation**
+   - Powered by `squads.json`
+   - Hash-based deep linking (`#squad/{id}`)
+   - Search + scroll interaction model
+   - Responsive breakpoints (960px, 720px)
+   - Accessibility: WCAG AA, skip link, focus management
+
+#### Acceptance Criteria (All Met)
+
+| Criterion | Status | Evidence |
+|-----------|--------|----------|
+| Awesome Copilot = UX/IA reference | ✓ PASS | Hero → search → browse cards. Single search input, flat card grid, zero facets. |
+| Bradygaster Squad = visual reference | ✓ PASS | Dark gradient, cyan accents, pill buttons, glassmorphic panels, restrained glow. |
+| No leading install wall | ✓ PASS | "Browse squads" is primary CTA. Getting-started content in secondary "How it works" card below fold. |
+| No invented dashboard/facet/filter experience | ✓ PASS | Zero filter drawers, zero facet counts, zero multi-select. Only interaction is search-and-scroll. |
+
+#### Validation
+
+- Build: ✓ PASS
+- Validate: ✓ PASS
+- Test: ✓ PASS
+- GitHub Pages deployment: ✓ SUCCESS (run 23162488700)
+
+#### Impact
+
+This rebuild supersedes all prior MVP-reset direction. Team members should treat this as the current baseline for public Pages UX. Next iterations can layer on complexity (multi-select filters, advanced search, category browsing) only when catalog growth and user feedback justify them.
+
+#### Related Decisions (Context)
+
+**Landing Page Information Architecture (Superseded)** — Original discovery-first + tier-2 filter spec was architecturally sound but temporally premature. Concepts will be valuable for 20+ squad catalogs. Current rebuild simplifies to MVP scope (1-5 squads).
+
+**Bradygaster Squad Style Alignment** — Visual polish concepts adopted (subtle motion, glowing backgrounds). Heavy animations and contributor framing deferred to Phase 2+.
+
+**Model Override: GPT-5.4** — Override used successfully for rebuild pass. Improved reasoning and code quality on complex task.
+
+---
+
 ## Governance
 
 - All meaningful changes require team consensus
