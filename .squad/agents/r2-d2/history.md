@@ -17,6 +17,15 @@ Key findings:
 - **One lightweight search is enough:** removing filters, multi-state selection, and detail-pane orchestration preserves usefulness without turning the page into an app.
 - **Subdued Bradygaster influence works better:** dark gradients, restrained accents, and clean cards keep the Bradygaster vibe without heavy glass, floating chrome, or motion noise.
 
+### Reference Alignment Correction (2026-03-16)
+
+**Corrected the landing page to follow Awesome Copilot for structure and Bradygaster Squad for presentation.**
+
+Key findings:
+- **Primary IA must stay discovery-first:** hero search and browse grid belong above support content when Awesome Copilot is the main reference.
+- **Support content should stay lightweight:** contribution and getting-started guidance work best as secondary cards, not as the opening flow.
+- **Reference fidelity improved by subtraction:** a single hero search and simple card grid are closer to the reference pair than either quickstart-first copy or custom filter mechanics.
+
 ### Landing Page Redo Prep (2026-03-16)
 
 **Prep complete for calmer replacement direction.**
@@ -89,3 +98,21 @@ Landing redesign implemented in existing static stack with discovery-first hiera
 **Artifacts:**
 - `.squad/orchestration-log/2026-03-16T19:20:29Z-poe.md` — Orchestration log
 - `.squad/decisions.md` — Merged decision record
+
+### Awesome Copilot + Bradygaster landing alignment (2026-03-16)
+
+**Landing rebuilt to mirror Awesome Copilot structure with Bradygaster-inspired calm styling.**
+
+Key findings:
+- **Discovery-first IA:** hero + nav lead directly into the directory, with browsing as the primary action.
+- **Simplified interaction:** single search input and clean card grid replace heavier directory mechanics.
+- **Contribution call-to-action:** dedicated section keeps submission path clear without leading with install steps.
+
+### Awesome Copilot + Bradygaster Landing Redo (2026-03-16)
+
+**Reference-led rebuild shipped in the existing static stack.**
+
+Key findings:
+- **Awesome Copilot structure translates cleanly to this registry:** hero → search → browse cards gives clearer orientation than a quickstart-led or app-like layout.
+- **Bradygaster works best as visual language, not layout complexity:** dark gradients, strong headline scale, pill CTAs, and calm panels deliver the feel without recreating docs-site sprawl.
+- **Minimal JS is enough for Pages here:** live search plus optional hash highlighting preserves discoverability while avoiding state-heavy directory mechanics.

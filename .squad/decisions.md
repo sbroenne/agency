@@ -555,6 +555,30 @@ This rebuild supersedes all prior MVP-reset direction. Team members should treat
 
 **Model Override: GPT-5.4** — Override used successfully for rebuild pass. Improved reasoning and code quality on complex task.
 
+### Design Leadership: Poe on Landing Page Redesign
+
+**Owner:** Poe (UX Expert)  
+**Assigned:** 2026-03-16T19:58:39Z  
+**Status:** In Progress
+
+#### Decision
+
+Poe assumes design leadership for landing page redesign. Awesome Copilot (awesome-copilot.github.com) is the primary reference guide for UX/IA patterns. Playwright required for design validation and testing.
+
+#### Rationale
+
+- Prior implementation-led approach was rejected; design leadership model corrects this
+- Awesome Copilot exemplifies the discovery-first, search-primary UX pattern we need
+- Playwright provides reproducible testing framework for design changes
+- Clear ownership prevents decision cycles
+
+#### Implications
+
+- Design decisions flow through Poe; implementation follows
+- Awesome Copilot sets the UX bar (hero → search → cards model)
+- Playwright tests protect against regression in interaction design
+- Team defers to Poe on UX/visual trade-offs
+
 ---
 
 ## Governance
