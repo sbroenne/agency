@@ -581,6 +581,41 @@ Poe assumes design leadership for landing page redesign. Awesome Copilot (awesom
 
 ---
 
+### Tech Stack Alignment & Local Preview Mandate
+
+**Owner:** Stefan Broenner (User)  
+**Date:** 2026-03-17  
+**Status:** Active
+
+#### Decision
+
+**DIRECTIVE.** Effective immediately:
+
+1. **Tech Stack Alignment:** Squad site must use the same technology stack as Squad docs if it does not already. Audit and align stack components.
+2. **Local Preview Mandate:** Every major UX change must have a local preview available before publishing to production. This is now mandatory, not optional.
+
+#### Rationale
+
+- Documentation and product should share dependencies to reduce context switching and maintenance burden
+- Local preview gates prevent regression and allow design review before deployment
+- User requirement — captured for team memory
+
+#### Implementation Scope
+
+- [ ] Audit current site tech stack vs. Squad docs stack
+- [ ] Identify gaps and plan alignment work
+- [ ] Establish local preview workflow (e.g., `npm run dev` or equivalent)
+- [ ] Document preview process in CONTRIBUTING.md or equivalent
+- [ ] Integrate preview validation into PR review checklist for major UX changes
+
+#### Success Criteria
+
+- Tech stack components match (versions, build tools, dependencies)
+- Local preview workflow is documented and working
+- Team enforces preview requirement for all major UX changes before publication
+
+---
+
 ## Governance
 
 - All meaningful changes require team consensus

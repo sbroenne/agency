@@ -1,9 +1,13 @@
 ---
-updated_at: 2026-03-16T19:12:13.238Z
-focus_area: Landing page redesign
-active_issues: []
+updated_at: 2026-03-17T05:15:00.000Z
+focus_area: Tech stack alignment + Local preview mandate
+active_issues:
+  - Tech stack audit and alignment
+  - Local preview workflow implementation
 ---
 
 # What We're Focused On
 
-Implementing the discovery-first landing page redesign with Bradygaster-inspired styling and scalable filtering in the current static-site stack.
+**Primary:** Aligning squad site tech stack with Squad docs (audit + implementation) and establishing mandatory local preview workflow for all major UX changes before publication.
+
+**Secondary:** Landing page redesign continues using current stack; all changes must be validated with local preview before publishing.

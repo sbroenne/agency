@@ -3,47 +3,43 @@ const DATA_URL = './squads.json';
 const state = {
   squads: [],
   query: '',
-  selectedSlug: getSelectedSlug(),
 };
 
 const elements = {
-  searchForm: document.querySelector('#directory-search'),
+  searchForm: document.querySelector('#hero-search'),
   searchInput: document.querySelector('#search-input'),
   resetSearch: document.querySelector('#reset-search'),
   resultsSummary: document.querySelector('#results-summary'),
   emptyState: document.querySelector('#empty-state'),
   squadList: document.querySelector('#squad-list'),
   squadTemplate: document.querySelector('#squad-template'),
+  modal: document.querySelector('#squad-modal'),
+  modalBackdrop: document.querySelector('.modal__backdrop'),
+  modalClose: document.querySelector('.modal__close'),
 };
 
 initialize().catch((error) => {
   console.error(error);
-  elements.resultsSummary.textContent = 'Unable to load squads right now.';
+  elements.resultsSummary.textContent = 'Unable to load squads.';
   elements.emptyState.hidden = false;
-  elements.emptyState.querySelector('p').textContent = 'Please try again after the registry feed is available.';
 });
 
 async function initialize() {
   const response = await fetch(DATA_URL);
-  if (!response.ok) {
-    throw new Error(`Failed to load ${DATA_URL}: ${response.status}`);
-  }
+  if (!response.ok) throw new Error(`Failed to load ${DATA_URL}`);
 
   const payload = await response.json();
   state.squads = Array.isArray(payload.squads) ? payload.squads : [];
 
   bindEvents();
   render();
-  focusSelectedCard(false);
 }
 
 function bindEvents() {
-  elements.searchForm.addEventListener('submit', (event) => {
-    event.preventDefault();
-  });
+  elements.searchForm.addEventListener('submit', (e) => e.preventDefault());
 
-  elements.searchInput.addEventListener('input', (event) => {
-    state.query = event.target.value;
+  elements.searchInput.addEventListener('input', (e) => {
+    state.query = e.target.value;
     render();
   });
 
@@ -54,18 +50,19 @@ function bindEvents() {
     elements.searchInput.focus();
   });
 
-  window.addEventListener('hashchange', () => {
-    state.selectedSlug = getSelectedSlug();
-    render();
-    focusSelectedCard(true);
+  elements.modalBackdrop?.addEventListener('click', closeModal);
+  elements.modalClose?.addEventListener('click', closeModal);
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && !elements.modal.hidden) closeModal();
   });
 }
 
 function render() {
   const squads = getFilteredSquads();
 
-  elements.resultsSummary.textContent = buildResultsSummary(squads.length);
-  elements.resetSearch.hidden = state.query.trim().length === 0;
+  elements.resultsSummary.textContent = buildSummary(squads.length);
+  elements.resetSearch.hidden = !state.query.trim();
   elements.emptyState.hidden = squads.length > 0;
 
   renderSquads(squads);
@@ -77,107 +74,118 @@ function renderSquads(squads) {
   squads.forEach((squad) => {
     const fragment = elements.squadTemplate.content.cloneNode(true);
     const card = fragment.querySelector('.squad-card');
-    const targetHash = `#squad/${squad.slug}`;
 
     card.id = `squad-${squad.slug}`;
-    card.dataset.selected = String(squad.slug === state.selectedSlug);
 
     fragment.querySelector('.squad-card__source').textContent = squad.sourceLabel;
     fragment.querySelector('.squad-card__title').textContent = squad.name;
-    fragment.querySelector('.squad-card__jump').href = targetHash;
     fragment.querySelector('.squad-card__tagline').textContent = squad.tagline;
-    fragment.querySelector('.squad-card__summary').textContent = squad.summary;
-    fragment.querySelector('.squad-card__mission').textContent = squad.howTheyWork;
-    fragment.querySelector('.squad-card__location').textContent = `Directory: ${squad.location}`;
-    fragment.querySelector('.squad-card__manifest').textContent = `Manifest: ${squad.source.manifestPath}`;
 
     const status = fragment.querySelector('.status-pill');
     status.textContent = titleCase(squad.status);
     status.dataset.tone = squad.status;
 
     const focusList = fragment.querySelector('.squad-card__focus');
-    squad.focus.forEach((focus) => {
-      const item = document.createElement('li');
-      item.className = 'token';
-      item.textContent = focus;
-      focusList.append(item);
+    squad.focus.slice(0, 3).forEach((f) => {
+      const li = document.createElement('li');
+      li.textContent = f;
+      focusList.append(li);
+    });
+    if (squad.focus.length > 3) {
+      const li = document.createElement('li');
+      li.textContent = `+${squad.focus.length - 3}`;
+      focusList.append(li);
+    }
+
+    fragment.querySelector('.squad-card__members').textContent =
+      `${squad.members.length} member${squad.members.length !== 1 ? 's' : ''}`;
+
+    const link = fragment.querySelector('.squad-card__link');
+    link.href = squad.source.repository;
+
+    card.addEventListener('click', (e) => {
+      if (e.target.closest('a')) return;
+      openModal(squad);
     });
 
-    const members = fragment.querySelector('.member-list');
-    squad.members.forEach((member) => {
-      const item = document.createElement('li');
-      item.innerHTML = `<strong>${member.name}</strong><span>${member.role}</span>`;
-      members.append(item);
+    card.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        openModal(squad);
+      }
     });
-
-    const homepageLink = fragment.querySelector('.squad-homepage');
-    homepageLink.href = squad.source.homepage ?? squad.links[0]?.url ?? squad.source.repository;
-
-    const repositoryLink = fragment.querySelector('.squad-repository');
-    repositoryLink.href = squad.source.repository;
 
     elements.squadList.append(fragment);
   });
 }
 
+function openModal(squad) {
+  const m = elements.modal;
+  m.querySelector('#modal-status').textContent = titleCase(squad.status);
+  m.querySelector('#modal-status').dataset.tone = squad.status;
+  m.querySelector('#modal-source').textContent = squad.sourceLabel;
+  m.querySelector('#modal-title').textContent = squad.name;
+  m.querySelector('#modal-tagline').textContent = squad.tagline;
+  m.querySelector('#modal-summary').textContent = squad.summary;
+  m.querySelector('#modal-mission').textContent = squad.howTheyWork;
+
+  const focusList = m.querySelector('#modal-focus');
+  focusList.replaceChildren();
+  squad.focus.forEach((f) => {
+    const li = document.createElement('li');
+    li.textContent = f;
+    focusList.append(li);
+  });
+
+  const membersList = m.querySelector('#modal-members');
+  membersList.replaceChildren();
+  squad.members.forEach((mem) => {
+    const li = document.createElement('li');
+    li.innerHTML = `<strong>${mem.name}</strong><span>${mem.role}</span>`;
+    membersList.append(li);
+  });
+
+  m.querySelector('#modal-repo').href = squad.source.repository;
+  m.querySelector('#modal-homepage').href =
+    squad.source.homepage || squad.links?.[0]?.url || squad.source.repository;
+
+  m.hidden = false;
+  document.body.style.overflow = 'hidden';
+  elements.modalClose.focus();
+}
+
+function closeModal() {
+  elements.modal.hidden = true;
+  document.body.style.overflow = '';
+}
+
 function getFilteredSquads() {
-  const query = state.query.trim().toLowerCase();
+  const q = state.query.trim().toLowerCase();
+  if (!q) return [...state.squads];
 
-  if (!query) {
-    return [...state.squads];
-  }
-
-  return state.squads.filter((squad) => {
-    return [
-      squad.name,
-      squad.tagline,
-      squad.summary,
-      squad.howTheyWork,
-      squad.sourceLabel,
-      squad.location,
-      squad.focus.join(' '),
-      squad.source.repository,
-      squad.members.map((member) => `${member.name} ${member.role} ${member.expertise.join(' ')}`).join(' '),
+  return state.squads.filter((s) =>
+    [
+      s.name,
+      s.tagline,
+      s.summary,
+      s.howTheyWork,
+      s.sourceLabel,
+      s.focus.join(' '),
+      s.members.map((m) => `${m.name} ${m.role}`).join(' '),
     ]
       .join(' ')
       .toLowerCase()
-      .includes(query);
-  });
+      .includes(q)
+  );
 }
 
-function buildResultsSummary(count) {
+function buildSummary(count) {
   const total = state.squads.length;
-  const query = state.query.trim();
-
-  if (!query) {
-    return `${total} published squad${total === 1 ? '' : 's'}`;
-  }
-
-  return `${count} match${count === 1 ? '' : 'es'} for “${query}”`;
+  const q = state.query.trim();
+  if (!q) return `${total} squad${total !== 1 ? 's' : ''} published`;
+  return `${count} result${count !== 1 ? 's' : ''} for "${q}"`;
 }
 
-function getSelectedSlug() {
-  const match = window.location.hash.match(/^#squad\/([^/]+)$/);
-  return match ? decodeURIComponent(match[1]) : null;
-}
-
-function focusSelectedCard(shouldScroll) {
-  if (!state.selectedSlug) {
-    return;
-  }
-
-  const card = document.querySelector(`#squad-${CSS.escape(state.selectedSlug)}`);
-  if (!card) {
-    return;
-  }
-
-  if (shouldScroll) {
-    card.scrollIntoView({ block: 'center', behavior: 'smooth' });
-  }
-
-  card.focus({ preventScroll: true });
-}
-
-function titleCase(value) {
-  return value.replace(/\b\w/g, (letter) => letter.toUpperCase());
+function titleCase(str) {
+  return str.replace(/\b\w/g, (c) => c.toUpperCase());
 }

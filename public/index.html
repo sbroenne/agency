@@ -6,7 +6,7 @@
     <title>Awesome Squads</title>
     <meta
       name="description"
-      content="Browse community-contributed squads, inspect their repositories, and submit your own through the Awesome Squads registry."
+      content="Community-contributed squads to enhance your GitHub Copilot experience. Browse, discover, and submit reusable AI team configurations."
     />
     <link rel="stylesheet" href="./styles.css" />
   </head>
@@ -16,142 +16,127 @@
     <div class="page-shell">
       <header class="hero" aria-labelledby="hero-title">
         <p class="eyebrow">Awesome Squads</p>
-        <h1 id="hero-title">Community-contributed squads for teams building with GitHub Copilot.</h1>
-        <p class="hero__lede">
-          Browse reusable squads, inspect how they are put together, and publish your own through the
-          same pull-request workflow that powers this registry.
+        <h1 id="hero-title">Community-contributed squads for GitHub Copilot</h1>
+        <p class="hero__subtitle">
+          Browse reusable AI team configurations, inspect how they work, and submit your own.
         </p>
 
-        <div class="hero__actions">
-          <a class="button button--primary" href="#browse">Browse squads</a>
-          <a class="button button--secondary" href="https://github.com/sbroenne/agency/pulls">Submit a squad</a>
-          <a class="button button--ghost" href="https://bradygaster.github.io/squad/">Read Squad docs</a>
-        </div>
+        <form class="hero__search" id="hero-search" role="search" aria-label="Search squads">
+          <label for="search-input" class="sr-only">Search all squads</label>
+          <input
+            id="search-input"
+            name="query"
+            type="search"
+            placeholder="Search squads…"
+            autocomplete="off"
+          />
+          <button class="search-clear" id="reset-search" type="button" hidden aria-label="Clear search">×</button>
+        </form>
 
-        <div class="hero__command" aria-label="Recommended Squad command">
-          <span class="hero__command-label">Recommended way to run Squad</span>
-          <code>copilot --agent squad</code>
-        </div>
+        <p class="hero__meta" id="results-summary" aria-live="polite">Loading…</p>
       </header>
 
       <main class="page-main" id="main">
-        <section class="section-panel search-panel" id="browse" aria-labelledby="browse-title">
-          <div class="section-heading">
-            <p class="eyebrow">Search all squads</p>
-            <div class="section-heading__row">
-              <h2 id="browse-title">Browse published squads</h2>
-              <p class="section-heading__meta" id="results-summary">Loading squads…</p>
-            </div>
-            <p class="section-heading__copy">
-              Keep discovery simple: search by squad name, focus area, team member, or repository and
-              scan the published cards below.
-            </p>
-          </div>
-
-          <form class="search-form" id="directory-search" role="search">
-            <label class="search-label" for="search-input">Search the registry</label>
-            <div class="search-control">
-              <input
-                id="search-input"
-                name="query"
-                type="search"
-                placeholder="Try: pages, registry, R2-D2, sbroenne/agency"
-                autocomplete="off"
-              />
-              <button class="button button--ghost button--small" id="reset-search" type="button" hidden>
-                Clear
-              </button>
-            </div>
-          </form>
+        <section class="browse-section" id="browse" aria-labelledby="browse-title">
+          <h2 id="browse-title" class="sr-only">Browse Squads</h2>
 
           <div class="empty-state" id="empty-state" hidden>
-            <h3>No squads match that search.</h3>
-            <p>Try a broader term or clear the search to return to the published list.</p>
+            <p class="empty-state__title">No squads match that search.</p>
+            <p>Try a broader term or clear the search.</p>
           </div>
 
-          <div class="squad-list" id="squad-list" aria-live="polite"></div>
+          <div class="squad-grid" id="squad-list" aria-live="polite"></div>
         </section>
 
-        <section class="info-grid" aria-label="How to use and contribute">
-          <article class="section-panel info-card" aria-labelledby="how-it-works-title">
-            <p class="eyebrow">How it works</p>
-            <h2 id="how-it-works-title">A lighter path than a dashboard</h2>
-            <ol class="step-list">
-              <li>
-                <strong>Browse first.</strong>
-                <span>Start with the published squads so you can see the shape, mission, and source repo before adopting anything.</span>
-              </li>
-              <li>
-                <strong>Run Squad in your repo.</strong>
-                <span>Use the Bradygaster Squad workflow when you are ready to bring a team into your own codebase.</span>
-              </li>
-              <li>
-                <strong>Submit what works.</strong>
-                <span>When your squad is reusable, open a pull request so it can be validated and listed here.</span>
-              </li>
-            </ol>
-          </article>
-
-          <article class="section-panel info-card" aria-labelledby="contribute-title">
-            <p class="eyebrow">Contribute</p>
-            <h2 id="contribute-title">Publish through the existing GitHub flow</h2>
-            <p class="info-card__copy">
-              This registry stays static on purpose: squads live in the repository, validation runs in CI,
-              and GitHub Pages publishes the result. No custom app routing, no extra directory mechanics.
-            </p>
-            <div class="info-card__actions">
-              <a class="text-link" href="https://github.com/sbroenne/agency/blob/main/CONTRIBUTING.md">Read CONTRIBUTING.md</a>
-              <a class="text-link" href="https://github.com/sbroenne/agency">Open the repository</a>
-            </div>
-          </article>
+        <section class="quick-links" aria-labelledby="quick-links-title">
+          <h2 id="quick-links-title" class="sr-only">Resources</h2>
+          <div class="quick-links__grid">
+            <a href="https://bradygaster.github.io/squad/docs/get-started/installation/" class="quick-link" target="_blank" rel="noopener">
+              <span class="quick-link__icon" aria-hidden="true">📖</span>
+              <span class="quick-link__content">
+                <strong>Get Started</strong>
+                <span>Install Squad and build your first team</span>
+              </span>
+            </a>
+            <a href="https://github.com/sbroenne/agency/pulls" class="quick-link" target="_blank" rel="noopener">
+              <span class="quick-link__icon" aria-hidden="true">➕</span>
+              <span class="quick-link__content">
+                <strong>Submit a Squad</strong>
+                <span>Add your squad through a pull request</span>
+              </span>
+            </a>
+            <a href="https://bradygaster.github.io/squad/" class="quick-link" target="_blank" rel="noopener">
+              <span class="quick-link__icon" aria-hidden="true">📚</span>
+              <span class="quick-link__content">
+                <strong>Squad Docs</strong>
+                <span>Learn how Squad works</span>
+              </span>
+            </a>
+            <a href="https://github.com/sbroenne/agency" class="quick-link" target="_blank" rel="noopener">
+              <span class="quick-link__icon" aria-hidden="true">🔗</span>
+              <span class="quick-link__content">
+                <strong>Repository</strong>
+                <span>View the source on GitHub</span>
+              </span>
+            </a>
+          </div>
         </section>
       </main>
+
+      <footer class="page-footer">
+        <p>Made with ❤️ by the community. <a href="https://github.com/sbroenne/agency/blob/main/CONTRIBUTING.md">Contribute →</a></p>
+      </footer>
     </div>
 
     <template id="squad-template">
-      <article class="squad-card" tabindex="-1">
-        <div class="squad-card__top">
-          <div>
-            <p class="squad-card__source"></p>
-            <div class="squad-card__title-row">
-              <h3 class="squad-card__title"></h3>
-              <a class="squad-card__jump" href="">Jump link</a>
-            </div>
-            <p class="squad-card__tagline"></p>
-          </div>
+      <article class="squad-card" tabindex="0">
+        <div class="squad-card__header">
           <span class="status-pill"></span>
+          <span class="squad-card__source"></span>
         </div>
-
-        <p class="squad-card__summary"></p>
-
-        <div class="squad-card__grid">
-          <section>
-            <h4>Mission</h4>
-            <p class="squad-card__mission"></p>
-          </section>
-
-          <section>
-            <h4>Focus</h4>
-            <ul class="token-list squad-card__focus"></ul>
-          </section>
-
-          <section>
-            <h4>Team</h4>
-            <ul class="member-list"></ul>
-          </section>
-
-          <section>
-            <h4>Source</h4>
-            <p class="squad-card__location"></p>
-            <p class="squad-card__manifest"></p>
-            <div class="squad-card__actions">
-              <a class="button button--ghost button--small squad-homepage" target="_blank" rel="noreferrer">Homepage</a>
-              <a class="button button--ghost button--small squad-repository" target="_blank" rel="noreferrer">Repository</a>
-            </div>
-          </section>
+        <h3 class="squad-card__title"></h3>
+        <p class="squad-card__tagline"></p>
+        <ul class="squad-card__focus"></ul>
+        <div class="squad-card__footer">
+          <span class="squad-card__members"></span>
+          <a class="squad-card__link" href="" target="_blank" rel="noopener">View →</a>
         </div>
       </article>
     </template>
+
+    <div id="squad-modal" class="modal" hidden aria-modal="true" role="dialog" aria-labelledby="modal-title">
+      <div class="modal__backdrop"></div>
+      <div class="modal__content">
+        <button class="modal__close" aria-label="Close">&times;</button>
+        <div class="modal__header">
+          <span class="status-pill" id="modal-status"></span>
+          <p class="modal__source" id="modal-source"></p>
+        </div>
+        <h2 id="modal-title" class="modal__title"></h2>
+        <p class="modal__tagline" id="modal-tagline"></p>
+        <p class="modal__summary" id="modal-summary"></p>
+
+        <div class="modal__section">
+          <h3>Mission</h3>
+          <p id="modal-mission"></p>
+        </div>
+
+        <div class="modal__section">
+          <h3>Focus Areas</h3>
+          <ul class="token-list" id="modal-focus"></ul>
+        </div>
+
+        <div class="modal__section">
+          <h3>Team</h3>
+          <ul class="member-list" id="modal-members"></ul>
+        </div>
+
+        <div class="modal__actions">
+          <a class="button button--primary" id="modal-repo" href="" target="_blank" rel="noopener">View Repository</a>
+          <a class="button button--secondary" id="modal-homepage" href="" target="_blank" rel="noopener">Homepage</a>
+        </div>
+      </div>
+    </div>
 
     <script src="./app.js" type="module"></script>
   </body>

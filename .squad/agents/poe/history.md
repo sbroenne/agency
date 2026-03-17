@@ -171,3 +171,59 @@ Landing redesign delivered in existing static stack with:
 6. Preserved hash-based deep links, card selection, copy-link behavior, and clickable focus tags from the detail panel back into the directory.
 
 **Implementation note:** I kept the current static HTML/CSS/JS stack and used lightweight DOM updates rather than introducing a framework or routing layer.
+
+---
+
+### Awesome Copilot UX Redesign (Revision Pass) (2026-03-16)
+
+**Status:** Implemented and validated.
+
+**Context:** Previous redesign passes were rejected. User requested UX-led correction using Awesome Copilot as the PRIMARY guide and Bradygaster Squad for style/visual polish.
+
+**What changed:**
+
+1. **Hero → Search-first (Awesome Copilot pattern):**
+   - Removed button-heavy hero with "Browse squads" CTA
+   - Added prominent search input directly in hero
+   - Shortened headline, tighter subtitle
+   - Search is now primary CTA above fold
+
+2. **Grid cards replace complex card lists (Awesome Copilot pattern):**
+   - Moved from dense, info-heavy cards to clean visual cards
+   - Cards show: status pill, source, title, tagline, 3 focus tags, member count
+   - Click card → modal for full details (progressive disclosure)
+
+3. **Quick links grid (Awesome Copilot pattern):**
+   - Added 4-card resource grid below squads: Get Started, Submit, Docs, Repository
+   - Matches Awesome Copilot's category card pattern
+
+4. **Modal for details (Bradygaster pattern):**
+   - Full squad details in modal overlay
+   - Includes mission, all focus areas, full team list, action buttons
+   - Keeps browse view scannable, detail view comprehensive
+
+5. **Visual polish (Bradygaster style):**
+   - GitHub-native dark theme (#0d1117 bg)
+   - Clean rounded corners (12px), subtle borders
+   - Hover lift animations (translateY), focus states
+   - prefers-reduced-motion respected
+
+6. **Simplified JS:**
+   - Removed hash-based routing/selection state
+   - Cleaner event binding
+   - Modal open/close with focus management
+
+**Why this follows Awesome Copilot:**
+- Search-first hero (matches their global search pattern)
+- Visual card grid for browsing (matches their category cards)
+- Click for details (progressive disclosure)
+- Resource links in card format (matches their quick links)
+- No complex filter UI, no overcomplicated dashboard
+
+**Why this follows Bradygaster Squad for style:**
+- Dark theme with GitHub-native colors
+- Clean panel borders, subtle hover states
+- Modal for detail view (similar to their doc structure)
+- Minimal, content-focused layout
+
+**Validation:** `npm run build`, `npm run validate`, `npm test` all pass.
