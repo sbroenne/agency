@@ -116,3 +116,13 @@ Key findings:
 - **Awesome Copilot structure translates cleanly to this registry:** hero → search → browse cards gives clearer orientation than a quickstart-led or app-like layout.
 - **Bradygaster works best as visual language, not layout complexity:** dark gradients, strong headline scale, pill CTAs, and calm panels deliver the feel without recreating docs-site sprawl.
 - **Minimal JS is enough for Pages here:** live search plus optional hash highlighting preserves discoverability while avoiding state-heavy directory mechanics.
+
+### Astro + Tailwind Pages Migration (2026-03-17)
+
+**Astro 5.7 + Tailwind 4.1 now power the public registry with mandatory local preview for major UX work.**
+
+Key findings:
+- **Stack alignment should preserve the registry pipeline:** `scripts/build-registry.mjs` still generates `public/squads.json`, while Astro reads the same registry source for static page generation.
+- **Preview discipline is now part of the platform contract:** `npm run dev` supports iteration, but major UX work must finish with `npm run build` and `npm run preview` before publish.
+- **Pages deployment is cleaner from `dist/`:** GitHub Actions now builds the Astro site and uploads the static artifact instead of publishing `public/` directly.
+- **Key paths:** `src/pages/index.astro`, `src/components/SquadCard.astro`, `src/scripts/site.js`, `astro.config.mjs`, `.github/workflows/deploy-pages.yml`.

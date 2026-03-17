@@ -234,3 +234,20 @@ All strategic decisions implemented correctly:
 
 **Decision:** Ship as-is. This implementation correctly interprets both reference sites while remaining appropriately minimal for the current catalog size.
 
+### Session 7: Docs Stack Alignment Decision (2026-03-17)
+
+**Task:** Determine whether `agency` matches the official Bradygaster Squad docs/site stack and define the migration + preview gate if not.
+
+**Key findings:**
+1. Official Bradygaster Squad docs are built in `bradygaster/squad/docs` using **Astro 5.7** + **Tailwind CSS 4.1 via `@tailwindcss/vite`**.
+2. Official docs expose the standard Astro workflow: `dev`, `build`, and `preview`; deploy publishes static output to GitHub Pages.
+3. Official docs also use **Pagefind** after build, but that is an optional search enhancement, not the core platform requirement for `agency`.
+4. `agency` still runs a hand-rolled static stack: root `package.json`, `public/index.html`, custom CSS/JS, and `.github/workflows/deploy-pages.yml` publishing `public/`.
+
+**Decision:** We are **not** on the same stack. For the next major UX iteration, migrate `agency` to Astro + Tailwind and add a mandatory local production preview gate before publish. Do not block on Pagefind.
+
+**User preference captured:** Every major UX change must be reviewed locally in production preview before publish.
+
+**Key file paths:**
+- Official reference: `bradygaster/squad/docs/package.json`, `bradygaster/squad/docs/astro.config.mjs`, `bradygaster/squad/.github/workflows/squad-docs.yml`
+- Current repo: `package.json`, `public/index.html`, `.github/workflows/deploy-pages.yml`

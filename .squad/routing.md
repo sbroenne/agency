@@ -62,4 +62,4 @@ When triaging, the Lead should ask:
 | Pages deployment, CI/CD | R2-D2 | — |
 | squad.json validation | C-3PO | — |
 | discovery, site experience | Poe | — |
-
+| UX testing, Playwright visual review | Wedge | Poe |
