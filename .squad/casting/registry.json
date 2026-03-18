@@ -30,6 +30,12 @@
       "universe": "Star Wars",
       "status": "active"
     },
+    "padme": {
+      "created_at": "2026-03-18T17:02:47.679Z",
+      "persistent_name": "Padme",
+      "universe": "Star Wars",
+      "status": "active"
+    },
     "wedge": {
       "created_at": "2026-03-17T05:21:16.969Z",
       "persistent_name": "Wedge",

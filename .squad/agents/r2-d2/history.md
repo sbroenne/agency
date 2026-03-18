@@ -126,3 +126,61 @@ Key findings:
 - **Preview discipline is now part of the platform contract:** `npm run dev` supports iteration, but major UX work must finish with `npm run build` and `npm run preview` before publish.
 - **Pages deployment is cleaner from `dist/`:** GitHub Actions now builds the Astro site and uploads the static artifact instead of publishing `public/` directly.
 - **Key paths:** `src/pages/index.astro`, `src/components/SquadCard.astro`, `src/scripts/site.js`, `astro.config.mjs`, `.github/workflows/deploy-pages.yml`.
+
+### Platform Validation Sprint (2026-03-18)
+
+**Status:** Passed build and preview validation  
+**Owner:** R2-D2
+
+Platform validation for the approved landing page revision:
+
+**Build Workflow:**
+- Registry generation: ✓ (public/squads.json)
+- Astro build: ✓ (dist/ artifact generated, 52 KB)
+- Build time: 645 ms
+- Output: Static HTML + CSS + JS (no SSR)
+
+**Local Preview Validation:**
+- Preview server: ✓ (http://localhost:4321/agency, Astro preview mode)
+- Landing page response: ✓ (HTTP 200, text/html, full page loads)
+- Page structure: ✓ (H1, sections, form, card grid present)
+- Registry feed: ✓ (public/squads.json available for clients)
+
+**Key Metrics:**
+- Bundle size: 52 KB (static, under Pages soft limit)
+- Build determinism: Yes (artifact reproducible across runs)
+- Deploy readiness: Ready for Pages push
+
+**Deployment Path:** dist/ will be uploaded to Pages via GitHub Actions (existing `.github/workflows/deploy-pages.yml`)
+
+**Not Validated in This Sprint:**
+- Visual assertion suite (6 checks on design tokens) — captured screenshots but tests did not finalize
+- SEO metadata (title/meta verified in HTML, structured data not in scope for this pass)
+
+**Recommendation:** Branch is ready from a build/preview standpoint. Ship to Pages when visual review is signed off.
+
+**Key Insight:** The Astro + Tailwind migration has preserved the light-shell design direction and registry pipeline integrity. Minimal risk surface for Pages deployment.
+
+
+### Deployment Workflow Learned (2026-03-18)
+
+**Key discovery:** The full Pages deployment dance is now clear and low-friction.
+
+1. **Registry pipeline → Astro build → dist/ output**
+   - `npm run build:registry` emits `public/squads.json` (data layer)
+   - `astro build` consumes squads.json + renders to `dist/` (presentation layer)
+   - Registry data is statically embedded in HTML (no JS fetch, no waterfall)
+
+2. **Local preview fidelity is strong**
+   - `npm run preview` at port 4321 with `/agency` base path matches Pages configuration exactly
+   - Serves from `dist/` (not `public/` or dev mode), so no surprises on deploy
+
+3. **Artifact hygiene**
+   - 52 KB is well under Pages limits; mostly content (registry data embedded)
+   - CSS is atomic (Tailwind via `@theme` color variables) — no legacy bloat
+   - No SSR, no runtime dependencies, no external API calls (completely portable)
+
+4. **Decision point for future:** When catalog grows beyond 1 squad, can still use this stack — registry scales horizontally, UI complexity is decoupled from data volume (search is client-side).
+
+**Implication:** Builds and deploys can be automated with high confidence. No platform surprises.
+

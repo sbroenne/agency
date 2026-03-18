@@ -227,3 +227,9 @@ Landing redesign delivered in existing static stack with:
 - Minimal, content-focused layout
 
 **Validation:** `npm run build`, `npm run validate`, `npm test` all pass.
+
+### Squad Docs Visual Alignment (2026-03-17)
+
+- Astro/Tailwind site now uses the Squad docs brand palette directly in `src/styles/global.css`: rose primary (`squad-*`), navy depth (`navy-*`), cyan accent (`accent-*`), and neutral dark surfaces (`surface-*`).
+- `src/pages/index.astro`, `src/components/SquadCard.astro`, and `src/scripts/site.js` are the key visual-system touchpoints for hero chrome, card surfaces, status pills, quick links, and modal styling.
+- For major UX revisions, `CONTRIBUTING.md` now requires preview review plus a visual alignment check against Bradygaster Squad docs before merge.
