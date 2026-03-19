@@ -160,3 +160,63 @@ Move canonical squad manifests from `squads/` to root level; retire the `squads/
 **Clarification note:** Schema path updates in manifests (root relative → `../../tooling/schema/`) are necessary architectural corrections, not constraint violations. They align manifests to actual repository structure.
 
 **Logged to:** `.squad/orchestration-log/2026-03-19T11:47:28Z-mon-mothma-review-2.md`
+
+---
+
+## Learnings
+
+### 2026-03-19: View Link Arbitration
+
+**Event:** Resolved disagreement between Poe and Wedge on squad card "View →" link behavior.
+
+**Analysis:**
+The implementation shows that `SquadCard.astro` line 61 uses `squad.source.repository` for the View link, which points to the repo root (`https://github.com/sbroenne/agency`). However, the data in `squads.json` also includes `squad.source.directory` (e.g., `squads/agency`, `squads/scout`) — specific folder paths for each squad.
+
+**Verdict:** Poe is correct. This is a UX bug.
+
+**Rationale:**
+1. **Data exists:** The registry already exposes `source.directory` per squad — it's being ignored
+2. **User intent:** Clicking "View" on the Scout card should take the user to Scout's manifest, not to the shared repo root
+3. **Discovery-first principle:** Our established doctrine is discovery-first; deep-linking to the actual squad folder honors this
+4. **Modal distinction is moot:** Whether the card opens a modal or not doesn't change what "View" should mean externally — it should point to the squad, not the repo
+
+**Decision:** The View link should compose the full GitHub URL: `{repository}/tree/main/{directory}` (e.g., `https://github.com/sbroenne/agency/tree/main/squads/scout`).
+
+**Files to change:**
+- `src/components/SquadCard.astro` — update href from `squad.source.repository` to a composed path using `squad.source.directory`
+- Optionally, consider doing the same for `#modal-repo` in `site.js` (line 278)
+
+**Logged to:** `.squad/decisions/inbox/mon-view-link-verdict.md`
+
+---
+
+## 2026-03-19: View Link Arbitration — Final Verdict
+
+**Event:** Resolved Poe vs. Wedge disagreement on squad card "View →" destination  
+**Date:** 2026-03-19T18:12:22Z
+
+**Summary:**
+Two-agent input led to clear decision:
+- **Poe:** This is a UX bug; View should link to squad-specific paths
+- **Wedge:** Current behavior was verified as intentional; two-action pattern is correct
+
+**Analysis:**
+Wedge correctly identified that the two-action pattern (modal + external link) is intentional. However, the *destination* of the external link is a separate issue. Both squads linking to the repo root because they share `source.repository` is indeed a UX bug, because:
+1. The registry already has `source.directory` per squad
+2. "View →" should reveal the squad being viewed, not the generic repo
+3. Aligns with established discovery-first principle
+
+**Verdict:** ✅ **APPROVED** — Poe is correct; this is a bug.
+
+**Decision:** Update View links to compose squad-specific GitHub URLs:
+```
+{source.repository}/tree/main/{source.directory}
+```
+
+**Files to change:**
+- `src/components/SquadCard.astro` line 59–65
+- `src/scripts/site.js` line 277–278 (modal button consistency)
+
+**Design Alignment:** This honors discovery-first doctrine by deep-linking to the specific resource (squad folder), not a generic landing page.
+
+**Status:** Approved. Awaiting implementation and validation.

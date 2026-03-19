@@ -2738,3 +2738,67 @@ Both are agency-only (respecting user directive). Both have similar implementati
 - **User directive:** `.squad/decisions/inbox/copilot-directive-2026-03-19T11-00-31Z.md`
 - **Orchestration logs:** `.squad/orchestration-log/2026-03-19T11:21:22Z-{leia,mon-mothma}.md`
 - **Session log:** `.squad/log/2026-03-19T11:21:22Z-agency-reshape-proposal.md`
+
+---
+
+## View Link Destination: Squad-Specific Path Required
+
+**Authors:** Poe (UX Engineer) + Wedge (UX Tester) + Mon Mothma (Arbitration)  
+**Date:** 2026-03-19  
+**Status:** APPROVED (Mon Mothma verdict)
+
+### Summary
+
+Squad card "View →" links currently target `source.repository` for all squads, causing both Agency and Scout to navigate to the shared repo root. This is a UX bug. The link should target squad-specific folders using `source.directory`.
+
+### Finding
+
+**Current Implementation:**
+- `SquadCard.astro` line 61: `href={squad.source.repository}`
+- Result: Both squads link to `https://github.com/sbroenne/agency` (repo homepage)
+
+**Available Data:**
+- Each squad has `source.directory` (e.g., `squads/agency`, `squads/scout`)
+- This data exists in the registry but is not used by the View link
+
+### Verdict
+
+**Poe is correct.** This is a UX bug.
+
+**Wedge's argument** — that the two-action card pattern (modal + external link) makes the destination irrelevant — conflates internal navigation with external resource linking. The "View →" button should point to the resource being viewed, not to a generic repo container.
+
+### Correct Behavior
+
+Compose the GitHub URL from available manifest data:
+
+```
+{source.repository}/tree/main/{source.directory}
+```
+
+**Examples:**
+- Agency: `https://github.com/sbroenne/agency/tree/main/squads/agency`
+- Scout: `https://github.com/sbroenne/agency/tree/main/squads/scout`
+
+### Design Principle
+
+Aligns with our **discovery-first doctrine**: deep-link to the actual resource, not to a landing page users must navigate from.
+
+### Implementation
+
+**Files to change:**
+
+1. **`src/components/SquadCard.astro`** (line 59–65)
+   - Replace `href={squad.source.repository}` with composed URL
+
+2. **`src/scripts/site.js`** (line 277–278, modal "View on GitHub" button)
+   - Apply same fix for consistency
+
+**Validation:**
+- Run `npm run build && npm test` to verify no regressions
+- Spot-check both squads in preview to confirm links are now distinct
+
+### References
+
+- **Orchestration logs:** `.squad/orchestration-log/2026-03-19T18:12:22Z-{poe,wedge,mon-mothma}.md`
+- **Session log:** `.squad/log/2026-03-19T18:12:22Z-view-link-verdict.md`
+- **Inbox (merged):** `poe-view-link.md`, `wedge-squad-view-link-audit.md`, `mon-view-link-verdict.md`

@@ -28,3 +28,29 @@
 
 ## Recent Work
 
+## Learnings
+
+- 2026-03-19: Squad card "View" currently uses `source.repository`, so monorepo squads all land on the same repo root. For squad-specific browsing, derive the destination from `source.directory` plus `source.import.ref` (or `manifestPath`) instead.
+
+---
+
+## 2026-03-19: Squad Card View Link Verdict
+
+**Event:** UX bug confirmed and approved for fix  
+**Date:** 2026-03-19T18:12:22Z
+
+**Summary:**
+Proposed that squad card "View →" links should target squad-specific folders, not repo root. Initial proposal confirmed as UX bug; Mon Mothma approved the fix.
+
+**Verdict:** ✅ APPROVED
+
+**Decision:** View links should compose GitHub tree URL using `source.directory`:
+```
+{source.repository}/tree/main/{source.directory}
+```
+
+**Changes required:**
+- `src/components/SquadCard.astro` line 59–65
+- `src/scripts/site.js` line 277–278 (modal button for consistency)
+
+**Next:** Awaiting implementation. Orchestration logs and decision merged to `.squad/` reference system.

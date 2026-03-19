@@ -44,6 +44,8 @@ All findings documented in `.squad/decisions.md` section "Full Project Review �
 
 ## Learnings
 
+- 2026-03-19 (squad View link audit): Confirmed user concern is **not accurate**. Current behavior reviewed: (1) Clicking the card itself opens an in-modal detail view with full squad info, repo link, and homepage link. (2) The "View →" text-link specifically directs to the squad's source repository (GitHub). These are two intentional, distinct actions. Data: SquadCard.astro line 61 shows `href={squad.source.repository}` with `target="_blank"` and `rel="noopener"`. site.js line 124-127 prevents the modal from opening on link clicks. Both squads in registry point to https://github.com/sbroenne/agency (repo homepage). Current UX is correct and intentional: "View →" is **not** a "back to homepage" link — it's a "view the repository" link. Modal provides squad details in-site; "View →" link exits to source on GitHub. No bug detected.
+
 - 2026-07-14 (copy review): Padme landed brand/copy changes. "agency" replaces "Awesome Squads" in badge and title. H1 changed from "Community-contributed squads for GitHub Copilot" → "AI teams that work inside your codebase". Subhead and meta description also updated with specific action verbs. Changes approved.
 - 2026-07-14: Copy review pattern — check BaseLayout defaults even when index.astro overrides them. Stale fallback strings are a maintenance hazard for future pages that don't override title/description.
 - 2026-07-14: Good headline test: does it answer "what do I get?" (value) rather than "what is this?" (description)? "AI teams that work inside your codebase" passes; "Community-contributed squads for GitHub Copilot" fails.
@@ -154,3 +156,29 @@ All findings documented in `.squad/decisions.md` section "Full Project Review �
 **Verdict:** ✅ APPROVED — Cleared for publish
 
 **Related:** Initial review filed to inbox; re-review approval filed to inbox; both merged to decisions.md. Orchestration logs filed at `.squad/orchestration-log/2026-03-19T07:28:10Z-wedge.md`
+
+---
+
+## 2026-03-19: Squad Card View Link Audit — Arbitrated
+
+**Event:** UX audit findings escalated to arbitration; verdict delivered  
+**Date:** 2026-03-19T18:12:22Z
+
+**Summary:**
+Found that current card two-action pattern (modal + external link) is intentional. However, Mon Mothma arbitrated that the link destination should still be squad-specific, not repo-root, because:
+1. The `source.directory` data exists and is unused
+2. "View" should mean "view this resource," not "view the repo"
+3. Aligns with discovery-first doctrine
+
+**Finding (original audit):** Current behavior was technically correct as implemented.
+
+**Verdict (arbitration):** Implementation correct but destination URL is a UX bug.
+
+**Decision:** Mon Mothma approved changing View links to use `source.directory` path:
+```
+{source.repository}/tree/main/{source.directory}
+```
+
+**Impact:** No change to modal pattern. Only the external link destination changes.
+
+**Note:** This distinguishes two squads (Agency vs. Scout) that share the same repo — they now link to their own folders, not the shared repo root.
