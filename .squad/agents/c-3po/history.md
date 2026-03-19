@@ -9,9 +9,9 @@
 ## Learnings
 
 ### Validation & Testing Infrastructure (2026-03-18)
-- **validate** command: `node scripts/validate-squads.mjs` checks squad.json manifests against schema; passes cleanly on approved revisions
-- **test** command: `node --test tests/registry.test.mjs` runs Node.js built-in test suite (2 tests); validates registry loads and counts correctly
-- **test:visual** command: `npm run build && node --test tests/visual-acceptance.test.mjs` runs Playwright-backed acceptance tests after Astro build
+- **validate** command: `node tooling/scripts/validate-squads.mjs` checks squad.json manifests against schema; passes cleanly on approved revisions
+- **test** command: `node --test tooling/tests/registry.test.mjs` runs Node.js built-in test suite (2 tests); validates registry loads and counts correctly
+- **test:visual** command: `npm run build && node --test tooling/tests/visual-acceptance.test.mjs` runs Playwright-backed acceptance tests after Astro build
 - All commands exit cleanly with code 0 on schema-compliant revisions
 - Squad count: Currently 1 validated manifest in the registry
 
@@ -53,10 +53,10 @@ All findings merged into `.squad/decisions.md` section "Full Project Review — 
 **Next:** Add negative tests before accepting scalable squad submissions.
 
 ### Manifest Hardening & Temp-Repo Tests (2026-03-19)
-- `scripts/lib/registry.mjs` now accepts injected `repoRoot`/`schemaPath`/`squadsRoot`/`now` options, which makes schema and registry tests deterministic without touching the real workspace.
+- `tooling/scripts/lib/registry.mjs` now accepts injected `repoRoot`/`schemaPath`/`squadsRoot`/`now` options, which makes schema and registry tests deterministic without touching the real workspace.
 - Import semantics are now explicit: `upstream-sync` and `fork-sync` must provide both `path` and `ref`.
 - Semantic validation now guards registry assumptions beyond JSON Schema alone: repository URLs must include owner/repo path segments, and `source.directory` / `source.import.path` must stay repository-relative.
-- `tests/registry.test.mjs` now covers valid normalization plus nine negative/edge cases: invalid JSON, malformed repo URLs, missing sync import fields, path escapes, slug-directory mismatch, duplicate ids/slugs, and case-insensitive duplicate focus/expertise values.
+- `tooling/tests/registry.test.mjs` now covers valid normalization plus nine negative/edge cases: invalid JSON, malformed repo URLs, missing sync import fields, path escapes, slug-directory mismatch, duplicate ids/slugs, and case-insensitive duplicate focus/expertise values.
 
 ## Validation Run — 2026-03-19 (Afternoon)
 
@@ -112,4 +112,29 @@ Implemented root-level squad discovery aliases. Added symlinks from `agency/squa
 **Team Decision:** Symlink aliases approved as production-ready pattern.
 
 **Merged to:** decisions.md (2026-03-19T08:04:56Z)
+
+---
+
+## 2026-03-19: Agency-Only Tooling Cleanup — INITIAL PASS
+
+**Event:** Consolidation sprint to reduce root-level marketplace noise  
+**Status:** ⚠️ Rejected by Mon Mothma (structural gaps)  
+**Date:** 2026-03-19T13:45:00Z
+
+**Work Completed:**
+- Moved `schema/`, `scripts/`, `tests/`, `test/` directories under `tooling/` namespace
+- Kept schema `$id` stable (`https://sbroenne.github.io/agency/schema/squad.schema.json`) for validation identity
+- Moved invalid `squads/test/squad.json` fixture to `tooling/test-fixtures/`
+- Updated documentation in docs/templates
+
+**Critical Gaps Identified by Reviewer:**
+1. **Build system broken** — `package.json` scripts still reference root-level paths (actual files moved to `tooling/`)
+2. **Test fixture not removed** — `squads/test/squad.json` remained in original location after move
+3. **Script paths not updated** — `tooling/scripts/lib/registry.mjs` hardcoded root-level references
+
+**Team Decision:** Reassigned to R2-D2 for revision (different agent per protocol). C-3PO's work was 85% correct but left three concrete blockers that prevent build/validation from passing.
+
+**Lesson:** Schema migration is stable; path resolution and build system integration require cross-tool validation (not just schema-layer checks).
+
+**Logged to:** `.squad/orchestration-log/2026-03-19T11:47:28Z-c-3po.md`
 

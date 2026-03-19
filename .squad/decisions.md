@@ -633,7 +633,7 @@ Poe's initial dark glassmorphic redesign was rejected by Wedge; visual refinemen
 **Owner:** Wedge (UX Tester)  
 **Date:** 2026-03-18  
 **Status:** ✅ Implemented  
-**Artifact:** `tests/visual-acceptance.test.mjs`
+**Artifact:** `tooling/tests/visual-acceptance.test.mjs`
 
 #### Decision
 
@@ -656,11 +656,11 @@ npm run test:visual
 
 - Builds site, starts preview server on port 4322
 - Runs six Playwright checks
-- Screenshots land in `tests/screenshots/visual-acceptance/`
+- Screenshots land in `tooling/tests/screenshots/visual-acceptance/`
 
 #### Integration with Existing Tests
 
-- `npm test` now explicitly targets `tests/registry.test.mjs` (prevents browser test auto-discovery in CI)
+- `npm test` now explicitly targets `tooling/tests/registry.test.mjs` (prevents browser test auto-discovery in CI)
 - Existing test infrastructure unchanged in intent; scoped more precisely
 - Visual harness remains opt-in (`npm run test:visual`) for local design review
 
@@ -866,7 +866,7 @@ The Awesome Squads Agency is **architecturally sound** and **governance-proven**
 **Blocker #2: Schema Changes Not Flagged in PR Template**
 - Schema modifications may merge without visibility
 - PR template provides general "call out anything" but no schema-change checkbox
-- **Action:** Add explicit checkbox: "[ ] This includes changes to schema/squad.schema.json" with approval note
+- **Action:** Add explicit checkbox: "[ ] This includes changes to tooling/schema/squad.schema.json" with approval note
 
 **Medium #3: Upstream Sync Underdocumented**
 - squad-upstream-sync.yml sophisticated but mentioned once
@@ -986,7 +986,7 @@ All filter chips follow the docs-style visual system:
 - `src/pages/index.astro` — Filter markup and computed counts
 - `src/components/SquadCard.astro` — `data-status` and `data-focus` attributes
 - `src/scripts/site.js` — Filter state management and event handlers
-- `tests/filter-ui.test.mjs` — 15 structure tests
+- `tooling/tests/filter-ui.test.mjs` — 15 structure tests
 
 #### Test Coverage
 
@@ -1083,7 +1083,7 @@ The review found that the schema only covered structure, while the registry code
 
 #### Test Impact
 
-- Expanded `tests/registry.test.mjs` from 2 happy-path checks to 10 tests covering normalization and negative/edge cases
+- Expanded `tooling/tests/registry.test.mjs` from 2 happy-path checks to 10 tests covering normalization and negative/edge cases
 - Added temp-repo based fixtures so validation failures can be tested without mutating the live `squads/` tree
 
 #### Validation
@@ -1148,7 +1148,7 @@ Platform is deterministic, fully tested, and ready for publication. Visual accep
 Full UX re-review against:
 - Agreed IA (Tier 1 status chips + Tier 2 collapsible focus filter)
 - Bradygaster Squad docs-style visual system (6 acceptance criteria)
-- Structural test suite: `tests/filter-ui.test.mjs` (15 tests), `tests/registry.test.mjs` (10 tests)
+- Structural test suite: `tooling/tests/filter-ui.test.mjs` (15 tests), `tooling/tests/registry.test.mjs` (10 tests)
 
 #### Scorecard
 
@@ -1887,6 +1887,110 @@ When the Squad SDK implements marketplace plugin matching for team member hiring
 
 ---
 
+
+---
+
+## Approved: Agency-Only Tooling Cleanup
+
+### Decision Summary
+
+**Status:** ✅ APPROVED by Mon Mothma (Lead)  
+**Workflow:** C-3PO (initial) → Rejected → R2-D2 (revision) → Approved  
+**Date Completed:** 2026-03-19
+
+### What Changed
+
+Consolidated `schema/`, `scripts/`, `tests/`, and `test/` directories under `tooling/` namespace to reduce root-level marketplace noise while keeping published `agency/` and `scout/` entries as marketplace-discoverable squads.
+
+### Why This Path
+
+1. **Path 1 (Quick Noise Reduction)** was selected over Path 2 (Structural Reshape)
+2. Minimal friction; meaningful noise reduction without breaking existing patterns
+3. Keeps site discovery intact; single-focused change (consolidation only)
+4. Only path changes affected; no architectural changes
+
+### Critical Fixes Applied by R2-D2
+
+1. **Fixed path-resolution bug** in `tooling/scripts/lib/registry.mjs`
+   - Now correctly derives schema and squads paths from injected `repoRoot`
+   - Prevents temp-repo or alternate-root validation from reading wrong tree
+
+2. **Removed stale fixture aliasing**
+   - Deleted `tooling/test/` directory (moved to `.squad/test-fixtures/`)
+   - Cleaned up `squads/test/squad.json` remnant
+
+3. **Updated internal workflow templates**
+   - Switched from stale hardcoded test paths to `npm ci` + `npm test`
+   - Ensures generated CI won't fail on deleted test layout
+
+4. **Schema refs corrected**
+   - `squads/agency/squad.json`: `../../schema/` → `../../tooling/schema/`
+   - `squads/scout/squad.json`: `../../schema/` → `../../tooling/schema/`
+   - Aligns manifests to actual repository structure
+
+### Validation
+
+✅ `npm run validate` — Clean (2 squads validated)  
+✅ `npm run build` — Succeeds; registry generated correctly  
+✅ `npm test` — 12/12 tests pass  
+✅ Marketplace integrity intact — `agency` and `scout` present in registry  
+✅ All member data, focus areas, links preserved  
+
+### Constraints Satisfied
+
+- ✅ Changes stay on `agency` side only
+- ✅ No changes to core squad ecosystem tooling
+- ✅ No changes to C-3PO's validation logic
+- ✅ Published marketplace surface unchanged
+
+### Orchestration
+
+- **C-3PO (initial):** Moved directories but missed build/path updates → Rejected
+- **Mon Mothma (review):** Identified 3 critical blockers; reassigned for revision
+- **R2-D2 (revision):** Fixed all blockers; verified all checks pass
+- **Mon Mothma (final):** Approved; validated structural soundness
+
+### Recommendation for Future
+
+If C-3PO's negative test suite is added, ensure it validates both relative paths (`../../tooling/schema/`) and absolute paths to prevent regressions on future schema relocations.
+
+---
+
+## Tooling Cleanup: Initial Attempt (Rejected)
+
+**Author:** C-3PO  
+**Status:** Rejected by Mon Mothma  
+**Date:** 2026-03-19T13:45:00Z
+
+**Decision:** Moved `schema/`, `scripts/`, `tests/`, and `test/` under `tooling/`. Kept schema `$id` stable (`https://sbroenne.github.io/agency/schema/squad.schema.json`) even though file now lives at `tooling/schema/squad.schema.json`. Moved invalid `squads/test/squad.json` fixture to `tooling/test-fixtures/`.
+
+**Blockers Identified (Mon Mothma):**
+1. Build system broken — `package.json` scripts still reference root paths
+2. Test fixture not removed — `squads/test/squad.json` remained
+3. Script paths not updated — Registry lib hardcoded root paths
+
+Reassigned to R2-D2 for revision.
+
+---
+
+## Tooling Cleanup: Revision (Approved)
+
+**Author:** R2-D2  
+**Status:** ✅ Approved by Mon Mothma  
+**Date:** 2026-03-19T12:47:00Z
+
+**Decision:** Keep `squads/<slug>/squad.json` as canonical manifest location. Keep root-level `agency/` + `scout/` entries as marketplace aliases. Fix agency-side bugs by making registry path resolution derive paths from injected `repoRoot`, and switch internal templates to `npm ci` + `npm test` instead of stale hardcoded test paths.
+
+**Why:** Previous cleanup left one real bug — overriding `repoRoot` didn't relocate defaults. Internal workflows still pinned to deleted layout, so generated CI would fail.
+
+**Applied Fixes:**
+- Fixed `tooling/scripts/lib/registry.mjs` path resolution
+- Removed stale `tooling/test/` alias directory
+- Updated workflow templates to modern npm patterns
+- Added regression coverage for path resolution
+
+**Verified:** All checks pass; no regressions; marketplace integrity maintained.
+
 ## References
 
 ### Squad CLI Marketplace Commands
@@ -1942,7 +2046,7 @@ Scout is a practical discovery assistant, not a meta-squad. It reads the catalog
 
 ## Coupled Changes
 
-- `tests/registry.test.mjs` — Fixed member count assertion that assumed a single squad. Now sums across all squads.
+- `tooling/tests/registry.test.mjs` — Fixed member count assertion that assumed a single squad. Now sums across all squads.
 - `public/squads.json` — Rebuilt by `build:registry` to include Scout.
 
 ---
@@ -2192,7 +2296,7 @@ marketplace/               (New: federation pointer)
 ### What Stays Unchanged
 
 - ✅ `squads/` directory structure
-- ✅ Schema validation (`schema/squad.schema.json`)
+- ✅ Schema validation (`tooling/schema/squad.schema.json`)
 - ✅ Build pipeline (`npm run build:registry`)
 - ✅ CI/CD workflows (no new steps needed)
 - ✅ Astro site deployment to GitHub Pages

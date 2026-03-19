@@ -117,3 +117,46 @@ Move canonical squad manifests from `squads/` to root level; retire the `squads/
 **Team Memory:** Logged to `.squad/decisions/inbox/mon-mothma-agency-reshape.md` → merged to decisions.md
 
 ---
+
+## 2026-03-19: Tooling Cleanup Review & Approval Authority
+
+**Event:** Two-phase review of agency tooling consolidation  
+**Status:** ✅ Initial rejection → Final approval  
+**Dates:** 2026-03-19T13:45:00Z (reject) → 2026-03-19T12:47:00Z (approve)
+
+### Phase 1: Review & Rejection (13:45)
+
+**Work reviewed:** C-3PO's consolidation of schema/, scripts/, tests/, test/ under tooling/ namespace
+
+**Critical blockers identified:**
+1. Build system broken — package.json scripts reference root paths; files moved to tooling/
+2. Test fixture persistence — squads/test/squad.json remained after move
+3. Registry path hardcoding — tooling/scripts/lib/registry.mjs uncorrected
+
+**Decision:** Reject C-3PO's pass. Require different agent for revision (protocol: don't let original author fix their own work).
+
+**Escalation:** Routed to R2-D2 (Platform Engineer) with explicit blockers documented.
+
+**Logged to:** `.squad/orchestration-log/2026-03-19T11:47:28Z-mon-mothma-review-1.md`
+
+### Phase 2: Revision Approval (12:47)
+
+**Work reviewed:** R2-D2's correction of all three blockers
+
+**Fixes validated:**
+1. ✅ `tooling/scripts/lib/registry.mjs` — Path resolution now derives from injected `repoRoot`
+2. ✅ Stale fixture removed — `tooling/test/` directory deleted; consolidated in `.squad/test-fixtures/`
+3. ✅ Build scripts corrected — `package.json` updated; internal workflow templates switched to modern npm patterns
+4. ✅ Schema refs updated — `squads/agency/squad.json` and `squads/scout/squad.json` corrected to `../../tooling/schema/`
+
+**All checks pass:**
+- `npm run validate` ✓ (2 squads clean)
+- `npm run build` ✓ (registry generated correctly)
+- `npm test` ✓ (12/12 tests pass)
+- Marketplace integrity ✓ (agency + scout preserved in registry)
+
+**Verdict:** APPROVED. Structural fixes are sound and complete. Agency-side constraint satisfied (no core tooling changes). Ready for orchestration steps.
+
+**Clarification note:** Schema path updates in manifests (root relative → `../../tooling/schema/`) are necessary architectural corrections, not constraint violations. They align manifests to actual repository structure.
+
+**Logged to:** `.squad/orchestration-log/2026-03-19T11:47:28Z-mon-mothma-review-2.md`
