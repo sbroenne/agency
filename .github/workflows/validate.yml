@@ -31,7 +31,7 @@ jobs:
       - name: Validate squad manifests
         run: npm run validate
 
-      - name: Build registry feed
+      - name: Build Astro site
         run: npm run build
 
       - name: Run tests

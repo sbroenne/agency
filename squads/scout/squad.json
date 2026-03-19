@@ -1,5 +1,5 @@
 {
-  "$schema": "../../schema/squad.schema.json",
+  "$schema": "../../tooling/schema/squad.schema.json",
   "specVersion": "1.0",
   "id": "scout",
   "slug": "scout",

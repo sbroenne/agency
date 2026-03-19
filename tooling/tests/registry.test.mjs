@@ -5,7 +5,7 @@ import os from 'node:os';
 import path from 'node:path';
 import { loadRegistry, readJson, repoRoot } from '../scripts/lib/registry.mjs';
 
-const schemaPath = path.join(repoRoot, 'schema', 'squad.schema.json');
+const schemaPath = path.join(repoRoot, 'tooling', 'schema', 'squad.schema.json');
 const baseManifestPath = path.join(repoRoot, 'squads', 'agency', 'squad.json');
 const baseManifest = readJson(baseManifestPath);
 const fixedNow = '2026-03-19T00:00:00.000Z';
@@ -16,8 +16,8 @@ function setupRepo(t, manifests) {
     fs.rmSync(tempRoot, { recursive: true, force: true });
   });
 
-  fs.mkdirSync(path.join(tempRoot, 'schema'), { recursive: true });
-  fs.copyFileSync(schemaPath, path.join(tempRoot, 'schema', 'squad.schema.json'));
+  fs.mkdirSync(path.join(tempRoot, 'tooling', 'schema'), { recursive: true });
+  fs.copyFileSync(schemaPath, path.join(tempRoot, 'tooling', 'schema', 'squad.schema.json'));
 
   for (const [folder, manifest] of Object.entries(manifests)) {
     const manifestPath = path.join(tempRoot, 'squads', folder, 'squad.json');
@@ -30,7 +30,7 @@ function setupRepo(t, manifests) {
 
   return {
     repoRoot: tempRoot,
-    schemaPath: path.join(tempRoot, 'schema', 'squad.schema.json'),
+    schemaPath: path.join(tempRoot, 'tooling', 'schema', 'squad.schema.json'),
     squadsRoot: path.join(tempRoot, 'squads'),
     now: () => fixedNow,
   };
@@ -63,11 +63,42 @@ test('registry loads and normalizes a valid manifest', (t) => {
   ]);
 });
 
+test('root-level marketplace aliases reuse the canonical manifests', () => {
+  const agencyAliasPath = path.join(repoRoot, 'agency', 'squad.json');
+  const scoutManifestPath = path.join(repoRoot, 'squads', 'scout', 'squad.json');
+  const scoutAliasPath = path.join(repoRoot, 'scout', 'squad.json');
+
+  assert.deepEqual(readJson(agencyAliasPath), baseManifest);
+  assert.deepEqual(readJson(scoutAliasPath), readJson(scoutManifestPath));
+  assert.equal(fs.realpathSync(agencyAliasPath), baseManifestPath);
+  assert.equal(fs.realpathSync(scoutAliasPath), scoutManifestPath);
+});
+
 test('registry counts members and focus areas', () => {
   const registry = loadRegistry();
   const totalMembers = registry.squads.reduce((sum, s) => sum + s.members.length, 0);
   assert.equal(registry.counts.members, totalMembers);
   assert.ok(registry.counts.focusAreas >= 1);
+});
+
+test('registry path resolution follows an injected repoRoot', (t) => {
+  const manifest = structuredClone(baseManifest);
+  manifest.name = 'Temp Agency';
+  manifest.source.repository = 'https://example.com/temp/agency';
+  manifest.source.homepage = 'https://example.com/temp/agency/';
+  manifest.source.directory = 'squads/agency';
+  manifest.source.import = {
+    type: 'manual',
+    path: 'squads/agency/squad.json',
+    ref: 'main',
+  };
+
+  const registry = loadRegistry({ repoRoot: setupRepo(t, { agency: manifest }).repoRoot, now: () => fixedNow });
+
+  assert.equal(registry.counts.squads, 1);
+  assert.equal(registry.generatedAt, fixedNow);
+  assert.equal(registry.squads[0].name, 'Temp Agency');
+  assert.equal(registry.squads[0].sourceLabel, 'example.com/temp/agency');
 });
 
 test('registry derives a stable source label for non-GitHub repositories', (t) => {

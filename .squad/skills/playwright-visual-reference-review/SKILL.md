@@ -42,7 +42,7 @@ Reject with specific changes: exact accent to promote, accents to remove, surfac
 ## Structural Test Fallback Pattern
 When Playwright browser launch is blocked, use `filter-ui.test.mjs` (or equivalent `node:test` files that read `dist/index.html`) as a structural proxy. These tests:
 - Verify DOM structure, ARIA attributes, and data-attributes in the **compiled dist output** (catches minification/class-stripping regressions that source review misses)
-- Run in milliseconds with no browser dependency: `node --test tests/filter-ui.test.mjs`
+- Run in milliseconds with no browser dependency: `node --test tooling/tests/filter-ui.test.mjs`
 - Are reliable for: IA hierarchy order, filter chip presence/default state, hidden-by-default patterns, count rendering, data-attribute presence
 
 Not reliable for: computed hover states, focus ring colors, JS-driven DOM mutations after user interaction — those still require a live browser.

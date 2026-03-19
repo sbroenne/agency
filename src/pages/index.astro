@@ -1,0 +1,284 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import SquadCard from '../components/SquadCard.astro';
+import { loadRegistry } from '../../tooling/scripts/lib/registry.mjs';
+
+const registry = loadRegistry();
+const squads = registry.squads;
+const description =
+  'Find your next squad. Browse AI teams you can inspect, copy, and run.';
+
+// Compute focus area counts for Tier 2 filters
+const focusCounts = new Map();
+for (const squad of squads) {
+  for (const focus of squad.focus) {
+    focusCounts.set(focus, (focusCounts.get(focus) || 0) + 1);
+  }
+}
+// Sort by count (desc), then alphabetically
+const sortedFocusAreas = [...focusCounts.entries()]
+  .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]));
+
+// Status counts for Tier 1
+const statusCounts = { live: 0, building: 0, prototype: 0 };
+for (const squad of squads) {
+  if (squad.status in statusCounts) {
+    statusCounts[squad.status]++;
+  }
+}
+---
+
+<BaseLayout title="agency — Find your next squad" description={description}>
+  <a
+    class="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[60] focus:rounded-lg focus:bg-squad-600 focus:px-4 focus:py-2 focus:text-white focus:no-underline"
+    href="#main"
+  >
+    Skip to main content
+  </a>
+
+  <div class="mx-auto flex min-h-screen w-full max-w-5xl flex-col px-4 py-12 sm:px-6 lg:px-8">
+    <header class="mb-12 text-center">
+      <p class="mx-auto mb-4 inline-flex items-center gap-2 rounded-full border border-squad-200 bg-squad-50 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-squad-700">
+        <span class="h-1.5 w-1.5 rounded-full bg-squad-500"></span>
+        agency
+      </p>
+      <h1 class="mx-auto mb-4 max-w-3xl text-balance text-3xl font-semibold tracking-tight text-surface-900 sm:text-4xl">Find your next squad</h1>
+      <p class="mx-auto mb-8 max-w-2xl text-base leading-7 text-surface-600">Browse AI teams you can inspect, copy, and run in your own projects.</p>
+
+      <div class="mx-auto mb-8 flex flex-wrap justify-center gap-3">
+        <a
+          class="inline-flex items-center justify-center rounded-lg bg-squad-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-squad-700 hover:no-underline"
+          href="https://bradygaster.github.io/squad/docs/get-started/installation/"
+          rel="noopener"
+          target="_blank"
+        >
+          Get Started
+        </a>
+        <a
+          class="inline-flex items-center justify-center rounded-lg border border-surface-300 bg-white px-5 py-2.5 text-sm font-semibold text-surface-700 shadow-sm transition hover:bg-surface-50 hover:no-underline"
+          href="https://github.com/sbroenne/agency/pulls"
+          rel="noopener"
+          target="_blank"
+        >
+          Submit a Squad
+        </a>
+      </div>
+
+      <form class="mx-auto max-w-md" id="hero-search" role="search" aria-label="Search squads">
+        <label class="sr-only" for="search-input">Search all squads</label>
+        <div class="relative">
+          <input
+            class="w-full rounded-lg border border-surface-300 bg-white px-4 py-2.5 pr-10 text-sm text-surface-900 outline-none transition placeholder:text-surface-400 focus:border-squad-500 focus:ring-2 focus:ring-squad-500/20"
+            id="search-input"
+            name="query"
+            type="search"
+            placeholder="Search squads…"
+            autocomplete="off"
+          />
+          <button
+            aria-label="Clear search"
+            class="absolute right-2 top-1/2 flex h-6 w-6 -translate-y-1/2 items-center justify-center rounded text-sm text-surface-400 transition hover:text-surface-600"
+            hidden
+            id="reset-search"
+            type="button"
+          >
+            ×
+          </button>
+        </div>
+      </form>
+
+      <p class="mt-4 text-sm text-surface-500" id="results-summary" aria-live="polite">{registry.counts.squads} squad{registry.counts.squads === 1 ? '' : 's'} published</p>
+    </header>
+
+      <main class="flex flex-1 flex-col gap-12" id="main">
+        <section aria-labelledby="browse-title" id="browse">
+          <h2 class="sr-only" id="browse-title">Browse squads</h2>
+
+          <!-- Tier 1: Status chips (always visible) -->
+          <div class="mb-4" role="group" aria-label="Filter by status">
+            <div class="flex flex-wrap items-center gap-2">
+              <span class="text-xs font-medium text-surface-500 mr-1">Status:</span>
+              <button
+                class="filter-chip filter-chip--active rounded-md border border-surface-200 bg-surface-50 px-2.5 py-1 text-xs font-medium text-surface-700 transition hover:border-surface-300 hover:bg-surface-100 data-[active]:border-squad-300 data-[active]:bg-squad-50 data-[active]:text-squad-700"
+                data-status-filter="all"
+                data-active
+                type="button"
+              >
+                All <span class="ml-1 text-surface-400">({squads.length})</span>
+              </button>
+              <button
+                class="filter-chip rounded-md border border-surface-200 bg-surface-50 px-2.5 py-1 text-xs font-medium text-surface-700 transition hover:border-surface-300 hover:bg-surface-100 data-[active]:border-green-300 data-[active]:bg-green-50 data-[active]:text-green-700"
+                data-status-filter="live"
+                type="button"
+              >
+                Live <span class="ml-1 text-surface-400">({statusCounts.live})</span>
+              </button>
+              <button
+                class="filter-chip rounded-md border border-surface-200 bg-surface-50 px-2.5 py-1 text-xs font-medium text-surface-700 transition hover:border-surface-300 hover:bg-surface-100 data-[active]:border-squad-300 data-[active]:bg-squad-50 data-[active]:text-squad-700"
+                data-status-filter="building"
+                type="button"
+              >
+                Building <span class="ml-1 text-surface-400">({statusCounts.building})</span>
+              </button>
+              <button
+                class="filter-chip rounded-md border border-surface-200 bg-surface-50 px-2.5 py-1 text-xs font-medium text-surface-700 transition hover:border-surface-300 hover:bg-surface-100 data-[active]:border-surface-400 data-[active]:bg-surface-100 data-[active]:text-surface-600"
+                data-status-filter="prototype"
+                type="button"
+              >
+                Prototype <span class="ml-1 text-surface-400">({statusCounts.prototype})</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Tier 2: Focus filters (collapsible with progressive disclosure) -->
+          <div class="mb-6" id="focus-filter-panel">
+            <button
+              class="flex items-center gap-2 text-xs font-medium text-surface-600 transition hover:text-surface-900"
+              id="focus-toggle"
+              type="button"
+              aria-expanded="false"
+              aria-controls="focus-filter-content"
+            >
+              <svg class="h-3.5 w-3.5 transition-transform" id="focus-toggle-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+              </svg>
+              Focus areas <span class="text-surface-400" id="focus-count">({sortedFocusAreas.length})</span>
+            </button>
+
+            <div class="hidden mt-3 rounded-lg border border-surface-200 bg-surface-50 p-3" id="focus-filter-content">
+              <!-- Inline search for focus areas -->
+              <div class="mb-3">
+                <label class="sr-only" for="focus-search">Search focus areas</label>
+                <input
+                  class="w-full rounded-md border border-surface-200 bg-white px-3 py-1.5 text-xs text-surface-700 placeholder:text-surface-400 focus:border-squad-400 focus:outline-none focus:ring-1 focus:ring-squad-400/30"
+                  id="focus-search"
+                  type="search"
+                  placeholder="Search focus areas…"
+                  autocomplete="off"
+                />
+              </div>
+
+              <!-- Focus chips container -->
+              <div class="flex flex-wrap gap-1.5" id="focus-chips" role="group" aria-label="Filter by focus area">
+                {sortedFocusAreas.map(([focus, count], i) => (
+                  <button
+                    class:list={[
+                      "focus-chip rounded-md border border-surface-200 bg-white px-2 py-0.5 text-xs text-surface-600 transition hover:border-surface-300 hover:bg-surface-100 data-[active]:border-squad-300 data-[active]:bg-squad-50 data-[active]:text-squad-700",
+                      i >= 7 ? "focus-chip--overflow hidden" : ""
+                    ]}
+                    data-focus-filter={focus}
+                    type="button"
+                  >
+                    {focus} <span class="ml-0.5 text-surface-400">({count})</span>
+                  </button>
+                ))}
+              </div>
+
+              <!-- Show more/less toggle -->
+              {sortedFocusAreas.length > 7 && (
+                <button
+                  class="mt-2 text-xs font-medium text-squad-600 transition hover:text-squad-700"
+                  id="focus-show-more"
+                  type="button"
+                >
+                  Show all ({sortedFocusAreas.length})
+                </button>
+              )}
+
+              <!-- Clear focus filters -->
+              <button
+                class="mt-2 ml-2 text-xs text-surface-500 transition hover:text-surface-700 hidden"
+                id="focus-clear"
+                type="button"
+              >
+                Clear filters
+              </button>
+            </div>
+          </div>
+
+          <div class="mb-6 rounded-lg border border-dashed border-surface-300 bg-surface-50 px-6 py-8 text-center text-surface-600" hidden id="empty-state">
+            <p class="mb-2 text-lg font-semibold text-surface-900">No squads match that search.</p>
+            <p>Try a broader term or clear the search.</p>
+          </div>
+
+          <div class="grid gap-4 md:grid-cols-2 xl:grid-cols-3" id="squad-list">
+            {squads.map((squad, index) => <SquadCard squad={squad} index={index} />)}
+          </div>
+        </section>
+
+        <section aria-labelledby="quick-links-title" class="border-t border-surface-200 pt-10">
+          <div class="mb-6 text-center sm:text-left">
+            <p class="mb-1 text-xs font-semibold uppercase tracking-wide text-squad-600">Resources</p>
+            <h2 class="text-xl font-semibold tracking-tight text-surface-900" id="quick-links-title">Move from discovery to action</h2>
+          </div>
+          <div class="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+            <a class="group rounded-lg border border-surface-200 bg-white p-4 transition hover:border-surface-300 hover:shadow-sm hover:no-underline" href="https://bradygaster.github.io/squad/docs/get-started/installation/" rel="noopener" target="_blank">
+              <p class="mb-2 inline-flex h-9 w-9 items-center justify-center rounded-md bg-squad-50 text-base" aria-hidden="true">📖</p>
+              <strong class="block text-sm font-semibold text-surface-900">Get Started</strong>
+              <span class="mt-1 block text-sm leading-6 text-surface-500">Install Squad and build your first team</span>
+            </a>
+            <a class="group rounded-lg border border-surface-200 bg-white p-4 transition hover:border-surface-300 hover:shadow-sm hover:no-underline" href="https://github.com/sbroenne/agency/pulls" rel="noopener" target="_blank">
+              <p class="mb-2 inline-flex h-9 w-9 items-center justify-center rounded-md bg-surface-100 text-base" aria-hidden="true">➕</p>
+              <strong class="block text-sm font-semibold text-surface-900">Submit a Squad</strong>
+              <span class="mt-1 block text-sm leading-6 text-surface-500">Add your squad through a pull request</span>
+            </a>
+            <a class="group rounded-lg border border-surface-200 bg-white p-4 transition hover:border-surface-300 hover:shadow-sm hover:no-underline" href="https://bradygaster.github.io/squad/" rel="noopener" target="_blank">
+              <p class="mb-2 inline-flex h-9 w-9 items-center justify-center rounded-md bg-surface-100 text-base" aria-hidden="true">📚</p>
+              <strong class="block text-sm font-semibold text-surface-900">Squad Docs</strong>
+              <span class="mt-1 block text-sm leading-6 text-surface-500">Learn how Squad works</span>
+            </a>
+            <a class="group rounded-lg border border-surface-200 bg-white p-4 transition hover:border-surface-300 hover:shadow-sm hover:no-underline" href="https://github.com/sbroenne/agency" rel="noopener" target="_blank">
+              <p class="mb-2 inline-flex h-9 w-9 items-center justify-center rounded-md bg-surface-100 text-base" aria-hidden="true">🔗</p>
+              <strong class="block text-sm font-semibold text-surface-900">Repository</strong>
+              <span class="mt-1 block text-sm leading-6 text-surface-500">View the source on GitHub</span>
+            </a>
+          </div>
+        </section>
+      </main>
+
+      <footer class="mt-12 border-t border-surface-200 pt-8 text-center text-sm text-surface-500">
+        <p>Made with ❤️ by the community. <a class="text-squad-600 hover:text-squad-700" href="https://github.com/sbroenne/agency/blob/main/CONTRIBUTING.md">Contribute →</a></p>
+      </footer>
+  </div>
+
+  <div class="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6" hidden id="squad-modal" aria-labelledby="modal-title" aria-modal="true" role="dialog">
+    <div class="absolute inset-0 bg-surface-900/60" data-modal-backdrop></div>
+    <div class="relative z-10 max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-xl border border-surface-200 bg-white p-6 shadow-xl sm:p-8">
+      <button aria-label="Close" class="absolute right-4 top-4 flex h-8 w-8 items-center justify-center rounded-md text-lg text-surface-400 transition hover:bg-surface-100 hover:text-surface-600" data-modal-close type="button">×</button>
+
+      <div class="mb-5 flex flex-wrap items-center gap-3 pr-10">
+        <span class="inline-flex items-center rounded-md px-2.5 py-1 text-xs font-semibold uppercase tracking-wide" id="modal-status"></span>
+        <p class="text-sm text-surface-500" id="modal-source"></p>
+      </div>
+
+      <h2 class="mb-2 text-2xl font-semibold tracking-tight text-surface-900" id="modal-title"></h2>
+      <p class="mb-2 text-base text-surface-700" id="modal-tagline"></p>
+      <p class="mb-6 text-sm leading-6 text-surface-600" id="modal-summary"></p>
+
+      <section class="mb-6">
+        <h3 class="mb-2 text-xs font-semibold uppercase tracking-wide text-squad-600">Mission</h3>
+        <p class="text-sm leading-6 text-surface-600" id="modal-mission"></p>
+      </section>
+
+      <section class="mb-6">
+        <h3 class="mb-2 text-xs font-semibold uppercase tracking-wide text-squad-600">Focus Areas</h3>
+        <ul class="flex flex-wrap gap-2" id="modal-focus"></ul>
+      </section>
+
+      <section class="mb-6">
+        <h3 class="mb-2 text-xs font-semibold uppercase tracking-wide text-squad-600">Team</h3>
+        <ul class="grid gap-2" id="modal-members"></ul>
+      </section>
+
+      <div class="flex flex-wrap gap-3">
+        <a class="inline-flex items-center justify-center rounded-lg bg-squad-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-squad-700 hover:no-underline" href="#" id="modal-repo" rel="noopener" target="_blank">View Repository</a>
+        <a class="inline-flex items-center justify-center rounded-lg border border-surface-300 bg-white px-4 py-2 text-sm font-semibold text-surface-700 shadow-sm transition hover:bg-surface-50 hover:no-underline" href="#" id="modal-homepage" rel="noopener" target="_blank">Homepage</a>
+      </div>
+    </div>
+  </div>
+
+  <script id="registry-data" type="application/json" set:html={JSON.stringify(squads)}></script>
+  <script>
+    import '../scripts/site.js';
+  </script>
+</BaseLayout>

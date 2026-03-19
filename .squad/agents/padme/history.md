@@ -30,7 +30,7 @@
   - Clear filters control appears when filters are active
   - All filter chips use consistent docs-style treatment: bordered surfaces, rose/green active states via data-[active] selectors
   - SquadCard now emits data-status and data-focus attributes for client-side filtering
-  - Created `tests/filter-ui.test.mjs` with 15 structure tests that pass without Playwright
+  - Created `tooling/tests/filter-ui.test.mjs` with 15 structure tests that pass without Playwright
 - Confirmed discovery-first hierarchy preserved: Directory section before Resources section
 - Rebranded landing page from "Awesome Squads" to "agency" (project name):
   - Page title updated to `agency`
