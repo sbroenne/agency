@@ -2802,3 +2802,13 @@ Aligns with our **discovery-first doctrine**: deep-link to the actual resource, 
 - **Orchestration logs:** `.squad/orchestration-log/2026-03-19T18:12:22Z-{poe,wedge,mon-mothma}.md`
 - **Session log:** `.squad/log/2026-03-19T18:12:22Z-view-link-verdict.md`
 - **Inbox (merged):** `poe-view-link.md`, `wedge-squad-view-link-audit.md`, `mon-view-link-verdict.md`
+
+### 2026-03-19T18:55:53Z: User directive
+**By:** Stefan Broenner (via Copilot)
+**What:** For small issues, do not ask for confirmation; just fix them directly.
+**Why:** User request — captured for team memory
+
+### 2026-03-19T19:00:00Z: Squad source deep-link behavior
+**By:** Poe
+**Decision:** Squad card and modal source actions now deep-link to `{repository}/tree/main/{source.directory}` when directory metadata is present on a GitHub repository. If directory metadata is missing or the repository URL is not GitHub, the action falls back to the repository root.
+**Why:** The visible View action is per-squad, so landing on the monorepo root hid the actual squad source. Matching the modal action to the same deep-link keeps the experience consistent and avoids two different destinations for the same mental model. The modal CTA label was updated to "View Source" so the copy matches a directory-level destination instead of implying the repo homepage.
