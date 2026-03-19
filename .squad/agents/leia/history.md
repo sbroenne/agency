@@ -72,3 +72,7 @@ All findings merged into `.squad/decisions.md` section "Full Project Review — 
 **Decision Record:** Written to `.squad/decisions/inbox/leia-docs-fix.md`
 
 **Outcome:** Repository now publication-ready from documentation/process perspective. Contributor paths are clear, visual validation expectations are explicit, and team decisions are documented.
+
+## 2026-03-19: Marketplace Inspection
+
+Conducted Squad plugin marketplace inspection and eligibility review. Confirmed Agency can be registered as marketplace immediately with no additional setup. Documented current state and recommended Phase 1 structure cleanup (optional enhancement). Result: Agency marketplace-ready for Squad ecosystem integration.

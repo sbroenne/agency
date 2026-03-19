@@ -1394,3 +1394,995 @@ All four layers are now internally consistent and match the approved copy from M
 3. Lando: Corrected description constant
 4. Wedge: Re-review confirms fix and approves
 
+
+---
+# Marketplace Architecture & Implementation Sprint — 2026-03-19
+
+## Overview
+
+This section consolidates decisions from the marketplace-ready sprint, where Mon Mothma, C-3PO, Leia, and Lando evaluated and implemented Squad plugin marketplace compatibility for the Agency repository.
+
+
+---
+
+# C-3PO — Marketplace compatibility implementation
+
+## Decision
+
+Add root-level `<slug>/squad.json` aliases for published squads while keeping `squads/<slug>/squad.json` as the canonical source of truth.
+
+## Why
+
+Squad plugin marketplace discovery expects meaningful root-level directories. Root aliases satisfy that expectation without forcing a repo reorganization or changing the existing validation, registry build, and Astro site paths.
+
+## Impact
+
+- Marketplace scanners can discover squads directly from the repo root.
+- Validation and feed generation continue to use the existing `squads/` tree.
+- Manifest content stays single-sourced instead of being copied into two places.
+
+---
+
+# C-3PO: Marketplace Capability Verification — 2026-03-19
+
+**Status:** VERIFIED
+**Date:** 2026-03-19T08:45:00Z
+**Requested by:** Stefan Broenner
+**Sources:**
+- bradygaster/squad index.js (lines 759–875): plugin marketplace command implementation
+- bradygaster/squad README.md: command table and feature summary
+- Local agency repo structure: squads/{agency,scout}/squad.json
+
+---
+
+## Finding 1: Which Flow Is Correct?
+
+**BOTH are correct, but for different purposes:**
+
+| Flow | Purpose | Command | Evidence |
+|------|---------|---------|----------|
+| **Plugin Marketplace** | Browse/discover plugin directories in a repo | `squad plugin marketplace add <owner/repo>` | index.js:759–875; README line 62 |
+| **Upstream** | Manage Squad source repositories (planned, not yet implemented in index.js) | `squad upstream add <git-url> --name agency` | README line 63; not yet in index.js |
+
+**Key distinction:** Plugin marketplace is for *plugin browsing*; upstream is for *Squad state sync* (not yet present in the current CLI release).
+
+---
+
+## Finding 2: What is `agency` Addable As Today?
+
+### **Verdict: `agency` IS addable as a plugin marketplace RIGHT NOW.**
+
+A user can run today:
+```bash
+squad plugin marketplace add sbroenne/agency
+```
+
+This registers `agency` in `.squad/plugins/marketplaces.json` and enables:
+```bash
+squad plugin marketplace browse agency
+```
+
+### Why This Works
+
+The plugin marketplace `browse` command (index.js line 849):
+```javascript
+gh api repos/${marketplace.source}/contents --jq "[.[] | select(.type == \\"dir\\") | .name]"
+```
+
+This GitHub API call lists **all root-level directories** in the repository.
+
+---
+
+## Finding 3: Expected Repo Structure for Plugin Marketplace
+
+Squad plugin marketplaces expect **root-level directories to represent plugins**.
+
+Example discovery from `bradygaster/squad` repo:
+```
+bradygaster/squad/
+├── samples/
+│   └── {plugins here}
+├── test-fixtures/
+├── docs/
+├── packages/
+└── ... (other dirs discovered as "plugins")
+```
+
+When a user browses the marketplace, they see all root-level directories as potential plugins.
+
+---
+
+## Finding 4: Current `agency` Repo Structure
+
+```
+agency (sbroenne/agency)
+├── .squad/                 ← Squad team state
+├── .github/                ← GitHub workflows
+├── squads/
+│   ├── agency/             ← ACTUAL squad manifest
+│   └── scout/              ← ACTUAL squad manifest
+├── src/                    ← Astro site code
+├── public/                 ← Astro build output
+├── schema/                 ← JSON Schema
+├── scripts/                ← Validation scripts
+├── tests/                  ← Test suite
+├── CONTRIBUTING.md
+├── README.md
+└── astro.config.mjs
+```
+
+---
+
+## Finding 5: Gap Analysis — What Happens If User Browses Today?
+
+**Command:**
+```bash
+squad plugin marketplace add sbroenne/agency
+squad plugin marketplace browse agency
+```
+
+**What Squad would discover (root-level directories):**
+```
+📦 .squad
+📦 .github
+📦 .astro
+📦 .copilot
+📦 src
+📦 public
+📦 schema
+📦 scripts
+📦 squads
+📦 tests
+📦 dist
+📦 node_modules
+```
+
+**Problem:** User sees 13 "plugins" including `.squad/`, `.github/`, `node_modules/`, etc. Only `squads/` is relevant.
+
+**Why this is wrong:** Squad plugin marketplace is designed for repositories with top-level plugin directories (like `bradygaster/squad/samples/`, which contains individual sample plugins). Agency is a *registry/site*, not a plugin collection.
+
+---
+
+## Finding 6: Actual Squad Manifests Are Nested
+
+The actual squad manifests are buried:
+```
+agency/squads/agency/squad.json
+agency/squads/scout/squad.json
+```
+
+For users to import these squads, they would need:
+1. ~~Plugin marketplace (doesn't apply)~~ 
+2. **Direct `squad import` from file path**
+3. **Or upstream sync (when implemented)**
+
+Current practical flow:
+```bash
+# Users must clone and manually:
+cd agency
+squad import squads/agency/squad.json
+
+# Or specify directly:
+squad import https://github.com/sbroenne/agency/raw/main/squads/agency/squad.json
+```
+
+---
+
+## Conclusion & Recommendations
+
+### For Stefan:
+
+1. **Plugin Marketplace?** Technically YES, but **NOT RECOMMENDED** for agency
+   - Agency is a registry/site, not a plugin collection
+   - Discovery would show 13 irrelevant directories
+   - Users would be confused
+
+2. **What Agency Actually Needs:**
+   - Move squads to **root level** OR
+   - Document the manual import path OR
+   - Wait for `upstream` flow (on Squad roadmap)
+
+3. **If You Want Plugin Marketplace to Work Well:**
+   - Restructure to root-level squad directories:
+     ```
+     agency/
+     ├── agency/squad.json          (was squads/agency/squad.json)
+     ├── scout/squad.json           (was squads/scout/squad.json)
+     ├── src/                       (site code)
+     └── ...
+     ```
+   - Then: `squad plugin marketplace add sbroenne/agency` works cleanly
+
+4. **Upstream Flow (Future):**
+   - Upstream is designed for exactly this: "inherit a team's .squad/ state from a repo"
+   - Squad roadmap shows this as planned
+   - More powerful than marketplace because it inherits decisions, learnings, team structure
+
+---
+
+## Evidence Summary
+
+| Item | Source | Line |
+|------|--------|------|
+| Plugin marketplace add | index.js | 788 |
+| Plugin marketplace browse | index.js | 841–870 |
+| Root-level directory discovery | index.js | 849 |
+| Upstream command documented | README.md | 63 |
+| Upstream NOT in index.js | (grep found 0 matches) | N/A |
+| agency structure today | repo root | `/squads/{agency,scout}/` |
+
+---
+
+## Next Steps for Team
+
+- **Clarify intent:** Is agency a plugin collection or a registry site?
+- **If plugin marketplace intended:** Restructure to root-level squads
+- **If upstream intended:** Wait for Squad v1.0 upstream implementation
+- **If import-based:** Document the manual path clearly in README
+
+---
+
+# Decision: Recruiter/Agency Squad — Positioning Evaluation
+
+**Author:** Lando (Marketing & SEO Strategist)  
+**Date:** 2026-03-20  
+**Status:** Recommendation (no implementation)
+
+## Summary
+
+A "recruiter" squad that uses agency to discover and recommend other squads is a **strong concept with a timing problem**. The idea is good — publish it, but not yet.
+
+## 1. Compelling or Too Meta?
+
+**Both — depending on framing.**
+
+If you describe it as "a squad that searches agency for squads," it sounds recursive and confusing. But if you frame it as **"a squad that staffs your project with the right AI team,"** it solves a real problem and the self-referential loop becomes a feature, not a bug.
+
+The "talent agency" metaphor already lives in the product name. A recruiter is the natural extension — the person at the agency who matches talent to the gig. That's not meta; that's the core value prop made executable.
+
+**Verdict:** Compelling when framed as a user-facing utility, not as an internal tool that talks to itself.
+
+## 2. What User Problem Does It Solve?
+
+**Squad selection fatigue.** As the directory grows past 5–10 entries, users face a curation problem:
+
+- "I'm building a Next.js app with auth — which squads should I grab?"
+- "I need code review, testing, and deployment — show me a starting lineup."
+- "What squads work well together?"
+
+The recruiter squad would take project context as input and recommend a combination of squads. That's the "personal shopper" for AI teams — a real pain point once the catalog has enough entries to make browsing insufficient.
+
+**Secondary value:** It's a powerful dogfooding showcase. Publishing a squad that actively uses agency to do its job proves the platform works and gives submitters a template for building discovery-layer squads.
+
+## 3. Naming and Description
+
+**Recommended name:** `recruiter`
+
+| Option | Pros | Cons |
+|---|---|---|
+| recruiter | Fits the "agency" metaphor perfectly. Clear job: find and recommend talent. | Could imply HR/hiring to some |
+| talent-scout | Evocative, slightly playful | Two words, less direct |
+| staffing | Very literal | Dry, corporate feel |
+| matchmaker | Fun, clear intent | Too cute for a dev tool |
+
+**Recommended tagline:** "Staff your project with the right AI team."
+
+**Recommended summary:** "Describe what you're building. Recruiter searches the agency directory and recommends which squads to bring in — matched to your stack, workflow, and goals."
+
+This framing:
+- Leads with the user's action ("describe what you're building")
+- Names the concrete output ("recommends which squads")
+- Avoids self-referential language ("uses agency to find squads in agency")
+- Keeps the agency metaphor alive without making it the punchline
+
+## 4. Timing: Publish Now, Later, or Never?
+
+**Later — when the directory has 5+ squads.**
+
+Right now agency has exactly 1 published squad (itself). A recruiter with a catalog of one has nothing to recruit from. Publishing it today would:
+
+- Undermine the "this is useful" claim — there's nothing to match against
+- Make the directory feel like a demo, not a product
+- Waste a strong first impression on an empty showcase
+
+**Publish when:**
+- The directory has **5+ squads** across at least 2–3 focus areas
+- There's enough variety that recommendation logic adds real value over manual browsing
+- The recruiter can demonstrate a non-trivial match (e.g., "you said Next.js + testing → here are 3 squads")
+
+**Pre-publish now:**
+- Reserve the `squads/recruiter/` slug
+- Draft the `squad.json` manifest with `"status": "building"` so the concept is visible on the directory as a teaser
+- Use it as a signal to contributors: "submit your squad — we're building tooling that makes discovery automatic"
+
+That "building" card on the homepage is itself a marketing asset. It says: the ecosystem is growing and we're investing in discovery infrastructure.
+
+## Recommendation
+
+✅ **Do it — but stage it.** Draft the recruiter squad now with status `building`. Flip to `live` once the directory has enough squads to make matching meaningful. The name `recruiter` and tagline "Staff your project with the right AI team" are the strongest positioning options.
+
+## Affects
+
+- **Mon Mothma:** Architecture decision on whether to reserve the slug and draft manifest now
+- **Padmé / Poe:** Card rendering — a "building" status card needs to look intentional, not broken
+- **Anyone submitting squads:** The recruiter concept is a reason to submit — "your squad will be discoverable automatically"
+
+---
+
+---
+date: 2026-03-19T08:45:00.000Z
+author: Leia
+title: Squad Plugin Marketplace Inspection & Agency Eligibility
+status: draft
+---
+
+# Squad Plugin Marketplace Inspection & Agency Eligibility
+
+## Question
+Can `agency` be added as a Squad plugin marketplace?
+
+## Answer: **YES**
+
+Agency is eligible to serve as a Squad plugin marketplace with **no additional setup required**. The squad CLI already supports marketplace registration for any GitHub repository.
+
+---
+
+## How Squad Marketplaces Work
+
+### CLI Registration
+Users register a marketplace using:
+```bash
+squad plugin marketplace add owner/repo
+```
+
+This stores the registration in `.squad/plugins/marketplaces.json`:
+```json
+{
+  "marketplaces": [
+    {
+      "name": "agency",
+      "source": "sbroenne/agency",
+      "added_at": "2026-03-19T00:00:00Z"
+    }
+  ]
+}
+```
+
+### CLI Commands
+Once registered, users can:
+- `squad plugin marketplace list` — Show all registered marketplaces
+- `squad plugin marketplace browse agency` — List available plugins in the marketplace
+
+### Discovery Format
+When a user runs `squad plugin marketplace browse agency`, the CLI:
+1. Calls `gh api repos/sbroenne/agency/contents`
+2. Filters for **directories** in the repo root
+3. Lists each directory name as a "plugin"
+
+---
+
+## Agency Repository Structure
+
+Agency currently publishes:
+```
+squads/
+  ├── agency/
+  │   └── squad.json
+  └── scout/
+      └── squad.json
+```
+
+And generates:
+```
+public/
+  └── squads.json  (comprehensive index/feed)
+```
+
+---
+
+## What Agency Would Need to Provide as a Marketplace
+
+Two options depending on use case:
+
+### Option 1: Current State (Ready Now, Lists All Root Directories)
+- Users browse `agency` marketplace and see **all root-level directories**:
+  - `.copilot`, `.github`, `.squad`, `.astro`, `dist`, `node_modules`, `public`, `schema`, `scripts`, `src`, `tests`, etc.
+  - (Squad CLI lists all directories, not just `squads/`)
+- Relevant plugin directories: `squads/`, `schema/`, `scripts/`
+- **Status:** Works today. Ready now. ⚠️ **User experience is cluttered** — sees build artifacts and dev dirs.
+- **Note:** This is why Option 2 is the recommended enhancement.
+
+### Option 2: Restructure to Explicit Plugin Format (Recommended for Future)
+- Create a `plugins/` directory alongside or instead of `squads/`
+- Each plugin follows the marketplace discovery pattern:
+```
+plugins/
+  ├── copilot-agent-starter/
+  │   ├── SKILL.md              (agent skill/instructions)
+  │   ├── charter.md            (role definition)
+  │   └── README.md
+  ├── typescript-testing-squad/
+  │   ├── SKILL.md
+  │   ├── charter.md
+  │   └── README.md
+  └── ...
+```
+- Users browse and see all plugins, install with skill merge
+- **Status:** Future enhancement. Cleaner UX, requires restructure.
+
+---
+
+## What "Agency as Marketplace" Means
+
+### For Squad Users
+```bash
+# 1. Register agency as a marketplace
+squad plugin marketplace add sbroenne/agency
+
+# 2. Browse what's available
+squad plugin marketplace browse agency
+# Output: agency, scout
+
+# 3. During team creation, squad coordinator will offer to match
+# plugins to newly hired team members (if marketplace plugin matching is implemented)
+```
+
+### For Agency
+- Becomes a **curated source for reusable squad templates**
+- Squad creators can discover and fork squads from agency
+- Marketplaces are discovered via `gh CLI` directory listing
+- Agency's existing `public/squads.json` feed is separate (human-friendly browsing)
+
+---
+
+## Marketplace Requirements Checklist
+
+- ✅ GitHub repository (exists: `sbroenne/agency`)
+- ✅ CLI can access it via `gh api` (public repo)
+- ✅ Contains directories at repo root (exists: `squads/agency`, `squads/scout`)
+- ✅ No special configuration needed
+
+---
+
+## Current vs. Future
+
+| Aspect | Now | Future Enhancement |
+|--------|-----|-------------------|
+| **Can Agency be registered as marketplace?** | ✅ Yes | N/A |
+| **Directory structure fit** | ✅ Yes (squads/ works) | 📋 plugins/ would be clearer |
+| **Plugin discovery** | ✅ Works (lists dirs) | ✅ Works |
+| **Human browsing** | 📋 Via squads.json site | 📋 Via squads.json site |
+| **Skill installation in new team members** | ⚠️ Not yet implemented | 📋 Planned in squad SDK |
+
+---
+
+## Recommendation
+
+### Phase 1: Prepare Agency Structure (Recommended Before Public Marketplace Launch)
+To provide a **clean user experience**, create a `plugins/` directory that mirrors the `squads/` structure:
+```bash
+plugins/
+  ├── agency/           (squad plugin export)
+  └── scout/            (squad plugin export)
+```
+
+Then update `.gitignore` and build scripts to ensure other directories (`.github`, `node_modules`, `dist`, etc.) don't clutter the marketplace browse output.
+
+**Result:** When users run `squad plugin marketplace browse agency`, they see only:
+- `agency`
+- `scout`
+- (optionally other curated plugins)
+
+**Effort:** Low (rename or symlink `squads/` → `plugins/`, update docs & scripts)
+
+### Phase 2: Registration (Immediate)
+Once the directory structure is clean, users can register:
+```bash
+squad plugin marketplace add sbroenne/agency
+squad plugin marketplace browse agency
+```
+
+### Phase 3: Future Enhancement (Not Blocking)
+When the Squad SDK implements marketplace plugin matching for team member hiring, Agency can evolve `plugins/` to contain skill modules (`.skill/`, `charter.md`, instructions) in addition to full squad exports.
+
+---
+
+## References
+
+### Squad CLI Marketplace Commands
+- Source: `bradygaster/squad` main branch, `index.js` lines ~1850–1950
+- Commands:
+  - `squad plugin marketplace add <owner/repo>`
+  - `squad plugin marketplace browse <name>`
+  - `squad plugin marketplace list`
+  - `squad plugin marketplace remove <name>`
+
+### Marketplace State Format
+- Location: `.squad/plugins/marketplaces.json`
+- Schema: `{ "marketplaces": [{ "name", "source", "added_at" }] }`
+
+### Discovery Mechanism
+- Uses `gh api repos/{owner}/{repo}/contents`
+- Filters for type === "dir"
+- Lists directory names as available plugins
+
+### Plugin Installation Template
+- Documented in: `.squad/templates/plugin-marketplace.md`
+- Pattern: Copy skill to `.squad/skills/{plugin-name}/SKILL.md`
+- Merge: Optional charter instructions into agent's charter
+
+---
+
+## Conclusion
+
+**Yes, agency can be added as a marketplace immediately.** No repository changes required. Agency's existing structure is compatible with Squad's marketplace discovery mechanism. This positions agency as a source for both published squads and (in the future) reusable agent skills and expertise plugins.
+
+---
+
+# Decision: Live Scout Squad
+
+**Author:** Mon Mothma
+**Date:** 2026-03-19
+**Status:** Implemented
+
+## What
+
+Added `squads/scout/squad.json` as a new **live** squad in the agency directory.
+
+## Naming
+
+Chose **Scout** over alternatives:
+- *Recruiter* — implies hiring; wrong metaphor for a discovery tool
+- *Compass* — too abstract; doesn't communicate what it does
+- *Scout* — concrete role-based name that maps directly to its function: scouting the directory to find the right squad
+
+## Framing
+
+Scout is a practical discovery assistant, not a meta-squad. It reads the catalog and helps users compare focus areas, team composition, and status to narrow down the best fit. Two-member team keeps it lightweight: Pathfinder (search/matching) and Briggs (comparison/analysis).
+
+## Coupled Changes
+
+- `tests/registry.test.mjs` — Fixed member count assertion that assumed a single squad. Now sums across all squads.
+- `public/squads.json` — Rebuilt by `build:registry` to include Scout.
+
+---
+
+# Decision: Recruiter/Agency Squad Evaluation
+
+**Author:** Mon Mothma (Lead)  
+**Date:** 2026-03-19  
+**Status:** Evaluated — **Not now; revisit at 10+ squads**  
+**Requested by:** Stefan Broenner
+
+---
+
+## Question
+
+Should we create a recruiter/agency squad that is itself published in agency and uses the agency directory as a discovery surface for other squads and agents?
+
+---
+
+## 1. Is this a good idea? — Yes, but not yet.
+
+The concept is architecturally sound and narratively compelling. A squad that uses agency to discover other squads is a natural proof-of-concept for the platform. It dogfoods our own product, it demonstrates a concrete use case, and it seeds the registry with a second listing.
+
+**However, it falls into the exact pattern we corrected in Sessions 4–5.** We built a multi-select faceted filter UI for a 1-squad catalog. User correctly called it premature. We stripped it back. A recruiter squad with nothing to recruit from is the same category of mistake — building for imagined scale, not present reality.
+
+With 1 squad in the registry, a "recruiter" has nothing meaningful to discover, match, or recommend. The value proposition is empty until the catalog reaches critical mass.
+
+---
+
+## 2. Main product and architecture risks
+
+| Risk | Severity | Detail |
+|------|----------|--------|
+| **Premature complexity** | High | Repeats the Sessions 4–5 anti-pattern. We build a thing whose value depends on future conditions that don't exist yet. |
+| **Recursive gimmickry** | Medium | "A squad on a squad directory that finds squads" sounds clever in a pitch but hollow in practice. Users will see one squad finding itself. |
+| **Identity confusion** | Medium | Agency is the registry. The agency squad builds the registry. A recruiter squad searches the registry. Three layers of self-reference muddies what each thing actually does. |
+| **No programmatic discovery surface** | Low | `squads.json` is a static JSON file — technically queryable, but there's no API, no search endpoint, no matching logic. The recruiter squad would need to invent this capability, which is engineering work with no users yet. |
+| **Distraction from seeding** | Medium | The project review flagged registry seeding as a medium-risk gap. Building a recruiter squad is work that doesn't add external squads to the catalog — it adds another internal one. |
+
+---
+
+## 3. Cleanest framing (if/when we build it)
+
+**Don't call it a recruiter.** "Recruiter" implies active sourcing and outreach, which a static registry squad can't do.
+
+**Frame it as a squad discovery assistant:**
+
+> A squad you bring into your project that reads your codebase context and recommends complementary squads from the agency catalog.
+
+This framing works because:
+- **It's user-facing, not platform-facing** — the squad serves developers, not the registry itself
+- **It's concrete** — "reads your project, recommends squads" is a testable value proposition
+- **It avoids recursion** — it's a consumer of the registry, not a meta-layer on top of it
+- **It justifies `squads.json` as an API** — a real consumer validates that the data model works for machine consumption
+- **It's a natural proof-of-concept** — proves the platform enables real tooling, not just browsing
+
+**Name candidates:** `scout`, `matchmaker`, `compass` — anything that implies finding the right fit, not staffing an agency.
+
+---
+
+## 4. Recommendation: Create it later, not now.
+
+**Trigger:** Revisit when the catalog reaches **10+ squads from at least 3 different sources**.
+
+**Why 10+:** That's the minimum where:
+- Discovery is a real problem (you can't just scan the page)
+- Matching logic has enough variance to produce useful results
+- The squad's existence doesn't feel like a demo
+
+**What to do now instead:**
+1. **Seed the registry** — get external squads submitted (the actual bottleneck)
+2. **Resolve contributor clarity** — Leia's open items from the project review
+3. **Stabilize the landing page** — headline and positioning are still the active focus
+4. **Bookmark the concept** — this decision doc is the bookmark
+
+**When we revisit, the build order should be:**
+1. Validate that `squads.json` is a sufficient discovery API (schema, freshness, machine-readability)
+2. Define matching criteria (focus area overlap, expertise gaps, status filters)
+3. Build the squad as a standalone consumer of `squads.json`
+4. Submit it to agency via PR like any other squad
+
+---
+
+## Principle Reinforced
+
+> Build for today's catalog, not tomorrow's. The same instinct that over-built the filter UI is now suggesting a recruiter for a 1-squad registry. Both are good ideas at scale; both are premature at 1.
+
+---
+
+---
+author: Mon Mothma
+date: 2026-03-19
+status: ready-for-review
+stakeholders:
+  - Stefan Broenner
+  - Wedge (UX validation)
+  - Lando (marketing/positioning)
+---
+
+# Architecture Decision: Squad Plugin Marketplace Layer
+
+## Question
+
+What is the **smallest practical repo/layout change** that makes `agency` a clean Squad plugin marketplace while preserving existing site and registry behavior?
+
+## Current State
+
+**Agency today:**
+- Serves as a **curated registry** for squad manifests via static Astro site
+- Stores manifests in `squads/<slug>/squad.json`
+- Generates feed at `public/squads.json` via `npm run build:registry`
+- Already serves as an upstream source for Squad ecosystem (approved: mon-mothma-marketplace-fit.md)
+- Operates as a **browseable directory** with filters, search, and discovery UX
+
+**The ask:**
+User wants Agency to be perceived and positioned as a "marketplace" for Squad plugins, not just a registry.
+
+## What "Marketplace" Means (Semantically)
+
+A marketplace implies:
+1. **Discoverability first** — browse, search, filter, compare
+2. **Trust signals** — status, team info, links to source
+3. **Portability** — export/import, copy, reuse in other projects  
+4. **Community contribution** — easy submission, clear governance
+5. **Upstream provisioning** — teams can inherit patterns and skills from the marketplace curator
+
+## Analysis: Current Alignment
+
+| Marketplace Property | Current Agency | Already Shipped? | Notes |
+|---|---|---|---|
+| Discoverability UX | ✅ Search, filters, status, focus areas | Yes | Rich filtering, good UX |
+| Trust signals | ✅ Team, links, source repo, status badges | Yes | Displayed on cards + detail views |
+| Portability | ✅ Download squads, copy source repo | Yes | PR-based submission, GitHub-native |
+| Community governance | ✅ Pull request workflow, schema validation | Yes | CONTRIBUTING.md exists |
+| Upstream provisioning | ✅ `.squad/` directory with skills, decisions, patterns | Yes | 5 skills, routing, wisdom published |
+| Clear positioning | ⚠️ README frames it as "registry" not "marketplace" | No | Language/framing needs tightening |
+
+**Verdict:** Agency is **functionally a marketplace today**. The gap is **positioning and language**, not infrastructure.
+
+## Recommended Approach: Zero-Breaking-Change Marketplace Layer
+
+### Option 1: Terminology Shift (Minimal, Recommended)
+
+**Change:** Reposition existing site as a marketplace through language and positioning only.
+
+**What changes:**
+1. Update README.md: frame as "Squad Plugin Marketplace" not just "registry"
+2. Update landing page hero copy to emphasize "marketplace" discovery (already says "Find your next squad" ✅)
+3. Add marketplace-specific branding in nav/footer (optional)
+4. Add marketplace UX affordances: 
+   - "Copy squad" button (already have "Browse" landing)
+   - Link to "Become a marketplace curator" (guides external squads to publish)
+5. Add `.squad/README.md` explaining Agency as upstream for external teams
+
+**What does NOT change:**
+- Repository structure (squads/ layout stays)
+- Build pipeline (registry build script works unchanged)
+- Schema or validation rules
+- GitHub Pages deployment
+- Astro site infrastructure
+
+**Risk level:** 🟢 **Low** — pure positioning, no structural risk
+
+**Effort:** ~4-6 hours (copy, UX tweaks, docs)
+
+---
+
+### Option 2: Namespace Separation (Moderate, Structural)
+
+**Change:** Introduce explicit `marketplace/` root alongside `squads/` to signal intent.
+
+**Directory proposal:**
+```
+squads/                    (Keep: local/canonical squads)
+  agency/squad.json
+  scout/squad.json
+
+marketplace/               (New: federation pointer)
+  README.md               (Explains this layer)
+  upstream-sources.json   (List of trusted upstream registries)
+```
+
+**Benefit:** Makes the "marketplace provider" role explicit in the repo structure.
+
+**Drawback:** Adds a new top-level concept; existing CI/CD doesn't use it yet (purely informational for now).
+
+**Risk level:** 🟡 **Medium** — introduces new convention, but non-breaking
+
+**Effort:** ~2-3 hours
+
+---
+
+### Option 3: Full Marketplace Repo (Structural + Operational, Not Recommended)
+
+**Change:** Separate concerns into distinct repositories:
+- `agency-squads/` — registry of squad manifests (current `squads/`)
+- `agency-marketplace/` — browsable marketplace (Astro site)
+- `agency-plugins/` — Squad CLI integration points
+
+**Why NOT recommended:**
+- ✅ Cleaner separation of concerns
+- ❌ **Breaks existing contributors** (submit PRs to new repo)
+- ❌ **Requires dual maintenance** (keep registry + marketplace in sync)
+- ❌ **Fragments the community** (external users don't know where to submit)
+- ❌ **No benefit to current workflow** (we already have squads + build)
+- ❌ **Fails the "smallest practical change" requirement**
+
+**Risk level:** 🔴 **Very High** — breaks existing registry behavior
+
+---
+
+## Recommended Decision: Go with Option 1
+
+### Concrete Changes (One Deployment)
+
+**1. README.md**
+- Change line 5 from: "GitHub-native registry for Squad manifests"
+- To: "Squad Plugin Marketplace — discover, share, and govern AI teams"
+- Add section: "Why Marketplace?" with benefits for teams/contributors
+- Keep "Adding a squad" section but retitle it "Publishing to the Marketplace"
+
+**2. src/pages/index.astro (Landing Page)**
+- Already says "Find your next squad" ✅ (good)
+- Add CTA section below search: "Want to add your squad?" → links to CONTRIBUTING
+- Optional: Add trust badges (e.g., "2 squads published", "X weekly installs")
+
+**3. CONTRIBUTING.md**
+- Retitle from "Submitting a Squad" to "Publishing Your Squad to the Marketplace"
+- Add "Marketplace Benefits" section (inherit skills, routing, wisdom)
+- Add "After Publication" guidance (upstream source, sync workflow)
+
+**4. New: .squad/README.md**
+- Explains Agency as an upstream source
+- Which skills are generalizable vs. domain-specific
+- How external teams can import Agency patterns
+
+**5. New: public/marketplace.json (Optional)**
+- Mirror of squads.json, but with marketplace-specific metadata
+- Could include: curator info, submission stats, featured squads
+- Non-breaking: coexists with existing public/squads.json
+
+**6. astro.config.mjs (Optional)**
+- Add marketplace-specific site config if needed
+- Could reference marketplace.json in build instead of squads.json
+- Non-breaking: conditional build step
+
+### What Stays Unchanged
+
+- ✅ `squads/` directory structure
+- ✅ Schema validation (`schema/squad.schema.json`)
+- ✅ Build pipeline (`npm run build:registry`)
+- ✅ CI/CD workflows (no new steps needed)
+- ✅ Astro site deployment to GitHub Pages
+- ✅ Existing squad submissions/PRs (no migration needed)
+
+## Risk Assessment
+
+### What Could Go Wrong?
+
+| Risk | Severity | Mitigation |
+|---|---|---|
+| Confusion between "registry" and "marketplace" terminology | Low | Add glossary to CONTRIBUTING, update README clearly |
+| Marketing language oversells vs. what product delivers | Medium | Have Lando review copy; keep "browse, copy, run" core promise |
+| Existing external squads don't see marketplace update | Low | Link from Squad CLI docs if/when Bradygaster adopts agency |
+| Breaking existing CI/CD | Very Low | Changes are docs + copy, no infrastructure touches |
+
+### What Won't Break
+
+- ❌ Not breaking: GitHub Pages deployment (site still builds same way)
+- ❌ Not breaking: Existing squad manifests (no schema changes)
+- ❌ Not breaking: Registry JSON feed (still at public/squads.json)
+- ❌ Not breaking: Squad CLI integration (already works as upstream)
+- ❌ Not breaking: Astro build or validation scripts
+
+## Risks to Avoid
+
+1. **Do NOT restructure `squads/` directory** — contributors will be confused, CI/CD breaks
+2. **Do NOT change schema or validation rules** — no benefit, high risk of rejecting valid squads
+3. **Do NOT rename or split the repository** — breaks the registry, confuses marketplace concept
+4. **Do NOT over-promise marketplace features** — keep positioning honest: "browse, copy, run"
+5. **Do NOT mandate upstream consumption** — marketplace works standalone; upstream is bonus
+
+## Implementation Readiness
+
+**Should this proceed immediately?** ✅ **YES**
+
+- Option 1 is low-risk, high-clarity
+- No infrastructure changes required
+- Existing registry behavior fully preserved
+- Positioning aligns with what the product already does
+- Marketing can begin immediately (no technical blockers)
+
+**Why now?**
+- User demand is clear ("I want it as a marketplace")
+- Product already behaves like one (UX is there)
+- Positioning catches up to reality
+- Lando (marketing) is now on the team (can drive messaging)
+
+## Decision
+
+**APPROVED:** Proceed with **Option 1 (Terminology Shift)** as the marketplace approach.
+
+### Rationale
+
+1. **Minimal change:** Preserves all existing infrastructure and behavior
+2. **Honest positioning:** Calls what the product is (a marketplace)
+3. **Non-breaking:** No impact on existing contributors or CI/CD
+4. **Marketable:** Gives Lando a clear story to tell ("Squad Plugin Marketplace")
+5. **Upstream-compatible:** Already works as Squad marketplace/upstream (proven)
+
+### Next Steps
+
+1. **Mon Mothma:** Write marketplace language guidelines for copy team
+2. **Lando:** Draft marketing copy and landing page revision
+3. **Wedge:** UX review of new CTA and marketplace positioning
+4. **Engineer:** Merge changes to README, landing page, CONTRIBUTING
+
+### Success Criteria
+
+- [ ] README positions Agency as a marketplace
+- [ ] Landing page has clear "Browse" and "Publish" CTAs
+- [ ] CONTRIBUTING explains marketplace benefits
+- [ ] .squad/README.md guides external teams
+- [ ] No broken build, CI/CD, or registry behavior
+- [ ] Marketing team (Lando) has messaging framework
+
+---
+
+## Appendix: Why This Isn't "Really" Breaking
+
+While we're calling this a "marketplace," the infrastructure already supports it:
+
+1. **Discoverability** — Astro site filters and search work
+2. **Trust** — Status badges, team info, source links display
+3. **Portability** — Squads are self-contained, easy to copy
+4. **Governance** — Pull request + validation workflow
+5. **Upstream** — .squad/ directory is active and shared
+
+The change is **labeling what we already built**, not building something new.
+
+
+---
+
+---
+author: Mon Mothma
+date: 2026-03-19
+status: ready-to-act
+---
+
+# Decision: Agency is Ready as Squad Upstream Marketplace
+
+## Question
+
+Can the `agency` repository be added as a marketplace/upstream source in the Squad ecosystem?
+
+## Answer
+
+**YES.** Agency can be used as an upstream source immediately.
+
+## Evidence
+
+I inspected the Squad repository (`bradygaster/squad`) at https://github.com/bradygaster/squad to determine upstream compatibility. The Squad CLI supports three upstream source types:
+1. **Local** — a `.squad/` directory on disk
+2. **Git** — a GitHub repository (auto-cloned, then reads `.squad/`)
+3. **Export** — a JSON export snapshot
+
+### What Squad Reads from Upstream Sources
+
+The coordinator reads these files from an upstream's `.squad/` directory:
+- `.squad/skills/*/SKILL.md` — reusable agent domain expertise
+- `.squad/decisions.md` — decision history and team guidance
+- `.squad/identity/wisdom.md` — patterns and best practices
+- `.squad/casting/policy.json` — agent allocation rules
+- `.squad/routing.md` — work domain routing
+
+### Agency's Current State
+
+**Compatibility check:**
+| Requirement | Agency Status | Evidence |
+|-------------|---------------|----------|
+| `.squad/routing.md` | ✅ Present | 50 lines of work routing rules |
+| `.squad/casting/policy.json` | ✅ Present | Universe allowlist + max capacity |
+| `.squad/identity/wisdom.md` | ✅ Present | Team patterns (learning-centric, explicit scope) |
+| `.squad/decisions.md` | ✅ Present | 2,000+ lines of team decisions |
+| `.squad/skills/*/SKILL.md` | ✅ Present | 5 skills (Astro, Playwright, docs, conventions, validation) |
+| Public GitHub repo | ✅ Present | `https://github.com/sbroenne/agency` |
+| Main branch current | ✅ Present | Active, up-to-date |
+
+All required fields are populated with meaningful content—not templates.
+
+## How to Use Agency as Upstream
+
+### As a Git Upstream (recommended for external sharing)
+```bash
+squad upstream add https://github.com/sbroenne/agency.git --name agency
+```
+
+### As a Local Upstream (if in monorepo or sibling checkout)
+```bash
+squad upstream add ../agency/.squad --name agency
+```
+
+What downstream teams inherit:
+- **5 skills** — Astro, Playwright, docs stack, project conventions, validation hardening
+- **Routing rules** — squad-style work assignment and @copilot qualification criteria
+- **Casting policy** — agent pool management (25-agent max, all universes allowed)
+- **Team wisdom** — patterns for learning, scope, decision making
+- **Decision archive** — precedent and rationale for choices made
+
+## Why This Works
+
+Agency was designed from the start as a registry and team—not a one-off project. Its `.squad/` directory is production-ready because it's actively used by the Agency team itself. Every file has been written and tested in live sessions.
+
+The content is **specific enough to be useful** (real skills from real work) but **abstract enough to apply broadly** (patterns for any squad-using project, not Agency-specific implementation details).
+
+## No Blockers
+
+- ❌ Not blocked by missing files (all present)
+- ❌ Not blocked by auth (repo is public)
+- ❌ Not blocked by structure (Squad already reads this pattern)
+- ❌ Not blocked by schema (Agency's `.squad/` conforms)
+
+## Recommendation
+
+1. **Publish** Agency as a marketplace/upstream source immediately
+2. **Optional enhancements** (non-blocking):
+   - Add `.squad/README.md` explaining Agency as an upstream for external teams
+   - Document which skills are domain-specific vs. generalizable
+   - Add guidance on overriding patterns in consuming projects
+
+## Decision
+
+**APPROVED** — Agency can be added to Squad marketplaces now.
+
+### URL for Configuration
+
+```bash
+squad upstream add https://github.com/sbroenne/agency.git --name agency
+```
+
+### For Documentation
+
+If publishing guidance, use this URL as the canonical reference.

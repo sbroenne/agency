@@ -91,3 +91,7 @@ All findings merged into `.squad/decisions.md` section "Full Project Review — 
 
 **Conclusion:** Data/schema layer GREEN. Build pipeline clean. Visual tests deferred due to headless browser env.
 
+
+## 2026-03-19: Marketplace Implementation
+
+Implemented root-level squad discovery aliases. Added symlinks from `agency/squad.json` and `scout/squad.json` to canonical manifests under `squads/`. Updated marketplace guidance in README, fixed registry tests, and validated all CI/CD checks pass. Repository now marketplace-ready for Squad plugin discovery.

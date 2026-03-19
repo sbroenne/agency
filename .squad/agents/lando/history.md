@@ -89,3 +89,7 @@
 **Approver:** Stefan Broenner
 
 **Related:** Inbox decisions merged to decisions.md; orchestration log filed at `.squad/orchestration-log/2026-03-19T07:28:10Z-lando.md`
+
+## 2026-03-19: Marketplace Positioning
+
+Evaluated recruiter squad positioning and timing. Recommended "Staff your project with the right AI team" narrative. Advised publishing when directory reaches 5+ squads. Provided naming guidance (Recruiter, Talent Scout alternatives) and stage-based implementation plan (draft now with 'building' status, flip to 'live' later).

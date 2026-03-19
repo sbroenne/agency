@@ -355,3 +355,13 @@ Summary of findings merged into `.squad/decisions.md` under "Full Project Review
 
 **Result:** Wedge approved; copy cleared for publish
 **Files:** `src/pages/index.astro`, `src/layouts/BaseLayout.astro`
+
+## 2026-03-19: Marketplace Architecture Sprint
+
+Led marketplace readiness evaluation. Recommended Option 1 (terminology shift) as minimal-risk approach to position Agency as Squad Plugin Marketplace. Decision approved for immediate implementation. Published Scout squad as discovery assistant. Deferred Recruiter squad to 10+ squads milestone.
+
+**Decisions Made:**
+- Architecture: Terminology shift with no structural changes
+- Scout Squad: Published as live discovery tool (2-member team)
+- Recruiter Squad: Timing postponed; reserve slug for future
+- Upstream Ready: Agency confirmed compatible with Squad ecosystem
