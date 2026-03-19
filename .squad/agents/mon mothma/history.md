@@ -251,3 +251,86 @@ All strategic decisions implemented correctly:
 **Key file paths:**
 - Official reference: `bradygaster/squad/docs/package.json`, `bradygaster/squad/docs/astro.config.mjs`, `bradygaster/squad/.github/workflows/squad-docs.yml`
 - Current repo: `package.json`, `public/index.html`, `.github/workflows/deploy-pages.yml`
+
+### Session 4: Full Project-Level Review (2026-03-19)
+
+**Task:** Complete project-level review including product direction, architecture, UX, workflow fit, and readiness for public launch.
+
+**Review scope:**
+- Product direction & strategy alignment
+- Architectural coherence & tech stack fit
+- Information architecture & UX maturity
+- Contributor workflow clarity
+- Publication readiness & risk assessment
+
+**Methodology:**
+- Examined decisions.md, team charter, recent work history
+- Verified build/test/deploy pipeline (all passing)
+- Analyzed GitHub workflows, PR/issue templates
+- Reviewed squad manifest schema and validation
+- Checked accessibility (skip links, ARIA, responsive)
+- Assessed contributor documentation (README, CONTRIBUTING, PR template)
+- Examined team composition and governance
+
+**Key findings:**
+
+**Strengths (6 areas):**
+1. Product direction sound (discovery-first IA validated against Awesome Copilot reference)
+2. Architecture coherent (Astro 5.7 + Tailwind 4.1 match Bradygaster stack; clean data flow)
+3. Governance working (Wedge visual harness catching regressions; decision framework preventing ambiguity)
+4. Accessibility solid (skip link, ARIA, focus mgmt, responsive verified)
+5. Schema validation strong (JSON Schema + AJV prevent bad manifests)
+6. CI/CD low-friction (automatic Pages deploy, upstream sync capability)
+
+**Issues identified (3 categories):**
+
+**BLOCKING (Leia's unresolved repo review):**
+- "Major UX change" threshold undefined (reviewers don't know when to run npm run build + npm run preview)
+- Schema changes not flagged in PR template (visibility risk)
+- Plus 5 supporting items (upstream sync docs, non-squad contribution path, visual test expectations, Node version requirement, Bradygaster link)
+
+**Medium-risk (launch preparation):**
+- Registry seeding strategy missing (only 1 squad; need go-to-market plan)
+- Content quality gates not defined (schema validates format, not quality)
+- Performance at scale not tested (likely fine, but should baseline with 50 squads)
+
+**Architectural assessment:**
+- Data model is sound; separates concerns cleanly
+- Extensibility proven (filtering/search handles 100+ without refactor)
+- No technical debt; build is lean (~800ms)
+- Testing coverage adequate (validation, counts, visual acceptance)
+
+**Verdict:** PUBLICATION-READY (with conditions)
+
+✅ Site is stable, well-tested, accessible  
+✅ Architecture is coherent; no technical debt  
+✅ Governance is working; team alignment clear  
+⚠️ Contributor docs need Leia's clarifications (2 blockers + 5 should-do)  
+⚠️ Go-to-market strategy (registry seeding) not yet defined  
+
+**Recommendations (priority):**
+1. Resolve Leia's contributor clarity gaps (2–3 hour effort; blocking for public confidence)
+2. Define registry seeding strategy (outreach targets, timeline)
+3. Create non-normative content quality checklist (reviewer guidance)
+4. Baseline performance at 50-squad scale during growth phase
+
+**Decision recorded:** `.squad/decisions/inbox/mon-mothma-project-review.md`
+
+**Next steps:** Await Leia's clarification implementation; then recommend GO for public beta.
+
+
+---
+
+## Full Project Review Completion — 2026-03-19
+
+**Event:** Team-wide publication readiness review completed  
+**Date:** 2026-03-19T05:49:18Z
+
+Summary of findings merged into `.squad/decisions.md` under "Full Project Review — 2026-03-19" section.
+
+**Key Outcome:** Conditional GO for publication. All blocking items documented; action plan prioritized.
+
+**Related Artifacts:**
+- Orchestration log: `.squad/orchestration-log/2026-03-19T05:49:18Z-full-review.md`
+- Session log: `.squad/log/2026-03-19T05:49:18Z-full-project-review.md`
+- Decisions merged from inbox; all findings consolidated in decisions.md

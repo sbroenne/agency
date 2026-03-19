@@ -23,6 +23,9 @@ Capture the local page and the live Bradygaster Squad site/docs in the same revi
 ### Review six things explicitly
 Check palette, contrast tone, accent discipline, surface treatment, spacing tone, and CTA hierarchy. Those six categories are enough to produce a crisp accept/reject note without drifting into vague design language.
 
+### Extend review to interaction quality and IA completeness
+After clearing the six visual checks, audit: (1) keyboard / ARIA patterns on interactive components (cards, modals, search); (2) IA conformance against the agreed decisions spec — is the filter UI built? does the page order match the signed-off flow?; (3) missing infrastructure meta (OG tags, favicon). Visual pass alone does not equal UX pass.
+
 ### Write corrections as visual instructions
 Reject with specific changes: exact accent to promote, accents to remove, surface treatment to flatten, spacing to open up, and CTA pattern to adopt.
 

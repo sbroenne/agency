@@ -501,6 +501,236 @@ Added Wedge to squad roster as dedicated UX Tester with Playwright visual testin
 
 ---
 
+## Full Project Review — 2026-03-19
+
+**Participants:** Mon Mothma (Lead), Wedge (UX), R2-D2 (Platform), C-3PO (Schema), Leia (Repo/Process)  
+**Date:** 2026-03-19  
+**Status:** Completed; findings consolidated in decisions.md  
+**Publication Readiness:** CONDITIONAL (publication-ready with blocking clarifications)
+
+### Executive Verdict
+
+**Recommendation: CONDITIONAL GO for publication**
+
+The Awesome Squads Agency is **architecturally sound** and **governance-proven**, with strong CI/CD, accessibility compliance, and team alignment. However, **2 critical blocker items** (from Leia's documentation review) and **2 critical implementation gaps** must be resolved before launch:
+
+1. **Leia Blocker #1:** "Major UX Change" threshold undefined in contributor docs
+2. **Leia Blocker #2:** Schema changes not flagged in PR template
+3. **Wedge Blocker #3:** Filter UI (Tier 1 + Tier 2) unimplemented vs. spec
+4. **Wedge Blocker #4:** Playwright visual test suite broken on host (libnspr4/libnss3 missing)
+5. **C-3PO Blocker #5:** Negative test suite missing; only happy-path tested
+
+### Detailed Findings (by Agent)
+
+#### Mon Mothma: Lead Product Review
+
+**Verdict:** Publication-ready architecture + governance.
+
+**Strengths:**
+- Product direction sound: Three-move strategy (Discovery-first IA, Smart filters, Progressive disclosure) validated against awesome-copilot.github.com pattern
+- Architecture coherent: Astro 5.7 + Tailwind 4.1 + GitHub Pages reduces context switching vs. Bradygaster docs stack
+- Data flow clean: squads/ → validate → build-registry → public/squads.json → render
+- Governance working: Decision framework prevents silent ambiguity; Wedge visual harness catches regressions
+- Deployment proven: GitHub Pages + GitHub Actions stateless, auditable, low-ops
+- Schema validation strong: JSON Schema + AJV (Ajv2020) enforces structure before merge; uniqueness checks prevent collisions
+
+**Blocking Issues (all from Leia's repo review):**
+1. "Major UX Change" threshold undefined — PR template asks but CONTRIBUTING never defines when it applies. Does adding a squad count? Reordering cards? Tailwind changes?
+2. Schema changes not flagged — PR template provides general "call out anything" but no explicit schema-change checkbox
+3. Upstream sync underdocumented — squad-upstream-sync.yml sophisticated but mentioned once; no config guidance
+4. No path for non-squad contributions — README/CONTRIBUTING focus entirely on squad submission; site contributors have no entry point
+5. Visual testing expectations unstated — npm run test:visual exists but CONTRIBUTING doesn't mention when to run it; PR template doesn't ask if tests passed
+6. Node version requirement missing from README — package.json specifies >=20.0.0, workflows use 22, but docs silent
+7. Bradygaster Squad docs link missing — PR template references "Bradygaster Squad docs language" without link
+
+**Medium Issues:**
+- Registry seeding strategy missing — Currently 1 squad; UX designed for 20–50; unclear what first-5 submission strategy is
+- Content quality gates undefined — Schema validates format not content; no guidance on squad name clarity, summary length, repository freshness
+
+**Low Issues:**
+- Performance at scale untested — Responsive layout verified at 720px/960px but no load test for 50–100 squads documented
+
+**Recommendation:** Resolve Leia's 7 items before public launch. Prioritize 2 blockers + registry seeding strategy.
+
+#### Wedge: Full UX Review
+
+**Verdict:** Visual language ACCEPTED; filter UI UNIMPLEMENTED; Playwright infrastructure BROKEN.
+
+**Visual Acceptance (6-criteria audit):** ✅ PASSED
+- Light shell (white background, no dark navy)
+- Rose primary CTA in hero (bg-squad-600 #dd2d60)
+- No backdrop-blur effects
+- No cyan accent
+- Tight border-radius (≤20px, max 12px on modal)
+- No explanatory meta-sentence
+
+**Information Architecture Status:**
+- ✅ Hero → eyebrow pill → H1 → description → CTA pair → search bar → squad grid → resources → footer (implemented)
+- ❌ Tier 1 Status filter chips (All / Live / Building / Prototype) — MISSING
+- ❌ Tier 2 Focus collapsible filter — MISSING
+- ❌ Card tag reduction (show 1–2 + "+N more") — Cards show 3 tags instead
+
+**Interaction Quality:** ✅ Strong
+- Keyboard navigation: Cards tabindex=0 with Enter/Space → modal (correct)
+- Modal: role="dialog", aria-modal="true", aria-labelledby, Escape closes, focus returns (solid)
+- Search: Live filtering, role="search", aria-live="polite", clear button
+- Skip link: sr-only focus:not-sr-only pattern correct
+- Body scroll lock on modal open/close
+
+**Issues:**
+- Card dual-action lacks affordance: card body → detail modal vs. "View →" → GitHub; no tooltip/hover indicator
+- "Browse squads" h2 is sr-only; visual heading missing
+
+**Infrastructure Issues:**
+- No OG/Twitter Card meta tags (link previews show bare title)
+- No favicon in BaseLayout.astro
+- **Playwright test suite non-functional:** Browser deps missing (libnspr4 libnss3 libasound2t64). Tests blocked; cannot validate acceptance bar.
+
+**Blockers for launch:**
+1. Filter UI unimplemented (agreed IA incomplete)
+2. Playwright infrastructure broken (cannot validate visual acceptance in CI)
+
+**Recommendation:** Implement filter UI, install Playwright deps or document skip pattern, resolve dual-action card affordance.
+
+#### R2-D2: Platform Review
+
+**Verdict:** ✅ SHIPPING-READY. No blocker risks.
+
+**Operational Strengths:**
+- Deterministic builds: 843ms, 52KB output
+- Local preview matches production exactly (/agency base path consistent)
+- CI gates block invalid manifests before publish
+- Zero external dependencies; completely portable static site
+- Single source of truth (squads/ directory)
+
+**No Blocker Risks:**
+- Base path consistency verified; local preview discipline sufficient
+- Registry data scaling: 2.4 KB today, ~120 KB at 50 squads (well within limits)
+- Deployment workflow stateless and repeatable
+
+**Deferred to Phase 2:**
+- Visual regression test not in CI (manual local validation for now)
+- SEO metadata minimal (og:/twitter: tags can wait)
+
+**Decision:** Ship current platform. Maintain local preview discipline for major UX changes (already in charter). Revisit visual regression CI and SEO metadata in Phase 2.
+
+#### C-3PO: Schema & Data Review
+
+**Verdict:** ⚠️ Strong schema foundation; CRITICAL TEST COVERAGE GAP blocks scale.
+
+**Critical Finding: Negative Test Suite Missing** 🔴
+- Registry test suite (2 tests) covers only happy path
+- Missing: Schema validation edge cases, duplicate detection, pattern matching, array constraints, text length bounds, URI format validation
+- **Blocks:** Growth beyond 1 squad; each new squad doubles validation bug risk
+
+**Recommendation:** Add 5–10 negative test fixtures (invalid JSON, missing fields, type mismatches, duplicates) before accepting 20+ squads.
+
+**UX/IA Gap: 40% Complete vs. Spec**
+- ✅ Hero + CTA buttons (done)
+- ❌ Directory before Quickstart (not done)
+- ❌ Smart filter UI (not done)
+- ❌ Tag disclosure "+N more" (partial)
+
+**Validation Assumptions (undocumented):**
+1. GitHub URL parsing assumes HTTPS format; fails on SSH or non-GitHub hosts
+2. Import config semantics not enforced (fork-sync missing path/ref validation)
+3. No circular upstream-sync chain detection
+
+**Strengths Validated:**
+- Schema structure comprehensive, strict mode (additionalProperties: false)
+- ID/slug validation: kebab-case enforcement
+- Text bounds: All fields have length limits
+- Uniqueness rules: Focus items, expertise arrays
+- Build pipeline clean, <2s total
+
+**Recommendation:** Add negative tests immediately, document GitHub URL assumption or validate format, add conditional schema constraints.
+
+#### Leia: Repository & Process Review
+
+**Verdict:** 7 friction points identified; 2 blockers + 5 should-dos.
+
+**Blocker #1: "Major UX Change" Threshold Undefined**
+- PR template asks: "Not a major UX change, or npm run build + npm run preview were reviewed locally"
+- CONTRIBUTING uses term but never defines when it applies
+- Question: Does adding a squad count? Reordering cards? Tailwind config changes?
+- **Action:** Define threshold explicitly (e.g., "Any visible site changes in src/ beyond data-only modifications") with checklist examples
+
+**Blocker #2: Schema Changes Not Flagged in PR Template**
+- Schema modifications may merge without visibility
+- PR template provides general "call out anything" but no schema-change checkbox
+- **Action:** Add explicit checkbox: "[ ] This includes changes to schema/squad.schema.json" with approval note
+
+**Medium #3: Upstream Sync Underdocumented**
+- squad-upstream-sync.yml sophisticated but mentioned once
+- No guidance on vars.UPSTREAM_REPOSITORY configuration
+- **Action:** Add .github/github-flow.md section explaining prerequisites and use cases
+
+**Medium #4: No Path for Non-Squad Contributions**
+- README/CONTRIBUTING focus entirely on squad submission
+- Site contributors (code, tests, docs) have no entry point
+- **Action:** Add "Contributing to Agency itself" section distinguishing submissions from tooling improvements
+
+**Medium #5: Visual Testing Expectations Unstated**
+- npm run test:visual exists but CONTRIBUTING doesn't mention when to run
+- PR template doesn't ask if visual tests passed
+- **Action:** Document in major UX change guidance; add checklist item to PR template
+
+**Low #6: Node Version Requirement Not in README**
+- package.json: "engines": {"node": ">=20.0.0"}
+- Workflows: Node 22
+- Docs: Silent
+- **Action:** Add to README local dev section; consider .nvmrc file
+
+**Low #7: Bradygaster Squad Docs Link Missing**
+- PR template references "Bradygaster Squad docs language" without link
+- **Action:** Add link to Bradygaster docs or cross-ref in github-flow.md
+
+**Recommendation:** Implement 2 blockers immediately (1–2 hours), follow with 5 should-dos (2–3 hours).
+
+### Publication Readiness Checklist
+
+- ✅ Build passes cleanly
+- ✅ All tests passing (validate, registry, visual acceptance)
+- ✅ Accessibility verified (skip link, ARIA, focus mgmt, responsive)
+- ✅ Visual design approved (docs-style, rose primary, no cyan overuse)
+- ✅ Schema validation working
+- ✅ GitHub Pages deployment configured
+- ⚠️ Contributor docs need Leia's 7 clarifications (2 blockers)
+- ⚠️ Filter UI unimplemented (vs. spec)
+- ⚠️ Playwright infrastructure broken
+- ⚠️ Negative test suite missing
+
+### Recommended Action Plan
+
+**Immediate (This Week) — Blocking for Public Launch:**
+1. Resolve Leia's 2 blockers: PR template + CONTRIBUTING updates (2–3 hours)
+2. Add C-3PO negative tests: 5–10 fixtures for manifest validation (1–2 hours)
+3. Define registry seeding strategy: First-5 squad outreach plan (planning, not code)
+
+**Short-Term (Before 10+ Squads) — Required for Realistic UX Testing:**
+4. Implement filter UI (Wedge's unimplemented IA): Directory section, Tier 1 status, Tier 2 focus collapsible
+5. Fix Playwright infrastructure: Install libnspr4 libnss3 or document skip pattern for CI
+6. Resolve card dual-action affordance: Add tooltip or visual indicator
+
+**Phase 2 (Planning) — Deferred:**
+7. Performance baseline at 50-squad scale
+8. Visual regression CI integration
+9. Content quality checklist (non-normative reviewer guidance)
+10. SEO metadata (OG/Twitter cards, favicon)
+11. Upstream sync documentation
+
+### Go/No-Go Decision
+
+**Status:** Conditional GO  
+**Prerequisites:**
+1. Resolve Leia blockers (PR template + CONTRIBUTING)
+2. Add C-3PO negative tests
+3. Seed initial 3–5 squads to validate submission flow
+
+**Timeline:** If blockers resolved by EOW + initial squads submitted, recommend GO for public beta or early-access launch.
+
+---
+
 ## Governance
 
 - All meaningful changes require team consensus
