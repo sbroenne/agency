@@ -1,0 +1,52 @@
+{
+  "$schema": "../../schema/squad.schema.json",
+  "specVersion": "1.0",
+  "id": "scout",
+  "slug": "scout",
+  "name": "Scout",
+  "status": "live",
+  "tagline": "Helps you find the right squad from the agency directory.",
+  "summary": "Scout reads the agency catalog and walks you through what each squad does, who is on it, and whether it fits your project. It narrows options fast so you spend less time browsing and more time building.",
+  "mission": "Surface the best-fit squad for any task by comparing focus areas, team composition, and status across every published manifest in the agency directory.",
+  "focus": [
+    "squad discovery",
+    "selection guidance",
+    "manifest comparison",
+    "onboarding"
+  ],
+  "source": {
+    "repository": "https://github.com/sbroenne/agency",
+    "directory": "squads/scout",
+    "homepage": "https://sbroenne.github.io/agency/",
+    "import": {
+      "type": "manual",
+      "path": "squads/scout/squad.json",
+      "ref": "main"
+    }
+  },
+  "links": [
+    {
+      "label": "Repository",
+      "url": "https://github.com/sbroenne/agency"
+    },
+    {
+      "label": "Directory",
+      "url": "https://sbroenne.github.io/agency/"
+    }
+  ],
+  "team": {
+    "name": "Scout",
+    "members": [
+      {
+        "name": "Pathfinder",
+        "role": "Discovery Lead",
+        "expertise": ["catalog search", "squad matching"]
+      },
+      {
+        "name": "Briggs",
+        "role": "Comparison Analyst",
+        "expertise": ["manifest analysis", "fit scoring"]
+      }
+    ]
+  }
+}
