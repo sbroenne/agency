@@ -2441,3 +2441,73 @@ Root-level symlink aliases reduce code duplication while maintaining:
 - `agency/squad.json` → symlink to `../squads/agency/squad.json`
 - `scout/squad.json` → symlink to `../squads/scout/squad.json`
 - No special handling required; document Windows limitation if needed
+
+---
+
+# Decision: Marketplace Noise Assessment (Leia + Mon Mothma)
+
+**Date:** 2026-03-19  
+**Authors:** Leia (GitHub Integrator), Mon Mothma (Leadership & Analysis)  
+**Status:** Complete — Deferred pending Squad CLI side improvements
+
+## Question
+
+Should `agency` clean up root-directory marketplace noise now or restructure the repository?
+
+## Assessment (Leia)
+
+### Current Situation
+
+When users run `squad plugin marketplace browse agency`, they see 12 root-level directories, but only 1 (`squads/`) is relevant:
+
+**Implementation Directories (noise):**
+- `src/` — site code
+- `public/` — static assets
+- `schema/` — JSON Schema
+- `scripts/` — build tools
+- `tests/` — test suite
+- `dist/` — build artifacts
+- `node_modules/` — dependencies
+
+**Relevant:**
+- `squads/` — actual squad manifests
+
+### Root Cause
+
+Squad CLI marketplace browse uses GitHub API to list all root directories. The noise is fundamentally a Squad CLI design issue, not an `agency` structure problem. Squad should either:
+1. Filter browse results by file type (only show dirs with `squad.json`)
+2. Add `.squadignore` support
+3. Direct users to `upstream` command instead
+
+### Restructuring Options Considered
+
+**Option A (Move squads to root):** High effort, breaks structure, moderate gain.  
+**Option B (Dotfile migration):** Non-standard, breaks DX, not recommended.  
+**Option C (Wait for upstream):** Minimal effort, future-proofs design, aligns with Squad intent.
+
+## Decision (Mon Mothma)
+
+**Status: Nice-to-have, not a must-fix. Defer pending Squad CLI improvements.**
+
+### Rationale
+
+1. **Functional health:** Current marketplace-facing aliases work correctly; no bugs.
+2. **Low urgency:** UX noise, not a blocker; doesn't prevent discovery or publication.
+3. **Squad-side decision:** Root-level pattern was deliberate Squad design. Changes require Squad CLI coordination.
+4. **Backward compatibility:** Moving aliases would break existing integrations.
+5. **Priority alignment:** Team focus is headline clarity and landing page SEO (higher-value work).
+
+## Recommendation
+
+**Leave `agency` as-is.** Root-level marketplace aliases are intentional, working, and documented. If Squad marketplace noise becomes a priority, coordinate with Squad CLI team (bradygaster/squad) for CLI-side filtering or `.squadignore` support.
+
+### Next Steps
+
+- **Short term:** Users can use `squad import` from URL as primary flow
+- **Medium term:** Wait for Squad `upstream` feature (on roadmap) — better designed for registry use case
+- **If needed:** Escalate UX improvements to Squad team
+
+---
+
+**Assessment document:** `.squad/decisions/inbox/leia-marketplace-noise.md`  
+**Prioritization document:** `.squad/decisions/inbox/mon-mothma-marketplace-noise-priority.md`

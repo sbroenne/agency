@@ -93,3 +93,23 @@ Conducted Squad plugin marketplace inspection and eligibility review. Confirmed 
 
 **Merged to:** decisions.md (2026-03-19T08:04:56Z)
 
+
+## 2026-03-19: Marketplace Noise Assessment
+
+**Event:** Conducted detailed assessment of Squad marketplace browse noise from root directories  
+**Date:** 2026-03-19T09:57:18Z
+
+**Assessment Summary:**
+- Identified 12 root directories visible in marketplace; only 1 (squads/) is relevant
+- 7 directories are implementation clutter (src/, scripts/, tests/, dist/, public/, schema/, node_modules/)
+- Root cause: Squad CLI marketplace browse shows ALL root directories; filtering is Squad CLI responsibility, not agency structure issue
+
+**Key Recommendations:**
+1. Do NOT restructure agency — noise is a Squad CLI design issue
+2. Escalate to Squad team for filtering, .squadignore, or upstream improvements
+3. Short term: Users can use squad import from URL
+4. Medium term: Wait for Squad upstream feature (on roadmap)
+
+**Merged to:** decisions.md (2026-03-19T09:57:18Z)
+
+---

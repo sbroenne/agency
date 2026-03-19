@@ -52,3 +52,28 @@ Led marketplace readiness evaluation. Recommended Option 1 (terminology shift) a
 - Scout Squad: Published as live discovery tool (2-member team)
 - Recruiter Squad: Timing postponed; reserve slug for future
 - Upstream Ready: Agency confirmed compatible with Squad ecosystem
+
+---
+
+## 2026-03-19: Marketplace Noise Prioritization
+
+**Event:** Assessed and prioritized marketplace noise cleanup  
+**Date:** 2026-03-19T09:57:18Z
+
+**Decision:** Nice-to-have, not a must-fix. Deferred pending Squad CLI side improvements.
+
+**Rationale:**
+1. Functional health — Current implementation works; no bugs
+2. Low urgency — UX noise, not a blocker
+3. Squad-side design — Root-level pattern was deliberate Squad design; changes require CLI coordination
+4. Backward compatibility — Moving aliases would break existing integrations
+5. Priority alignment — Team focus on headline clarity and landing page SEO (higher-value work)
+
+**Recommendation:**
+- Leave agency as-is
+- Coordinate with Squad CLI team (bradygaster/squad) for filtering or .squadignore support if needed
+- Short term: Users can import from URL; medium term: wait for Squad upstream
+
+**Merged to:** decisions.md (2026-03-19T09:57:18Z)
+
+---
