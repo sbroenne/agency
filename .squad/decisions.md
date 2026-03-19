@@ -2,6 +2,214 @@
 
 ## Active Decisions
 
+### User Directive: Lando Addition + Model Preference
+
+**By:** Stefan Broenner (via Copilot)  
+**Date:** 2026-03-19  
+**Status:** Implemented
+
+#### What
+
+Add a marketing and SEO expert to the team, and that role should use the most powerful available model.
+
+#### Why
+
+User request — capability expansion for team depth.
+
+#### Implementation
+
+- **Agent:** Lando
+- **Role:** Marketing & SEO Strategist
+- **Model Preference:** Most powerful available (user-specified)
+- **Charter:** `.squad/agents/lando/charter.md`
+- **Status:** Active (team.md updated)
+
+---
+
+### Hero Headline Revision: "Find your next squad"
+
+**Author:** Mon Mothma  
+**Date:** 2026-03-19  
+**Status:** Applied & Approved
+
+#### Context
+
+Wedge rejected the previous headline ("Your codebase, staffed by AI") and required a different author — not Padmé — to revise. Rejection criteria:
+1. Lead with discovery
+2. Stay under ~6 words
+3. Only promise what the page actually delivers
+
+#### Decision
+
+**H1:** "Find your next squad"  
+**Supporting copy:** "Browse AI teams you can inspect, copy, and run in your own projects."  
+**Default meta description:** "Find your next squad. Browse AI teams you can inspect, copy, and run."
+
+#### Rationale
+
+- **Leads with discovery** — "Find" is the opening verb; "Browse" opens the subhead. Both are active discovery verbs.
+- **4 words** — well under the ~6-word ceiling.
+- **Only promises what the page delivers** — the page is a directory you browse; the headline says exactly that.
+- **No install-first framing** — zero mention of setup or tooling.
+- **Uses the product term** — "squad" matches domain language visitors see throughout the page.
+- **Supporting line stays concrete** — "inspect, copy, and run" describes real actions the page enables.
+
+#### Files Changed
+
+- `src/pages/index.astro` — H1 and supporting paragraph
+- `src/layouts/BaseLayout.astro` — default meta description fallback
+
+#### Approval
+
+**Reviewer:** Wedge (UX Tester)  
+**Verdict:** ✅ APPROVED
+
+All three rejection criteria met:
+1. ✅ Lead with discovery language
+2. ✅ Stay under about 6 words
+3. ✅ Only promise what the page actually delivers
+
+Cleared for publish. BaseLayout default description is now in sync with hero framing.
+
+---
+
+### UX Review: Hero Headline Rejection — "Your codebase, staffed by AI"
+
+**Reviewer:** Wedge (UX Tester)  
+**Date:** 2026-03-16  
+**Status:** REJECTED
+
+#### Verdict: Reject
+
+The revised headline "Your codebase, staffed by AI" is punchier than its predecessor but fails on two key criteria.
+
+#### Catchiness
+
+Stronger than "AI teams that work inside your codebase" — the comma structure creates a satisfying beat, and "staffed by AI" is an interesting metaphor. The word "staffed" also plays cleverly on the product name "agency." This part works.
+
+#### Clarity
+
+**Weak.** "Staffed by AI" implies your codebase is actively being operated/maintained by AI right now. But this site is a **discovery directory** — users browse here, then take squads back to their own projects. The headline describes the outcome of using squads, not the act of discovering them here.
+
+#### Truthfulness
+
+**Borderline misleading.** "Your codebase, staffed by AI" implies active ongoing staffing by this product. In reality, the site helps you *find* and *copy* squads. The real value is discovery and portability, not staffing-as-a-service.
+
+#### Fit with discovery-first positioning
+
+**Fails.** The team's explicit copy principle states:
+> "Lead with discovery language ('Browse', 'Discover') not installation"
+> "Hero: 'Discover reusable squad templates, inspect source repos, and contribute your own'"
+
+The headline leads with ownership/outcome ("Your codebase") not discovery. The supporting sentence has to do all the positioning work, which is backwards.
+
+#### Requirement
+
+A **different agent** (not Padme) must revise. Suggested candidate: Mon Mothma, who owns copy principles and IA decisions.
+
+The revised headline must:
+1. Lead with or strongly imply *discovery* — browsing, finding, or exploring
+2. Communicate that this is a curated catalog/directory, not a deployment service
+3. Stay punchy — 6 words or fewer preferred
+4. Truth-check: only promise what the product delivers on this page
+
+---
+
+### Decision: Hero Headline Refresh
+
+**Author:** Padme  
+**Date:** 2026-03-15  
+**Status:** Rejected (see "UX Review: Hero Headline Rejection" above)
+
+#### Change
+
+Replaced the approved hero H1 from:
+
+> AI teams that work inside your codebase
+
+to:
+
+> Your codebase, staffed by AI
+
+#### Rationale
+
+The original headline was accurate but flat — it reads like a feature description. The new line inverts the framing: the *codebase* becomes the subject and "staffed by AI" lands as an unexpected, memorable verb. This creates a sharper hook while staying concrete and avoiding hype.
+
+Supporting copy was also tightened — removed "reusable Copilot team configurations" in favor of the shorter "AI teams you can inspect, copy, and run." Fewer words, same clarity, stronger rhythm.
+
+#### Scope
+
+- `src/pages/index.astro` — hero H1 and sub-headline
+- `src/layouts/BaseLayout.astro` — default meta description
+
+---
+
+### Decision: Landing page brand rename to `agency`
+
+**Author:** Padme  
+**Date:** 2026-03-15  
+**Status:** Implemented
+
+#### Context
+
+The landing page previously used "Awesome Squads" as the brand name and a generic headline "Community-contributed squads for GitHub Copilot". The project's actual name is `agency`.
+
+#### Decision
+
+Renamed all user-facing brand instances on the landing page:
+
+1. **Page title:** `Awesome Squads` → `agency`
+2. **Hero badge:** `Awesome Squads` → `agency`
+3. **Hero headline:** "Community-contributed squads for GitHub Copilot" → "AI teams that work inside your codebase"
+4. **Sub-headline:** "Browse reusable AI team configurations, inspect how they work, and submit your own." → "Discover squads — reusable Copilot team configurations you can inspect, copy, and adapt for your projects."
+5. **Meta description:** Updated for consistency
+
+#### Rationale
+
+- Project name should be the brand users see
+- New headline communicates the value proposition (AI teams working in your codebase) rather than describing the contribution model
+- Sub-headline preserves discoverability emphasis while clarifying what squads are
+
+#### Impact
+
+- No visual system changes — docs-style hierarchy preserved
+- Build validated with `npm run build`
+
+---
+
+### Copy Review: Agency Brand Rename + Headline Update
+
+**Author:** Wedge  
+**Date:** 2026-03-18  
+**Verdict:** ✅ APPROVED (with one non-blocking flag)
+
+#### Changes Reviewed
+
+- Badge + `<title>`: "Awesome Squads" → "agency"  
+- H1: "Community-contributed squads for GitHub Copilot" → "AI teams that work inside your codebase"  
+- Subhead: Updated with specific action verbs ("inspect, copy, and adapt")  
+- Meta description: Updated to "Find and share reusable AI teams for GitHub Copilot..."
+
+#### Why Approved
+
+1. **"agency" rename is correct.** "Awesome Squads" was a meta-pattern derivation, not a brand. "agency" ties to the repo name and creates a meaningful concept (a talent agency for AI teams) without front-loading jargon.
+
+2. **New H1 answers "what do I get?" not "what is this?"** "AI teams that work inside your codebase" positions value around where developers live. The old headline described the submission model, not the user benefit.
+
+3. **Subhead delivers the verb loop.** "inspect, copy, and adapt" are three specific, honest actions. Better than the old generic "browse... inspect... submit."
+
+4. **Meta description is consistent and search-friendly.** "Find and share reusable AI teams for GitHub Copilot" works as social/search context.
+
+#### Non-Blocking Flag
+
+`src/layouts/BaseLayout.astro` still has stale defaults:
+- `title = 'Awesome Squads'`  
+- `description = 'Community-contributed squads for GitHub Copilot.'`
+
+These don't appear on the live page (index.astro overrides both), but they're a maintenance hazard — any future page that forgets to pass a title will get the wrong brand name. Padme or Poe should clean these up as a follow-on task.
+
+---
+
 ### Landing Page Information Architecture
 
 **Owner:** Mon Mothma (Lead) + Poe (UX Engineer)  

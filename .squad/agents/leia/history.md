@@ -49,4 +49,26 @@
 
 All findings merged into `.squad/decisions.md` section "Full Project Review — 2026-03-19".
 
-**Recommendation:** Implement blockers immediately; schedule should-do items for next PR cycle.
+---
+
+### 2026-03-19: Documentation & Process Fixes Implementation
+
+**Summary:** Implemented all 7 friction-point fixes from repository review. Eliminated 2 critical blockers and resolved 5 should-do items affecting contributor experience.
+
+**Work Completed:**
+- Defined "Major UX Change" threshold with specific examples (layout/styling/navigation changes; squad additions/metadata updates exempt)
+- Added schema change checkbox and change-type categories to PR template
+- Documented upstream sync configuration with JSON example in CONTRIBUTING.md
+- Created non-squad contribution path for site/docs/test contributors
+- Added visual testing expectations and `npm run test:visual` guidance
+- Added Node 20.0.0+ requirement to README
+- Added Bradygaster Squad docs reference link to PR template
+
+**Validation:**
+- `npm run validate` → 1 squad manifest passes
+- `npm test` → All registry tests pass (2 tests, 0 failures)
+- Files reviewed for tone/style alignment
+
+**Decision Record:** Written to `.squad/decisions/inbox/leia-docs-fix.md`
+
+**Outcome:** Repository now publication-ready from documentation/process perspective. Contributor paths are clear, visual validation expectations are explicit, and team decisions are documented.

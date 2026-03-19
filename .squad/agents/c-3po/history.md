@@ -51,3 +51,43 @@
 All findings merged into `.squad/decisions.md` section "Full Project Review — 2026-03-19".
 
 **Next:** Add negative tests before accepting scalable squad submissions.
+
+### Manifest Hardening & Temp-Repo Tests (2026-03-19)
+- `scripts/lib/registry.mjs` now accepts injected `repoRoot`/`schemaPath`/`squadsRoot`/`now` options, which makes schema and registry tests deterministic without touching the real workspace.
+- Import semantics are now explicit: `upstream-sync` and `fork-sync` must provide both `path` and `ref`.
+- Semantic validation now guards registry assumptions beyond JSON Schema alone: repository URLs must include owner/repo path segments, and `source.directory` / `source.import.path` must stay repository-relative.
+- `tests/registry.test.mjs` now covers valid normalization plus nine negative/edge cases: invalid JSON, malformed repo URLs, missing sync import fields, path escapes, slug-directory mismatch, duplicate ids/slugs, and case-insensitive duplicate focus/expertise values.
+
+## Validation Run — 2026-03-19 (Afternoon)
+
+**Event:** Post-review validation sweep  
+**Result:** ✓ PASS (schema and unit layer green; visual env limited)
+
+**Schema validation:**
+- `npm run validate` ✓ Passes (1 manifest valid)
+
+**Registry tests (10 tests):**
+- ✓ Valid manifest load & normalization
+- ✓ Member/focus area counts
+- ✓ Non-GitHub repo source label derivation
+- ✓ Invalid JSON rejection
+- ✓ Malformed repo URL rejection
+- ✓ Missing sync import path/ref rejection
+- ✓ Path escape rejection
+- ✓ Slug-directory mismatch rejection
+- ✓ Duplicate id/slug rejection
+- ✓ Case-insensitive duplicate focus/expertise rejection
+- **Exit code:** 0 | **Duration:** 325ms
+
+**Build layer:**
+- Registry feed generation ✓ (`public/squads.json`)
+- Astro build ✓ (Vite 2 modules, 842ms end-to-end)
+- Static route generation ✓ (`dist/index.html`)
+
+**Visual acceptance (Playwright):**
+- 6 test definitions (skipped due to system dep: libnspr4, libnss3, libasound2t64 missing)
+- Test suite architecture valid; can run in CI with deps installed
+- **Exit code:** 0 (test framework handled gracefully)
+
+**Conclusion:** Data/schema layer GREEN. Build pipeline clean. Visual tests deferred due to headless browser env.
+

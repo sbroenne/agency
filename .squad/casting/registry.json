@@ -42,6 +42,12 @@
       "universe": "Star Wars",
       "status": "active"
     },
+    "lando": {
+      "created_at": "2026-03-19T06:21:52.064Z",
+      "persistent_name": "Lando",
+      "universe": "Star Wars",
+      "status": "active"
+    },
     "scribe": {
       "created_at": "2026-03-16T18:01:28.004Z",
       "persistent_name": "Scribe",

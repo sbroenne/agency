@@ -64,3 +64,4 @@ When triaging, the Lead should ask:
 | discovery, site experience | Poe | — |
 | visual design system, docs-style UI alignment | Padme | Poe |
 | UX testing, Playwright visual review | Wedge | Poe |
+| marketing messaging, SEO metadata, headline strategy | Lando | Mon Mothma |

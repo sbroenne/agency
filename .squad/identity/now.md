@@ -1,12 +1,12 @@
-updated_at: 2026-03-18T17:02:47.679Z
-focus_area: Lockout-safe visual revision + UX re-review
+updated_at: 2026-03-19T06:21:52.064Z
+focus_area: Headline and SEO positioning
 active_issues:
-  - Docs-style visual revision owned by Padme after Wedge rejection
-  - Playwright-backed re-review lane for the next local preview pass
+  - Add dedicated marketing and SEO ownership for landing-page messaging
+  - Rework the hero headline after Wedge rejected the latest copy pass
 ---
 
 # What We're Focused On
 
-**Primary:** Delivering a lockout-safe landing page visual revision that actually matches the Bradygaster Squad docs family, then re-running Wedge's Playwright-backed acceptance review.
+**Primary:** Tightening the `agency` story so the landing page headline is catchy, truthful, and easier to discover.
 
 **Secondary:** The Astro/Tailwind stack alignment and local preview mandate stay in force for every major UX change before publication.

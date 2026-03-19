@@ -38,3 +38,11 @@ Reject with specific changes: exact accent to promote, accents to remove, surfac
 - **Using stale internal decisions as the sole reference** — live docs may have moved on.
 - **Calling a page “aligned” because one color token matches** — the overall tone, spacing, and CTA hierarchy matter just as much.
 - **Blocking on browser launch failure** — when Playwright can't open a browser (e.g. missing `libnspr4`/`libnss3` on the host), fall back to source + `dist/` inspection for Tailwind/Astro sites. Compiled class names are direct proxies for computed styles; a class audit gives equivalent signal for palette, radius, backdrop-filter, and text content checks. Always document the browser failure and note the fix (`sudo apt-get install libnspr4 libnss3 libasound2t64`).
+
+## Structural Test Fallback Pattern
+When Playwright browser launch is blocked, use `filter-ui.test.mjs` (or equivalent `node:test` files that read `dist/index.html`) as a structural proxy. These tests:
+- Verify DOM structure, ARIA attributes, and data-attributes in the **compiled dist output** (catches minification/class-stripping regressions that source review misses)
+- Run in milliseconds with no browser dependency: `node --test tests/filter-ui.test.mjs`
+- Are reliable for: IA hierarchy order, filter chip presence/default state, hidden-by-default patterns, count rendering, data-attribute presence
+
+Not reliable for: computed hover states, focus ring colors, JS-driven DOM mutations after user interaction — those still require a live browser.

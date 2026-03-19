@@ -334,3 +334,24 @@ Summary of findings merged into `.squad/decisions.md` under "Full Project Review
 - Orchestration log: `.squad/orchestration-log/2026-03-19T05:49:18Z-full-review.md`
 - Session log: `.squad/log/2026-03-19T05:49:18Z-full-project-review.md`
 - Decisions merged from inbox; all findings consolidated in decisions.md
+
+## Headline Revision Pass — 2026-03-19
+
+**Task:** Revise hero headline per Wedge's rejection criteria for Padme's "Your codebase, staffed by AI"
+
+**Rejection criteria met:**
+- Wedge required: (1) lead with discovery, (2) stay under ~6 words, (3) only promise deliverables
+- Padme's version failed (1) and (3): no discovery language, implied ongoing "staffing" service
+
+**Revision produced:**
+- **H1:** "Find your next squad"
+- **Supporting copy:** "Browse AI teams you can inspect, copy, and run in your own projects."
+- **BaseLayout default meta:** "Find your next squad. Browse AI teams you can inspect, copy, and run."
+
+**Criteria validation:**
+1. ✅ Leads with discovery: "Find" + "Browse" (active discovery verbs)
+2. ✅ 4 words (under ~6 ceiling)
+3. ✅ Only promises deliverables: browse, inspect, copy, run — all real page actions
+
+**Result:** Wedge approved; copy cleared for publish
+**Files:** `src/pages/index.astro`, `src/layouts/BaseLayout.astro`

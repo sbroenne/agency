@@ -38,3 +38,45 @@ Visual acceptance audit completed. Key findings:
 All findings documented in `.squad/decisions.md` section "Full Project Review — 2026-03-19".
 
 **Related:** Review consolidated in orchestration log and session log files.
+- 2026-03-19 (re-review): All primary blockers from last review are resolved. Filter UI (Tier 1 + Tier 2) is now fully implemented and passes all 15 structural tests (filter-ui.test.mjs). Registry tests 10/10. Visual acceptance 6/6 via source+dist audit (browser still unavailable — libnspr4/libnss3 still not installed). Verdict: **APPROVED** for launch.
+- 2026-03-19 (re-review): Remaining non-blocking gaps: (1) OG/social meta tags absent from BaseLayout — post-launch polish item. (2) Favicon absent. (3) Card dual-action affordance (click=modal, "View →"=external) has no tooltip/indicator — cosmetic, not blocking at 1-squad scale. (4) Only 1 squad in registry — data issue, not code.
+- 2026-03-19 (re-review): filter-ui.test.mjs is a reliable, fast structural proxy for Playwright when browser launch is blocked. It tests against compiled dist output, catching minification/class-stripping regressions that source-only review misses.
+
+## Learnings
+
+- 2026-07-14 (copy review): Padme landed brand/copy changes. "agency" replaces "Awesome Squads" in badge and title. H1 changed from "Community-contributed squads for GitHub Copilot" → "AI teams that work inside your codebase". Subhead and meta description also updated with specific action verbs. Changes approved.
+- 2026-07-14: Copy review pattern — check BaseLayout defaults even when index.astro overrides them. Stale fallback strings are a maintenance hazard for future pages that don't override title/description.
+- 2026-07-14: Good headline test: does it answer "what do I get?" (value) rather than "what is this?" (description)? "AI teams that work inside your codebase" passes; "Community-contributed squads for GitHub Copilot" fails.
+
+## Headline Approval — 2026-03-19
+
+**Task:** Review Mon Mothma's revised hero headline per prior rejection of Padme's version
+
+**Copy reviewed:**
+- **H1:** "Find your next squad"
+- **Supporting copy:** "Browse AI teams you can inspect, copy, and run in your own projects."
+- **BaseLayout default meta:** "Find your next squad. Browse AI teams you can inspect, copy, and run."
+
+**Against prior rejection criteria:**
+
+1. ✅ **Lead with discovery language**
+   - "Find" opens the H1; "Browse" opens the subhead
+   - Both are active discovery verbs
+   - Copy principle satisfied: no installation language
+
+2. ✅ **Stay under about 6 words**
+   - H1 is 4 words
+   - Tight, scannable, nothing wasted
+
+3. ✅ **Only promise what the page actually delivers**
+   - Users land and literally browse squads
+   - Inspect squad files ✅, copy them ✅, run them ✅
+   - Every verb in subhead maps to real action
+
+**Additional notes:**
+- BaseLayout default description now in sync with hero framing
+- Future pages that don't override will inherit consistent discovery-first copy (improvement over stale fallback)
+- Page-level description override in `index.astro` also acceptable — leads with discovery, no false promises
+
+**Verdict:** ✅ APPROVED  
+**Action:** Cleared for publish — no residual issues
