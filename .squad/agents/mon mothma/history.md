@@ -77,3 +77,43 @@ Led marketplace readiness evaluation. Recommended Option 1 (terminology shift) a
 **Merged to:** decisions.md (2026-03-19T09:57:18Z)
 
 ---
+
+---
+
+## 2026-03-19: Agency Restructure Proposal (Path 2: Ambitious)
+
+**Event:** Two-path proposal for marketplace noise reduction  
+**Date:** 2026-03-19T11:21:22Z  
+**Mode:** Background collaboration with Leia  
+
+**Proposal (Path 2 — Mon Mothma's Structural Reshape):**
+
+Move canonical squad manifests from `squads/` to root level; retire the `squads/` directory layer.
+
+**Result:**
+- Eliminates symlink indirection; single source of truth
+- Cleaner root namespace (one entry per squad, not doubled)
+- Test fixtures isolated in `.squad/test-fixtures/` (hidden from marketplace)
+- No external API change (registry output and manifest format identical)
+
+**Changes Required:**
+- `registry.mjs`: Update scanning logic (root instead of `squads/`)
+- Moved manifests: Update schema refs
+- Test fixtures: Relocate to `.squad/test-fixtures/test-squad/`
+- Validation: Re-run `npm run validate && npm run build && npm test`
+
+**Why This Path:**
+- Eliminates conceptual confusion (symlink vs. canonical)
+- Aligns with "discovery-first" positioning
+- Simpler contributor mental model
+- Removes one directory layer (reduces conceptual debt)
+
+**Status:** Proposed; awaiting team decision.
+
+**Risk Assessment:** Medium (structural change requiring full validation). Low blocker risk if build/validation re-run carefully.
+
+**Cross-team note:** Path 1 (Leia) proposes conservative consolidation with minimal friction. Team to choose based on priorities.
+
+**Team Memory:** Logged to `.squad/decisions/inbox/mon-mothma-agency-reshape.md` → merged to decisions.md
+
+---

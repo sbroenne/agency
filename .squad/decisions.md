@@ -2511,3 +2511,126 @@ Squad CLI marketplace browse uses GitHub API to list all root directories. The n
 
 **Assessment document:** `.squad/decisions/inbox/leia-marketplace-noise.md`  
 **Prioritization document:** `.squad/decisions/inbox/mon-mothma-marketplace-noise-priority.md`
+
+---
+
+# Decision: Agency Restructure Proposals — Two Paths Forward (Leia + Mon Mothma)
+
+**Date:** 2026-03-19  
+**Authors:** Leia (GitHub Integrator), Mon Mothma (Leadership & Analysis)  
+**Status:** Proposed — Two distinct paths for team consideration
+
+## Context
+
+User directive (2026-03-19T11:00:31Z): Cannot change `squad` itself; any solution must remain on the `agency` side.
+
+Current marketplace browse shows 12 root-level directories; only `squads/` (+ aliases `agency/`, `scout/`) are marketplace-relevant.
+
+## Path 1: Leia's Agency-Only Cleanup (Conservative)
+
+**Option:** Consolidate `scripts/`, `tests/`, `schema/`, and `test/` into a single `tooling/` directory.
+
+### Result
+- Reduces visible directories from 12 to 8
+- Marketplace browse becomes: `squads/`, `src/`, `dist/`, `public/`, `tooling/`, `agency/`, `scout/`
+- Unavoidable noise remains: `src/`, `dist/`, `public/` (inherent to hosting site code in root)
+
+### Effort
+- 1.5–2 hours migration
+- Changes: `package.json` script paths (4 updates), `registry.mjs` path constants (3 updates)
+- No impact on local dev or CI/CD workflows
+- Fully reversible
+
+### Why
+- Minimal friction
+- Meaningful noise reduction without breaking existing patterns
+- Keeps site discovery intact
+- Single-focused change (consolidation only)
+
+### Risks
+- Low — only path changes affected; no architectural changes
+
+### Recommendation from Leia
+**Preferred option:** Best balance of effort and noise reduction.
+
+---
+
+## Path 2: Mon Mothma's Structural Reshape (Ambitious)
+
+**Option:** Move canonical squad manifests from `squads/` to root level; retire the `squads/` directory layer.
+
+### Before
+```
+agency/squad.json → ../squads/agency/squad.json  (symlink)
+squads/agency/squad.json  (canonical)
+squads/scout/squad.json   (canonical)
+squads/test/squad.json    (test fixture)
+```
+
+### After
+```
+agency/squad.json  (canonical, discoverable)
+scout/squad.json   (canonical, discoverable)
+.squad/test-fixtures/test-squad/squad.json  (test fixture, hidden)
+squads/  (deleted)
+```
+
+### Result
+- Eliminates symlink indirection; single source of truth
+- Cleaner root namespace (one entry per squad, not doubled)
+- Test fixtures isolated in `.squad/` (invisible to marketplace scanners)
+- No external API change (registry output and squad.json format identical)
+
+### Effort
+- 1.5–2 hours migration (same as Path 1)
+- Changes: `registry.mjs` scanning logic, schema refs in moved manifests, test fixture relocation
+- Requires re-validation: `npm run validate && npm run build && npm test`
+
+### Why
+- Eliminates conceptual confusion (symlink vs. canonical)
+- Aligns with "discovery-first" positioning
+- Simpler mental model for contributors
+- Removes one directory layer
+
+### Risks
+- Medium — Structural change requires full validation
+- If registry loader isn't updated properly, build fails
+- Test suite must be re-run to confirm symlink-discovery logic still works
+
+### Recommendation from Mon Mothma
+**Implement next sprint:** Low blocker risk if build/validation re-run. External impact minimal (squad manifest format unchanged).
+
+---
+
+## Comparison
+
+| Aspect | Path 1 (Tooling) | Path 2 (Restructure) |
+|--------|------------------|---------------------|
+| **Noise reduction** | 12→8 dirs | Approximately same (8-9 dirs, but different shape) |
+| **Friction** | Minimal (paths only) | Minimal (structural but localized) |
+| **Mental model** | Still dual-layer (`squads/` + root) | Single layer (root canonical) |
+| **Reversibility** | Very easy | Requires re-validation; moderate effort |
+| **External impact** | None (no API change) | None (registry output identical) |
+| **Team alignment** | Incremental cleanup | Structural clarity |
+| **Risk** | Low | Medium |
+| **Effort** | 1.5–2 hrs | 1.5–2 hrs + validation |
+
+---
+
+## Decision Status
+
+**Neither path approved yet.** Team to decide which aligns with current priorities:
+- **Path 1:** Better for quick wins and minimal disruption
+- **Path 2:** Better for long-term clarity and reducing conceptual debt
+
+Both are agency-only (respecting user directive). Both have similar implementation effort. The choice depends on whether the team prioritizes quick noise reduction or structural clarity.
+
+---
+
+## References
+
+- **Path 1 (Leia) full analysis:** `.squad/decisions/inbox/leia-agency-only-options.md`
+- **Path 2 (Mon Mothma) full proposal:** `.squad/decisions/inbox/mon-mothma-agency-reshape.md`
+- **User directive:** `.squad/decisions/inbox/copilot-directive-2026-03-19T11-00-31Z.md`
+- **Orchestration logs:** `.squad/orchestration-log/2026-03-19T11:21:22Z-{leia,mon-mothma}.md`
+- **Session log:** `.squad/log/2026-03-19T11:21:22Z-agency-reshape-proposal.md`

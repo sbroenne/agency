@@ -113,3 +113,36 @@ Conducted Squad plugin marketplace inspection and eligibility review. Confirmed 
 **Merged to:** decisions.md (2026-03-19T09:57:18Z)
 
 ---
+
+---
+
+## 2026-03-19: Agency Restructure Analysis (Path 1: Conservative)
+
+**Event:** Two-path proposal for marketplace noise reduction  
+**Date:** 2026-03-19T11:21:22Z  
+**Mode:** Background collaboration with Mon Mothma  
+
+**Proposal (Path 1 — Leia's Conservative Cleanup):**
+
+Consolidate `scripts/`, `tests/`, `schema/`, and `test/` into a single `tooling/` directory.
+
+**Result:**
+- Reduces visible marketplace directories: 12 → 8
+- Noise reduction: Meaningful but unavoidable remainder (src/, dist/, public/)
+- Effort: 1.5–2 hours (package.json + registry.mjs path updates)
+- Friction: Minimal — no impact on local dev or CI/CD
+
+**Why This Path:**
+- Incremental improvement, low risk
+- Single-focused change (consolidation only)
+- Fully reversible
+- Keeps site discovery and build intact
+- Best balance of effort and benefit
+
+**Status:** Proposed; awaiting team decision.
+
+**Cross-team note:** Path 2 (Mon Mothma) proposes larger restructure with structural benefits. Team to choose based on priorities (quick wins vs. long-term clarity).
+
+**Team Memory:** Logged to `.squad/decisions/inbox/leia-agency-only-options.md` → merged to decisions.md
+
+---
