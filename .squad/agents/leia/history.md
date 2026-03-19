@@ -146,3 +146,21 @@ Consolidate `scripts/`, `tests/`, `schema/`, and `test/` into a single `tooling/
 **Team Memory:** Logged to `.squad/decisions/inbox/leia-agency-only-options.md` → merged to decisions.md
 
 ---
+
+## 2026-03-19: Marketplace Cleanup Consolidation (PR #1)
+
+**Event:** Executed approved marketplace cleanup consolidation  
+**Date:** 2026-03-19T12:04:36Z
+
+**Work:** Implemented conservative consolidation (Path 1):
+- Consolidated `scripts/`, `tests/`, `schema/`, and `test/` into `tooling/`
+- Updated `package.json` script paths
+- Updated `registry.mjs` module paths
+- Verified no impact on CI/CD or local dev workflows
+
+**PR:** #1 `chore: marketplace cleanup consolidation`  
+**Commit:** 5acbabe64bd6b409e2ae4155d155b784591ca6bc  
+**Status:** Merged and closed  
+**Result:** Marketplace noise reduced; root directories now 8 visible (down from 12)
+
+---
