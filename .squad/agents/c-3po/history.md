@@ -95,3 +95,21 @@ All findings merged into `.squad/decisions.md` section "Full Project Review — 
 ## 2026-03-19: Marketplace Implementation
 
 Implemented root-level squad discovery aliases. Added symlinks from `agency/squad.json` and `scout/squad.json` to canonical manifests under `squads/`. Updated marketplace guidance in README, fixed registry tests, and validated all CI/CD checks pass. Repository now marketplace-ready for Squad plugin discovery.
+
+---
+
+## Session: 2026-03-19 Symlink Compatibility Check (Background)
+
+**Outcome:** Verified symlink compatibility for marketplace infrastructure.
+
+**Findings:**
+- Root-level symlinks resolve transparently via Node.js fs.readFileSync()
+- GitHub API treats symlinked files as regular files
+- Registry tests validate fs.realpathSync() resolution
+- All 11 tests pass; no symlink-related failures
+- Risk: Low (Unix/macOS); Medium on Windows (admin required)
+
+**Team Decision:** Symlink aliases approved as production-ready pattern.
+
+**Merged to:** decisions.md (2026-03-19T08:04:56Z)
+

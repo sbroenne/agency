@@ -76,3 +76,20 @@ All findings merged into `.squad/decisions.md` section "Full Project Review — 
 ## 2026-03-19: Marketplace Inspection
 
 Conducted Squad plugin marketplace inspection and eligibility review. Confirmed Agency can be registered as marketplace immediately with no additional setup. Documented current state and recommended Phase 1 structure cleanup (optional enhancement). Result: Agency marketplace-ready for Squad ecosystem integration.
+
+---
+
+## Session: 2026-03-19 Marketplace UX Verification (Background)
+
+**Outcome:** Verified marketplace UX with root-level aliases.
+
+**Findings:**
+- Squad CLI browse works with committed root directories
+- Both agency/ and scout/ appear in marketplace listings
+- Symlinked squad.json files resolve transparently
+- Manual workflow: browse → view → import (install command future enhancement)
+
+**Team Decision:** Root-level marketplace aliases approved for production.
+
+**Merged to:** decisions.md (2026-03-19T08:04:56Z)
+

@@ -2386,3 +2386,58 @@ squad upstream add https://github.com/sbroenne/agency.git --name agency
 ### For Documentation
 
 If publishing guidance, use this URL as the canonical reference.
+
+---
+
+# Decision: Marketplace Aliases (Leia + C-3PO)
+
+**Date:** 2026-03-19  
+**Authors:** Leia, C-3PO  
+**Status:** Verified & Approved
+
+## Question
+
+Are root-level alias directories (agency/, scout/) with symlinked squad.json files compatible with Squad CLI marketplace discovery and file reads?
+
+## Answer
+
+**YES.** Both browse and file-read operations work correctly.
+
+## Evidence
+
+### Leia: Marketplace Browse UX ✅
+
+Squad CLI browse command (`squad plugin marketplace browse <name>`) calls GitHub API to list root directories. After committing `agency/` and `scout/`:
+- Both appear in directory listings
+- Users can browse and inspect marketplace entries
+- Symlinks inside directories don't affect API response
+
+**Current UX:** browse → view → import (manual workflow)
+
+### C-3PO: Symlink Compatibility ✅
+
+File-read operations with symlinked squad.json:
+- Node.js `fs.readFileSync()` transparently follows symlinks
+- GitHub API treats symlinked files as regular files
+- Registry tests validate symlink resolution
+- All 11 tests pass with symlinks in place
+
+**Risk:** Low (Node.js + GitHub handle transparently); Medium on Windows (admin required)
+
+## Rationale
+
+Root-level symlink aliases reduce code duplication while maintaining:
+- **Discoverability** — Browse shows marketplace entries
+- **Compatibility** — File reads work without special handling
+- **Testing** — Validated in registry suite
+- **DX** — Canonical sources reduce maintenance
+
+## Decision
+
+**APPROVED** — Root-level marketplace aliases using symlinked squad.json are production-ready.
+
+### Implementation
+
+- `agency/squad.json` → symlink to `../squads/agency/squad.json`
+- `scout/squad.json` → symlink to `../squads/scout/squad.json`
+- No special handling required; document Windows limitation if needed
