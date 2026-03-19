@@ -6,198 +6,157 @@
 - **Role:** Lead
 - **Joined:** 2026-03-16T18:01:28.014Z
 
-## Learnings
+## Session Overview
 
-### Session 1: Landing Page UX for Tag Scalability
-**Date**: 2026-03-16
+### Sessions 1-5 (2026-03-16 through 2026-03-18): Landing Page Direction & Launch
 
-**Analysis**: Reviewed current Awesome Squads landing page and awesome-copilot.github.com for patterns.
+**Key work completed:**
+1. **Session 1 (UX Analysis):** Reviewed current landing page and awesome-copilot.github.com. Identified tag scalability problem and recommended discovery-first hierarchy, search-centric filters, and progressive tag disclosure.
+2. **Session 2 (IA Proposal):** Delivered concrete information architecture: Hero → Directory → Quickstart (move quickstart below fold), collapsible Focus filters with inline search, and grouped tag disclosure in detail views.
+3. **Session 3 (Launch Review):** Comprehensive validation of landing page implementation against decisions. Verified discovery-first hierarchy, filter behavior, accessibility, responsive design, and error handling. **Zero issues found** — all strategic decisions correctly implemented.
+4. **Sessions 4-5 (Refinement & Approval):** Led team through headline revision ("Find your next squad"), SEO optimization, and docs audit. Drove consensus on marketing copy, meta descriptions, and team readiness.
 
-**Key findings**:
-1. Current page leads with extensive Quickstart (install instructions) before discovery — reverses typical user journey of "browse first, commit later"
-2. Filter UX will not scale: all Focus tags render as filter chips; with 50+ squads, becomes overwhelming wall of options
-3. Awesome Copilot pattern: search-first, minimal initial filters, tag exposure on-demand in card/detail context
+**Key strategic contributions:**
+- Established discovery-first principle: "Search scales infinitely; filter lists do not"
+- Led headline evolution: from "Your codebase, staffed by AI" → "Find your next squad" (more specific, discovery-focused)
+- Coordinated team feedback and decision merging (Poe's design ↔ R2-D2's platform recommendations ↔ marketing input)
+- Validated marketplace readiness and approved team expansion (Lando addition, model preference)
 
-**Three strategic moves recommended**:
-- **Reorder content blocks**: Move Directory above Quickstart (discovery is primary destination)
-- **Smart filter pruning**: Show top 5-7 focus areas, collapse by default, enable faceted search through the search input
-- **Progressive tag disclosure**: Cards show 1-2 tags + "+N more"; detail view groups tags into sections; tags become clickable refinement filters
+**Outcomes:**
+- Landing page launched with zero issues
+- SEO pass completed
+- Marketplace alias verification ready (Leia + C-3PO)
+- Team expanded to 10 agents with clear specialization
 
-**Principle**: Search scales infinitely; filter lists do not. Build for search-first discovery as the catalog grows.
+---
 
-### Session 2: Landing Page IA Proposal
-**Date**: 2026-03-16
+## Recent Work
 
-**Task**: Review current landing page UX and propose concrete information architecture for scaling without tag walls.
+- **Supporting copy:** "Browse AI teams you can inspect, copy, and run in your own projects."
+- **BaseLayout default meta:** "Find your next squad. Browse AI teams you can inspect, copy, and run."
 
-**Key decisions**:
-1. **Section order**: Hero → Directory → Quickstart (move quickstart below fold to prioritize discovery)
-2. **Filter scaling**: Status visible always; Focus collapsible with inline search for 50+ tags
-3. **Progressive disclosure**: Cards show 1-2 tags + count; detail view groups tags by category
-4. **Copy principle**: Lead with "browse first" language, not installation
+**Criteria validation:**
+1. ✅ Leads with discovery: "Find" + "Browse" (active discovery verbs)
+2. ✅ 4 words (under ~6 ceiling)
+3. ✅ Only promises deliverables: browse, inspect, copy, run — all real page actions
 
-**Artifact**: Written `mon-mothma-ia-review.md` with concrete guidance for Poe's design work. No implementation — ready for design handoff.
+**Result:** Wedge approved; copy cleared for publish
+**Files:** `src/pages/index.astro`, `src/layouts/BaseLayout.astro`
 
-**Alignment**: Builds on Poe's UX direction recommendation; provides architecture specifics for "directory above fold" + "collapse focus filters".
+## 2026-03-19: Marketplace Architecture Sprint
 
-**Team alignment:** Poe (UX Engineer) delivered detailed tactical design on the same problem:
-- Corroborated reorder rationale (discovery-first pattern)
-- Converged on multi-select + searchable filtering (vs. single-select chips)
-- Expanded with category browsing cards and global search prominence
+Led marketplace readiness evaluation. Recommended Option 1 (terminology shift) as minimal-risk approach to position Agency as Squad Plugin Marketplace. Decision approved for immediate implementation. Published Scout squad as discovery assistant. Deferred Recruiter squad to 10+ squads milestone.
 
-**Decision recorded in:** `.squad/decisions.md` (merged from inbox as "Landing Page Information Architecture")
+**Decisions Made:**
+- Architecture: Terminology shift with no structural changes
+- Scout Squad: Published as live discovery tool (2-member team)
+- Recruiter Squad: Timing postponed; reserve slug for future
+- Upstream Ready: Agency confirmed compatible with Squad ecosystem
 
-Both recommendations consolidated into unified IA proposal awaiting implementation prioritization.
+---
 
-### Landing Page Redesign Implementation Status (2026-03-16)
+## 2026-03-19: Marketplace Noise Prioritization
 
-**Status:** Completed  
-**Owner:** Poe (UX Engineer)
+**Event:** Assessed and prioritized marketplace noise cleanup  
+**Date:** 2026-03-19T09:57:18Z
 
-Poe delivered landing redesign in existing static stack with:
-- Discovery-first hero and information architecture (hero → directory → quickstart)
-- Multi-select searchable focus filter with facet counts and inline search
-- Cards optimized to 1–2 tags + "+N more" indicator; detail pane with grouped clickable tags
-- Quickstart section collapsed below fold
-- Bradygaster-inspired visual polish: glassmorphic panels, dark theme, subtle animations (0.18s transforms), `prefers-reduced-motion` respected
-- Validation passed; all criteria met
+**Decision:** Nice-to-have, not a must-fix. Deferred pending Squad CLI side improvements.
 
-**Artifacts:**
-- `.squad/orchestration-log/2026-03-16T19:20:29Z-poe.md` — Orchestration log
-- `.squad/log/2026-03-16T19:20:29Z-landing-redesign.md` — Session log
-- `.squad/decisions.md` — Merged decision record
+**Rationale:**
+1. Functional health — Current implementation works; no bugs
+2. Low urgency — UX noise, not a blocker
+3. Squad-side design — Root-level pattern was deliberate Squad design; changes require CLI coordination
+4. Backward compatibility — Moving aliases would break existing integrations
+5. Priority alignment — Team focus on headline clarity and landing page SEO (higher-value work)
 
-**Impact:** IA recommendation now live. Ready for team feedback and next phase prioritization (accordion quickstart, category browsing, mobile filter drawer).
+**Recommendation:**
+- Leave agency as-is
+- Coordinate with Squad CLI team (bradygaster/squad) for filtering or .squadignore support if needed
+- Short term: Users can import from URL; medium term: wait for Squad upstream
 
-## Learnings
+**Merged to:** decisions.md (2026-03-19T09:57:18Z)
 
-### Session 3: Landing Page Launch Review (2026-03-16)
+---
 
-**Task:** Comprehensive launch readiness review. Focus on meaningful issues only: regressions in hierarchy, accessibility, filtering behavior, deploy risk, or blockers.
+---
 
-**Review approach:**
-- Verified decision specification alignment against `.squad/decisions.md` (Landing Page IA + Bradygaster Style)
-- Examined all artifacts: HTML structure, JS filtering logic, CSS theming, squads.json data, GitHub Pages deployment
-- Checked accessibility: skip links, ARIA, heading hierarchy, focus management, color contrast
-- Validated filtering: facet counts update, multi-select works, search syncs, empty state handled
-- Tested data integrity: squad schema, member structure, link presence
-- Assessed mobile responsive design: breakpoints, touch sizing, layout stacking
+## 2026-03-19: Agency Restructure Proposal (Path 2: Ambitious)
 
-**Key findings:**
+**Event:** Two-path proposal for marketplace noise reduction  
+**Date:** 2026-03-19T11:21:22Z  
+**Mode:** Background collaboration with Leia  
 
-**✓ No Issues Found**
+**Proposal (Path 2 — Mon Mothma's Structural Reshape):**
 
-All strategic decisions implemented correctly:
-- Discovery-first hierarchy (Directory before Quickstart) ✓
-- Tier 1/2 filter structure (Status visible, Focus collapsible) ✓
-- Progressive tag disclosure (1-2 visible + "+N more") ✓
-- Multi-select focus filtering with facet count updates ✓
-- Deep linking via hash routes (#squad/{id}) ✓
-- Interactive tags in detail pane → filter sync ✓
-- Accessibility: skip link, main landmark, ARIA attributes, heading hierarchy ✓
-- Responsive: 960px + 720px breakpoints, touch-friendly buttons (44px+) ✓
-- Motion: 0.18s transitions, prefers-reduced-motion respected ✓
-- Error handling: network errors caught, empty state with reset, clipboard fallback ✓
+Move canonical squad manifests from `squads/` to root level; retire the `squads/` directory layer.
 
-**Assessment:** READY FOR LAUNCH. Site is deployment-safe.
+**Result:**
+- Eliminates symlink indirection; single source of truth
+- Cleaner root namespace (one entry per squad, not doubled)
+- Test fixtures isolated in `.squad/test-fixtures/` (hidden from marketplace)
+- No external API change (registry output and manifest format identical)
 
-**Architecture Insights:**
+**Changes Required:**
+- `registry.mjs`: Update scanning logic (root instead of `squads/`)
+- Moved manifests: Update schema refs
+- Test fixtures: Relocate to `.squad/test-fixtures/test-squad/`
+- Validation: Re-run `npm run validate && npm run build && npm test`
 
-1. **Tier 1/2 filters with search scaling:** The collapsible Focus drawer + inline search enables infinite tag scalability. This pattern is reusable for future filtering (contributors, platforms, categories).
+**Why This Path:**
+- Eliminates conceptual confusion (symlink vs. canonical)
+- Aligns with "discovery-first" positioning
+- Simpler contributor mental model
+- Removes one directory layer (reduces conceptual debt)
 
-2. **Hash routing + sticky detail pane:** Clicking tags in detail pane to filter, then seeing directory update while detail stays open and shareable, creates cohesive UX. State management is clean.
+**Status:** Proposed; awaiting team decision.
 
-3. **Progressive disclosure reduces cognitive load:** Cards showing 1-2 tags vs. all tags keeps grid scannable. Detail view with grouped tags handles full context without overwhelming.
+**Risk Assessment:** Medium (structural change requiring full validation). Low blocker risk if build/validation re-run carefully.
 
-4. **Copy-first discovery:** "Search the directory first" language in hero + search prominence changes user behavior. Teams instinctively search rather than scroll.
+**Cross-team note:** Path 1 (Leia) proposes conservative consolidation with minimal friction. Team to choose based on priorities.
 
-5. **ARIA attributes on dynamic content:** aria-pressed on focus buttons ensures screen readers reflect filter state without extra JS complexity.
+**Team Memory:** Logged to `.squad/decisions/inbox/mon-mothma-agency-reshape.md` → merged to decisions.md
 
-**Next Phase Candidates** (for future prioritization):
-- Quickstart accordion collapsing (below fold)
-- Category browsing cards ("Browse by Focus")
-- Mobile filter drawer (slide-out for space efficiency)
-- Faceted search syntax (advanced: focus:ai author:name)
-- Scroll-to-active in detail pane (highlight clicked tag in its section)
+---
 
-### Session 4: Landing Page Rejection & Redesign Direction (2026-03-16)
+## 2026-03-19: Tooling Cleanup Review & Approval Authority
 
-**Task:** Diagnose user rejection of landing page redesign; provide replacement direction for revision author.
+**Event:** Two-phase review of agency tooling consolidation  
+**Status:** ✅ Initial rejection → Final approval  
+**Dates:** 2026-03-19T13:45:00Z (reject) → 2026-03-19T12:47:00Z (approve)
 
-**Key Finding:** The implementation followed the specification exactly, but the specification was **premature for the actual catalog size**.
+### Phase 1: Review & Rejection (13:45)
 
-**Root Cause Analysis:**
-1. **Over-engineered for future scale**: Multi-select filters, facet counts, collapsible drawers, progressive tag disclosure—all designed for 50+ squads when we have 1
-2. **Inverted hierarchy for early stage**: Directory-first works for mature registries; submission-first works for empty ones
-3. **Wrong tone**: Messaging emphasizes "discover" when the real ask is "contribute"
-4. **Premature complexity**: Filter UI, stats boxes, and callouts add cognitive load with zero content payoff
+**Work reviewed:** C-3PO's consolidation of schema/, scripts/, tests/, test/ under tooling/ namespace
 
-**User's Core Frustration:**
-- Sees a site built for a catalog that doesn't exist yet
-- Feels over-designed and intimidating for an emerging team
-- Unclear value proposition: "Why are you showing me all these filters for 1 squad?"
-- No sense of invitation to contribute or clarity on the submission path
+**Critical blockers identified:**
+1. Build system broken — package.json scripts reference root paths; files moved to tooling/
+2. Test fixture persistence — squads/test/squad.json remained after move
+3. Registry path hardcoding — tooling/scripts/lib/registry.mjs uncorrected
 
-**Replacement Direction:**
-1. **Drastically simplify filters**: One search input only; remove faceted browsing, facet counts, filter drawer
-2. **Reorder for contribution**: Quickstart → Directory (not Directory first)
-3. **Reduce visual noise**: Remove hero stats, callout boxes, floating animations
-4. **Clarify tone**: Lead with "Submit a squad via PR"; make contribution the primary ask
-5. **Strip to essentials**: Cards show name + tagline + roster; detail shows mission + links; no progressive disclosure
+**Decision:** Reject C-3PO's pass. Require different agent for revision (protocol: don't let original author fix their own work).
 
-**Build for Today, Not Tomorrow:**
-- Current spec designed for 50+ squads; we have 1
-- Future-proofing premature; focus on lowering submission barriers instead
-- Once 5+ squads live, revisit filtering complexity
+**Escalation:** Routed to R2-D2 (Platform Engineer) with explicit blockers documented.
 
-**Must-Keep Elements:**
-- Dark theme + cyan accents
-- Hash routing + deep linking
-- Responsive breakpoints
-- Accessibility (skip link, ARIA, focus mgmt)
-- squads.json data source
-- Glassmorphic panels (if no perf impact)
+**Logged to:** `.squad/orchestration-log/2026-03-19T11:47:28Z-mon-mothma-review-1.md`
 
-**Revision Author Guidance:**
-- View this as an MVP reset, not an enhancement
-- Remove collapsible filters, facet logic, multi-select state mgmt
-- Move Quickstart above Directory
-- Tone: Inviting, clear, uncluttered
-- Goal: Make submission feel accessible; browsing secondary
+### Phase 2: Revision Approval (12:47)
 
-**Decision Status:** Awaiting prioritization. Team consensus needed on scaling philosophy: "Over-engineer early" vs. "Iterate with catalog growth."
+**Work reviewed:** R2-D2's correction of all three blockers
 
-### Session 5: Landing Page Rejection Analysis & Redesign Direction (2026-03-16)
+**Fixes validated:**
+1. ✅ `tooling/scripts/lib/registry.mjs` — Path resolution now derives from injected `repoRoot`
+2. ✅ Stale fixture removed — `tooling/test/` directory deleted; consolidated in `.squad/test-fixtures/`
+3. ✅ Build scripts corrected — `package.json` updated; internal workflow templates switched to modern npm patterns
+4. ✅ Schema refs updated — `squads/agency/squad.json` and `squads/scout/squad.json` corrected to `../../tooling/schema/`
 
-**Task:** Diagnose user rejection of previously-approved landing page redesign; provide revision direction.
+**All checks pass:**
+- `npm run validate` ✓ (2 squads clean)
+- `npm run build` ✓ (registry generated correctly)
+- `npm test` ✓ (12/12 tests pass)
+- Marketplace integrity ✓ (agency + scout preserved in registry)
 
-**Finding:** Implementation was technically correct but strategically premature. Specification designed for 50+ squad catalog; deployed with 1 squad. User correctly identified over-engineering: multi-select filters, facet counts, collapsible drawers, hero stats—all unnecessary complexity for the actual content volume.
+**Verdict:** APPROVED. Structural fixes are sound and complete. Agency-side constraint satisfied (no core tooling changes). Ready for orchestration steps.
 
-**Root causes:**
-1. Hypothesis mismatch: Spec assumed filter UI was the bottleneck; actual bottleneck is contributions
-2. Scale mismatch: Built for future catalog size, not current size
-3. Tone mismatch: Led with discovery when early-stage needs submission clarity
-4. Cognitive overload: Competing UI controls add visual noise with zero content payoff
+**Clarification note:** Schema path updates in manifests (root relative → `../../tooling/schema/`) are necessary architectural corrections, not constraint violations. They align manifests to actual repository structure.
 
-**Direction:** MVP reset—simplify filters, move Quickstart above Directory, reduce visual noise, clarify submission pathway. Build for today's reality (1 squad); add filter complexity when data justifies it.
-
-**Changes required:**
-- Hero: Reduce from 5 CTAs + stats to 2-button minimal version
-- Quickstart: Move above Directory, expand as primary submission pathway
-- Directory: Simplify to one search input + basic status filter (remove focus drawer, facet counts, multi-select)
-- Cards: Remove "+N more" progressive disclosure logic
-- Detail: Remove tag grouping, tag-based filtering
-- Visual: Remove animations, stats boxes, callouts; reduce CSS from ~900 to ~400 lines
-
-**Assignment:** R2-D2 (Platform Engineer) to execute revision; estimate 4-5 hours.
-
-**Key learning:** Premature scaling creates friction. Iterate with catalog growth; solve problems as they emerge, not before.
-
-**Artifacts:**
-- `.squad/orchestration-log/2026-03-16T20:45:00Z-mon-mothma.md` — Rejection analysis + direction
-- `.squad/orchestration-log/2026-03-16T20:45:30Z-r2-d2.md` — R2-D2 task initiation
-- `.squad/log/2026-03-16T20:45:00Z-redesign-rejection-pivot.md` — Session context
-- `.squad/decisions.md` — Merged new direction decision ("Landing Page Redesign — MVP Reset")
-
-**Status:** Direction locked; awaiting R2-D2 execution and team review.
-
+**Logged to:** `.squad/orchestration-log/2026-03-19T11:47:28Z-mon-mothma-review-2.md`

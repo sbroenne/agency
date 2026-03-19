@@ -1,9 +1,9 @@
 {
-  "generatedAt": "2026-03-16T19:39:37.359Z",
+  "generatedAt": "2026-03-19T12:00:54.060Z",
   "counts": {
-    "squads": 1,
-    "members": 5,
-    "focusAreas": 4
+    "squads": 2,
+    "members": 7,
+    "focusAreas": 8
   },
   "squads": [
     {
@@ -89,6 +89,64 @@
           "ref": "main"
         },
         "manifestPath": "squads/agency/squad.json"
+      }
+    },
+    {
+      "id": "scout",
+      "slug": "scout",
+      "name": "Scout",
+      "status": "live",
+      "sourceLabel": "sbroenne/agency",
+      "location": "squads/scout",
+      "tagline": "Helps you find the right squad from the agency directory.",
+      "summary": "Scout reads the agency catalog and walks you through what each squad does, who is on it, and whether it fits your project. It narrows options fast so you spend less time browsing and more time building.",
+      "howTheyWork": "Surface the best-fit squad for any task by comparing focus areas, team composition, and status across every published manifest in the agency directory.",
+      "focus": [
+        "manifest comparison",
+        "onboarding",
+        "selection guidance",
+        "squad discovery"
+      ],
+      "links": [
+        {
+          "label": "Repository",
+          "url": "https://github.com/sbroenne/agency"
+        },
+        {
+          "label": "Homepage",
+          "url": "https://sbroenne.github.io/agency/"
+        }
+      ],
+      "members": [
+        {
+          "name": "Pathfinder",
+          "role": "Discovery Lead",
+          "expertise": [
+            "catalog search",
+            "squad matching"
+          ],
+          "github": null
+        },
+        {
+          "name": "Briggs",
+          "role": "Comparison Analyst",
+          "expertise": [
+            "fit scoring",
+            "manifest analysis"
+          ],
+          "github": null
+        }
+      ],
+      "source": {
+        "repository": "https://github.com/sbroenne/agency",
+        "directory": "squads/scout",
+        "homepage": "https://sbroenne.github.io/agency/",
+        "import": {
+          "type": "manual",
+          "path": "squads/scout/squad.json",
+          "ref": "main"
+        },
+        "manifestPath": "squads/scout/squad.json"
       }
     }
   ]

@@ -105,7 +105,26 @@
               "minLength": 1,
               "maxLength": 100
             }
-          }
+          },
+          "allOf": [
+            {
+              "if": {
+                "required": ["type"],
+                "properties": {
+                  "type": {
+                    "enum": ["upstream-sync", "fork-sync"]
+                  }
+                }
+              },
+              "then": {
+                "properties": {
+                  "path": true,
+                  "ref": true
+                },
+                "required": ["path", "ref"]
+              }
+            }
+          ]
         }
       }
     },

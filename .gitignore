@@ -1,5 +1,7 @@
 node_modules/
 .copilot/
+.astro/
+dist/
 
 # Squad runtime state
 .squad/config.json

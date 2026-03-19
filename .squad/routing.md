@@ -62,4 +62,6 @@ When triaging, the Lead should ask:
 | Pages deployment, CI/CD | R2-D2 | — |
 | squad.json validation | C-3PO | — |
 | discovery, site experience | Poe | — |
-
+| visual design system, docs-style UI alignment | Padme | Poe |
+| UX testing, Playwright visual review | Wedge | Poe |
+| marketing messaging, SEO metadata, headline strategy | Lando | Mon Mothma |
