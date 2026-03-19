@@ -737,3 +737,237 @@ The Awesome Squads Agency is **architecturally sound** and **governance-proven**
 - Document architectural decisions here
 - Keep history focused on work, decisions focused on direction
 - Archive decisions older than 30 days if file exceeds ~20KB
+
+---
+
+### Filter UI Implementation — Sprint Completion
+
+**Owner:** Padme (Visual Designer)  
+**Date:** 2026-03-19  
+**Status:** ✅ Implemented  
+
+#### Decision
+
+Implemented the two-tier filter UI system per the Landing Page IA decision:
+
+**Tier 1: Status Chips (Always Visible)**
+- Four chips: All, Live, Building, Prototype
+- Each shows facet count in parentheses
+- Single-select behavior with "All" active by default
+- Visual states: neutral default, rose active for All/Building, green active for Live
+
+**Tier 2: Focus Filters (Collapsible)**
+- Collapsed by default with "(N focus areas)" count
+- Expand button with chevron indicator and aria-expanded state
+- Inline search field for filtering focus chips when expanded
+- Top 7 focus areas visible by default, sorted by popularity
+- "Show all" expander for remaining chips
+- Multi-select behavior (AND logic)
+- "Clear filters" button appears when filters are active
+
+#### Visual Treatment
+
+All filter chips follow the docs-style visual system:
+- Bordered surfaces with `border-surface-200`
+- Rounded corners via `rounded-md` (8px)
+- Active states via `data-[active]:` selector pattern
+- Rose accent for active focus filters, green for "Live" status
+
+#### Implementation
+
+- `src/pages/index.astro` — Filter markup and computed counts
+- `src/components/SquadCard.astro` — `data-status` and `data-focus` attributes
+- `src/scripts/site.js` — Filter state management and event handlers
+- `tests/filter-ui.test.mjs` — 15 structure tests
+
+#### Test Coverage
+
+15 tests pass covering:
+- Tier 1 structure and ARIA attributes
+- Tier 2 collapse/expand states
+- Focus inline search presence
+- Squad card data attributes
+- Discovery-first hierarchy preservation
+
+#### Impact
+
+Implements the scalable filter UX from the IA decision, designed to handle 50+ squads without UX degradation.
+
+---
+
+### Documentation and Process Fixes — 2026-03-19
+
+**Owner:** Leia (Documentation Lead)  
+**Date:** 2026-03-19  
+**Status:** ✅ Implemented  
+
+#### Decision
+
+Implemented all 7 friction-point fixes identified in the repository review.
+
+#### Blockers (Critical, Now Resolved)
+
+1. **"Major UX Change" definition clarified in CONTRIBUTING.md**
+   - Specific examples: layout modifications to cards/detail views, site-wide styling changes, navigation reorganization
+   - Clarification: Squad metadata or new squad additions do NOT require visual review
+
+2. **Schema changes flagged in PR template**
+   - Added checkbox: "Schema change"
+   - Added checkbox: "Site styling or layout change (major UX change)"
+
+#### Should-Do Items (All Completed)
+
+3. **Upstream sync workflow documented in CONTRIBUTING.md**
+   - Added section with JSON configuration example
+   - Link to squad-upstream-sync.yml workflow
+
+4. **Non-squad contributions entry point added**
+   - New section: "Contribute to the site or documentation"
+   - Clear paths for bug fixes, docs updates, and site improvements
+
+5. **Visual testing expectations documented**
+   - Added "Visual testing" subsection in review expectations
+   - Command: `npm run test:visual`
+   - Purpose and validation scope explained
+
+6. **Node version requirement added to README**
+   - Added line: "Node version: 20.0.0 or later"
+   - Matches package.json engines specification
+
+7. **Bradygaster Squad docs link added to PR template**
+   - Link to github.com/bradygaster/squad-cli in "Review focus" section
+   - Provides reference for visual system compliance
+
+#### Changes
+
+- **README.md:** Added Node version requirement, upstream sync overview
+- **CONTRIBUTING.md:** Clarified UX change definition, added non-squad contribution path, documented visual testing and upstream sync
+- **.github/PULL_REQUEST_TEMPLATE.md:** Added change-type checkboxes, clarified visual review requirement, added Bradygaster docs link
+
+#### Validation
+
+- ✅ `npm run validate` — 1 squad manifest validates cleanly
+- ✅ `npm test` — All registry tests pass
+- ✅ Markdown readability — All files reviewed for tone/clarity alignment
+
+#### Impact
+
+Public launch ready. Two critical blockers removed. Contributor experience enhanced with clear, unambiguous paths for squad submission, site contribution, and visual validation.
+
+---
+
+### Test Hardening and Validation — C-3PO Review
+
+**Owner:** C-3PO (QA Engineer)  
+**Date:** 2026-03-19  
+**Status:** ✅ Implemented  
+
+#### Decision
+
+Tightened squad manifest validation in two places:
+
+1. **Schema-level import semantics:** `upstream-sync` and `fork-sync` now require both `path` and `ref`.
+2. **Registry semantic checks:** `source.repository` must be an http/https URL with owner/repo-style path segments, and repository-local paths (`source.directory`, `source.import.path`) must stay relative instead of escaping the repo root.
+
+#### Why
+
+The review found that the schema only covered structure, while the registry code still relied on undocumented assumptions. These checks keep valid manifests working, catch bad data earlier, and make registry generation safer as the catalog grows.
+
+#### Test Impact
+
+- Expanded `tests/registry.test.mjs` from 2 happy-path checks to 10 tests covering normalization and negative/edge cases
+- Added temp-repo based fixtures so validation failures can be tested without mutating the live `squads/` tree
+
+#### Validation
+
+- ✅ All 10 registry tests pass
+- ✅ Schema validation assumptions now explicit and enforced
+- ✅ Registry generation remains deterministic
+
+#### Impact
+
+Registry is now safer and more resilient to bad data. Validation assumptions are documented and tested.
+
+---
+
+### Playwright Environment Setup — Build & Preview Verification
+
+**Owner:** R2-D2 (Platform Engineer)  
+**Date:** 2026-03-19  
+**Status:** ✅ Complete  
+
+#### Decisions
+
+1. **Playwright Environment Setup**
+   - Created `scripts/setup-playwright.sh` for one-time dependency installation
+   - Added documentation in README.md and CONTRIBUTING.md
+   - First time: `bash scripts/setup-playwright.sh` (requires sudo password once)
+   - After setup: `npm run test:visual` (no further prompts)
+   - One-time cost is acceptable given team's existing visual testing discipline
+
+2. **Build & Preview Verification (Post-Review)**
+   - All platform gates passed after review-driven fixes were integrated
+   - Build pipeline verified: Registry generated, Astro built to `dist/`
+   - Build time: 1.02s (deterministic)
+   - Local preview: HTTP 200 on `/agency/`, page load successful
+   - All test suites pass (10/10 registry tests, build tests)
+
+#### Verification Summary
+
+| Item | Status |
+|------|--------|
+| Registry generation | ✅ `public/squads.json` (2.4 KB) |
+| Astro build | ✅ `dist/` (64 KB total) |
+| Build time | ✅ 1.02s deterministic |
+| Local preview | ✅ HTTP 200, valid structure |
+| Unit tests | ✅ 10/10 PASS |
+| Platform readiness | ✅ Ready for GitHub Pages |
+
+#### Impact
+
+Platform is deterministic, fully tested, and ready for publication. Visual acceptance suite remains local-only (Phase 1 scope); Playwright setup documented for contributors.
+
+---
+
+### Wedge Review: Filter UI + Full UX Re-Review
+
+**Owner:** Wedge (UX Tester)  
+**Date:** 2026-03-19  
+**Verdict:** ✅ APPROVED  
+
+#### What Was Reviewed
+
+Full UX re-review against:
+- Agreed IA (Tier 1 status chips + Tier 2 collapsible focus filter)
+- Bradygaster Squad docs-style visual system (6 acceptance criteria)
+- Structural test suite: `tests/filter-ui.test.mjs` (15 tests), `tests/registry.test.mjs` (10 tests)
+
+#### Scorecard
+
+**Filter UI — 15/15 tests PASS ✅**
+- Tier 1: All 4 status chips rendered, ARIA-labelled, counts correct, "All" active by default
+- Tier 2: Focus collapsible panel — toggle button, `aria-expanded="false"` on load, hidden content, inline search, chips with counts, clear button hidden by default, progressive disclosure (7 chips visible)
+- Cards: `data-status` and `data-focus` attributes present for JS filtering
+- Discovery-first hierarchy: browse section before resources section ✅
+
+**Visual Acceptance — 6/6 PASS ✅**
+1. ✅ White shell — `body { background: #ffffff }`, no dark chrome
+2. ✅ Rose-led hero CTA pair — `bg-squad-600` (#dd2d60) primary + neutral secondary
+3. ✅ No backdrop-blur — zero `backdrop-filter` classes anywhere
+4. ✅ No cyan accent — palette restricted to squad (rose) + surface (zinc) tokens
+5. ✅ Tight radius — `rounded-md`/`rounded-lg` on cards/chips; `rounded-xl` modal only; `rounded-full` only on 6px badge dot
+6. ✅ No explanatory meta-sentence — absent from dist
+
+**Registry — 10/10 PASS ✅**
+
+#### Residual Non-Blocking Items
+
+1. **OG/social meta tags** — Not present; add before social sharing push
+2. **Favicon** — Not present; low priority until branded assets exist
+3. **Card dual-action affordance** — No visual cue to distinguish modal vs. external link intents
+
+#### Decision
+
+**Site is approved for launch.** Filter UI is implemented and correct. Visual system is clean. All test suites pass.
+
+---
