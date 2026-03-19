@@ -39,6 +39,32 @@
   - Sub-headline refined to emphasize discovery and adaptability: "Discover squads — reusable Copilot team configurations you can inspect, copy, and adapt for your projects."
   - Meta description updated for SEO alignment
 
+## Visual Language Revision (Stale Palette Cleanup) — 2025-07-18
+
+**Task:** Fix stale visual system language per Wedge's rejection of Lando's audit
+
+**Context:** Wedge review identified two repo-facing files with stale pre-redesign palette language ("neutral dark surfaces", "navy depth", "restrained cyan"). Lando's audit had missed these. Wedge locked Lando out of revision cycle; routed to Padme per brand/copy expertise.
+
+**Changes Made:**
+
+### CONTRIBUTING.md (line 40)
+**Before:** `neutral dark surfaces, rose-led primary accents, navy depth, and restrained cyan highlights`
+**After:** `white/light-neutral shell, rose-led primary accents, calm bordered surfaces, and tighter radii`
+
+### .github/PULL_REQUEST_TEMPLATE.md (visual review checkbox)
+**Before:** `(neutral surfaces, rose primary accents, navy depth, restrained cyan)`
+**After:** `(white/light-neutral shell, rose primary accents, bordered surfaces, tighter radii)`
+
+**Validation:**
+- ✅ npm run build — pass
+- ✅ npm test — 10/10 pass
+- ✅ All stale palette terms removed (dark surfaces, navy depth, cyan)
+- ✅ Approved visual tokens (white/light-neutral, rose, bordered, tighter radii) in place
+
+**Wedge Review:** ✅ APPROVED (2026-07-14)
+
+**Outcome:** Contributors now guided toward correct visual target. Docs audit cycle complete and cleared to merge.
+
 ## Headline Revision Rejection — 2026-03-19
 
 **Task:** Wedge's review of "Your codebase, staffed by AI" headline

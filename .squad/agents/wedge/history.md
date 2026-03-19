@@ -80,3 +80,45 @@ All findings documented in `.squad/decisions.md` section "Full Project Review �
 
 **Verdict:** ✅ APPROVED  
 **Action:** Cleared for publish — no residual issues
+
+## Docs Copy Audit Review & Stale Language Detection — 2026-07-14
+
+**Task:** UX review of Lando's docs audit findings
+
+**Context:** Lando audited repo-facing docs; left no inbox entry. Stefan requested follow-up verification.
+
+**Wedge Review Findings:**
+
+**PASS items (3/5 files):**
+- ✅ README.md — consistent branding, no stale "Awesome Squads" language
+- ✅ src/layouts/BaseLayout.astro — correct meta description aligned with approved copy
+- ✅ src/pages/index.astro — H1 "Find your next squad", subhead accurate, badge correct
+
+**FAIL items (stale visual language):**
+- ❌ CONTRIBUTING.md line 40 — described stale palette: "neutral dark surfaces, navy depth, restrained cyan highlights" (rejected pre-redesign palette)
+- ❌ .github/PULL_REQUEST_TEMPLATE.md — visual checkbox described same stale palette
+
+**Impact:** Contributors would optimize for wrong visual target.
+
+**Verdict:** PARTIAL REJECT — Lando's implicit no-change conclusion rejected. Real stale copy contradicts approved visual system.
+
+**Required Changes:**
+1. CONTRIBUTING.md line 40: replace with "white/light-neutral shell, rose-led primary accents, calm bordered surfaces, and tighter radii"
+2. PULL_REQUEST_TEMPLATE.md: same replacement
+
+**Revision Author Requirement:** Lando must not author revision (per team protocol). Route to Padme or Mon Mothma.
+
+---
+
+**Follow-up: Approval of Padme's Revision — 2026-07-14**
+
+**Task:** Review Padme's corrections to stale visual language
+
+**Changes Verified:**
+- ✅ CONTRIBUTING.md: Dark palette language removed; approved visual tokens (white/light-neutral, rose, bordered, tighter radii) in place
+- ✅ PULL_REQUEST_TEMPLATE.md: Same corrections; stale language fully purged
+- ✅ Tests pass (npm run build, npm test 10/10)
+
+**Verdict:** ✅ APPROVED — Cleared to merge
+
+**Outcome:** Contributors now guided toward correct visual target. All stale palette references eliminated from repo-facing docs.

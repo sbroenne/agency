@@ -1179,3 +1179,63 @@ Full UX re-review against:
 **Site is approved for launch.** Filter UI is implemented and correct. Visual system is clean. All test suites pass.
 
 ---
+
+---
+
+### Docs Copy Audit & Visual Language Alignment Cycle
+
+**Context:** Stefan requested audit of README and repo-facing docs. Lando conducted comprehensive audit identifying stale README opening. Wedge review revealed additional stale visual system language in CONTRIBUTING.md and PULL_REQUEST_TEMPLATE.md. Revision locked to Padme per reviewer protocol. Padme updated visual language. Wedge approved final state.
+
+#### Phase 1: Lando's Copy Audit (2026-03-19)
+
+**Author:** Lando  
+**Status:** Complete  
+**Finding:** README.md opening was factual but lacked value positioning. No stale "Awesome Squads" branding detected.
+
+**Change:**
+- README.md: Added approved supporting copy tagline before description: "Browse AI teams you can inspect, copy, and run in your own projects."
+
+**Validation:** npm run validate, build, test all pass (10/10).
+
+#### Phase 2: Wedge's Partial Reject (2026-07-14)
+
+**Reviewer:** Wedge (UX Tester)  
+**Verdict:** PARTIAL REJECT  
+**Finding:** Two files contain stale visual system language from rejected pre-redesign palette:
+
+1. **CONTRIBUTING.md line 40** — Described "neutral dark surfaces, navy depth, restrained cyan highlights" (all rejected)
+2. **.github/PULL_REQUEST_TEMPLATE.md** — Visual checkbox described same stale palette
+
+**Impact:** Contributors would optimize for wrong visual target.
+
+**Revision Author Requirement:** Lando locked out. Route to Padme or Mon Mothma.
+
+#### Phase 3: Padme's Revision (2025-07-18)
+
+**Author:** Padme (Brand/Copy Specialist)  
+**Status:** Complete  
+**Changes:**
+- CONTRIBUTING.md line 40: "neutral dark surfaces, rose-led primary accents, navy depth, and restrained cyan highlights" → "white/light-neutral shell, rose-led primary accents, calm bordered surfaces, and tighter radii"
+- PULL_REQUEST_TEMPLATE.md visual checkbox: Same replacement
+
+**Validation:** npm run build, npm test (10/10) pass.
+
+#### Phase 4: Wedge's Approval (2026-07-14)
+
+**Reviewer:** Wedge (UX Tester)  
+**Verdict:** ✅ APPROVED
+
+**Verification:**
+- ✅ Dark surface language removed
+- ✅ Navy depth removed
+- ✅ Cyan removed
+- ✅ Approved visual tokens (white/light-neutral, rose, bordered, tighter radii) in place
+- ✅ All tests pass
+
+**Outcome:** Cleared to merge. Contributors now guided toward correct visual target.
+
+#### Decision
+
+The docs audit cycle successfully identified and corrected stale visual language across README, CONTRIBUTING, and PR template. The approved visual system (white/light-neutral shell, rose-led accents, bordered surfaces, tighter radii) now accurately documented in all repo-facing docs. Revision author lockout enforced. All validation gates passed.
+
+**Status:** Ready to merge.
