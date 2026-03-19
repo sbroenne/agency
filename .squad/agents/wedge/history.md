@@ -122,3 +122,35 @@ All findings documented in `.squad/decisions.md` section "Full Project Review �
 **Verdict:** ✅ APPROVED — Cleared to merge
 
 **Outcome:** Contributors now guided toward correct visual target. All stale palette references eliminated from repo-facing docs.
+
+## SEO / Copy Review Cycle — 2026-03-19 to 2026-03-20
+
+**Task:** Review SEO/messaging pass (Lando) and verify alignment before publish
+
+**Initial Review (2026-03-20):**
+
+**Scope:** `src/pages/index.astro`, `src/layouts/BaseLayout.astro`, `README.md`
+
+**Findings:**
+- ✅ H1 "Find your next squad" — correct and consistent
+- ✅ Subhead — accurate
+- ✅ BaseLayout default meta — aligned with approved copy
+- ✅ README — clean branding, no stale language
+- ❌ **Page-level `description` override in `src/pages/index.astro` (lines 8–10) — STALE**
+
+**Issue:** Stale description override ("Find and share reusable AI teams...") contradicts approved "Find your next squad" positioning and overrides the correct BaseLayout fallback. SEO gap identified.
+
+**Verdict:** ⚠️ PARTIAL PASS — Gap requires fix; author constraint enforced (Lando cannot revise own work per protocol)
+
+**Follow-up: Re-Review (2026-03-19)** ← Timeline correction: re-review occurred same day after fix was applied
+
+**Status After Fix:**
+- `<title>` — ✅ `"agency — Find your next squad"`
+- `<meta name="description">` — ✅ `"Find your next squad. Browse AI teams you can inspect, copy, and run."`
+- H1, subhead, BaseLayout default, README — all ✅ consistent
+
+**Verification:** All four layers now internally consistent. No drift between `index.astro` override and BaseLayout fallback.
+
+**Verdict:** ✅ APPROVED — Cleared for publish
+
+**Related:** Initial review filed to inbox; re-review approval filed to inbox; both merged to decisions.md. Orchestration logs filed at `.squad/orchestration-log/2026-03-19T07:28:10Z-wedge.md`

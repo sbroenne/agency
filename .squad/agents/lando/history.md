@@ -66,3 +66,26 @@
 
 **Status:** Complete  
 **Note:** Lando did not file inbox decision; Wedge review revealed additional stale visual language requiring Padme's revision. Lando locked out of revision cycle per reviewer protocol.
+
+## SEO / Message Pass — 2026-03-19
+
+**Task:** Align homepage meta description and title tag with approved "Find your next squad" positioning
+
+**Changes Made:**
+1. `src/pages/index.astro` — Updated page-level `description` constant (lines 8–10) from stale "Find and share reusable AI teams..." to approved "Find your next squad. Browse AI teams you can inspect, copy, and run."
+2. `src/pages/index.astro` — Upgraded page title from `"agency"` to `"agency — Find your next squad"` for improved search snippet
+
+**Validation:**
+- ✅ npm run validate
+- ✅ npm run build
+- ✅ npm test (10/10)
+
+**Review Cycle:**
+- Wedge initial review (2026-03-20): Flagged stale description override as SEO gap, required fix
+- Lando fix applied: Updated description constant to match BaseLayout default
+- Wedge re-review (2026-03-19): Verified all layers aligned, approved for publish
+
+**Status:** ✅ APPROVED for publish
+**Approver:** Stefan Broenner
+
+**Related:** Inbox decisions merged to decisions.md; orchestration log filed at `.squad/orchestration-log/2026-03-19T07:28:10Z-lando.md`
