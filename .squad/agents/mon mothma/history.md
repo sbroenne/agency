@@ -457,3 +457,69 @@ These are organized into **skill distributions** (library or customer-facing) us
 
 **Team Outcome:** Feature branch `feat/forge-docs-validated` (commit `ab4b126f0ddb42f82ac20c61773b5a7d28817f76`) addresses all Forge surface alignment and is PR-ready.
 
+---
+
+## 2026-03-20: Anthropic Skill Creator Investigation
+
+**Event:** Research on Anthropic's Skill Creator tool  
+**Date:** 2026-03-20T10:12:35Z  
+**Request Origin:** Stefan Broenner  
+**Status:** ✅ Complete — Merged to decisions.md
+
+### Finding
+
+Anthropic's Skill Creator is a Claude skill-authoring workflow tool. Comparison with Forge reveals architectural alignment with no conflicts:
+
+- Forge's agent skill concept matches Anthropic's Claude skill structure (SKILL.md + resources)
+- Forge's `plugin.json` adds packaging/distribution layer (non-conflicting)
+- Forge's skill types add business framing; Anthropic doesn't define this
+- Forge's registry adds discoverability; Anthropic uses GitHub repos
+
+### Decision
+
+**No changes required.** Forge's model is orthogonal to Anthropic's. Both use progressive disclosure, modular skills with metadata, and resource bundling — but Forge extends scope (distribution, registry, business framing).
+
+### Possible Future Inspiration (Non-Blocking)
+
+1. **Skill Creator workflow** (Create → Eval → Improve → Benchmark) could inspire future skill scaffolding tooling
+2. **Progressive disclosure pattern** already adopted by Forge (no change needed)
+3. **Evaluation framework** could inform future skill testing guides (out of scope for v1)
+
+### Conclusion
+
+Anthropic's Skill Creator is a reference implementation validating Forge's foundational concepts. No redesign required. The decision has been merged into the team record.
+
+**Decision Record:** `.squad/decisions.md` (2026-03-20T10:12:35Z)
+- Available as Claude.ai plugin + open-source skill in `anthropics/skills` GitHub repo
+- Provides interactive workflow: Create → Eval → Improve → Benchmark
+
+**Technical Model:**
+- Uses SKILL.md (YAML frontmatter + Markdown instructions)
+- Optional bundled resources: `scripts/`, `references/`, `assets/`
+- Progressive disclosure pattern (metadata first, full instructions on trigger, resources on demand)
+
+**Relationship to Forge:**
+- **Conceptually aligned, not contradictory** — Both systems converge on same agent skill structure
+- Anthropic focuses on workflow tooling (create/eval/improve); Forge adds packaging (`plugin.json`) + registry + distribution types
+- Forge's "agent skill" definition matches Anthropic's "Claude skill" exactly
+- Forge goes further: skill distributions (library vs. customer-facing) + versioning + plugin.json + PLUGINS.md registry
+
+**Key Insight:**
+Anthropic's Skill Creator is a **reference implementation of the authoring workflow** for the kind of modular skills Forge already defines architecturally. No redesign needed.
+
+### Implications for Forge
+
+**None.** No changes required to Forge:
+- ✅ Forge's SKILL.md + resources model already matches Anthropic's pattern
+- ✅ Forge's plugin.json adds a distribution layer Anthropic doesn't define (not a conflict)
+- ✅ Forge's library vs. customer-facing distinction is business-level framing, not architectural
+
+**Future inspiration points (non-blocking):**
+1. Skill Creator's create/eval/improve/benchmark workflow could inspire future Forge tooling
+2. Progressive disclosure pattern is already adopted — nothing to change
+3. Evaluation framework could inform future skill testing guides (out of scope for v1)
+
+### Team Takeaway
+
+Forge and Anthropic are **orthogonal, not competitive.** We're aligned on skill structure; Forge's value is in packaging, versioning, and ecosystem integration for GitHub Copilot plugins. No documentation or implementation changes needed.
+

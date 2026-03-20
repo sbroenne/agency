@@ -3250,3 +3250,77 @@ Created and merged PR #3 from `feat/forge-docs-validated` to `main`. All Forge d
 **PR #3 merged to `main`; feature branch cleaned up; remote and local synchronized. Forge documentation and plugin architecture now live on production main branch.**
 
 **Decision Record:** `leia-forge-pr-merge.md` (merged 2026-03-20T09:59:51Z)
+
+---
+
+### Anthropic Skill Creator Investigation: No Changes Required
+
+**Author:** Mon Mothma  
+**Date:** 2026-03-20  
+**Status:** Team Reference (No Action Required)
+
+#### Context
+
+Anthropic publishes a Skill Creator meta-skill — a Claude tool for building Claude skills. Question: Does this change Forge's architecture or conflict with our skill model?
+
+#### What We Found
+
+Anthropic's Skill Creator provides an interactive workflow for building Claude skills with four modes:
+1. **Create** — Start a new skill from scratch
+2. **Eval** — Run test prompts and measure outputs
+3. **Improve** — Analyze results and get suggestions
+4. **Benchmark** — Compare skill versions
+
+Anthropic skills use this structure:
+```
+skill-name/
+├── SKILL.md (metadata + instructions)
+├── scripts/ (optional executables)
+├── references/ (optional docs)
+└── assets/ (optional templates)
+```
+
+#### Technical Mapping
+
+| Forge Concept | Anthropic Equivalent | Relationship |
+|---|---|---|
+| Agent Skill | Claude Skill | Exact match — both reusable capability units |
+| `plugin.json` manifest | Not used | Forge adds packaging/distribution layer |
+| Skill Distribution | Anthropic skills repo | Anthropic publishes examples; Forge adds versioning & registry |
+| GitHub Copilot Plugin | Not Anthropic's concern | GitHub-specific scope |
+
+#### Key Differences
+
+1. **Model focus:** Anthropic builds for Claude; Forge abstracts for Copilot + Squad ecosystem
+2. **Scope:** Anthropic's Skill Creator is 100% evaluation/iteration; Forge spans full authoring → distribution → registry
+3. **Persona:** Anthropic skills are stateless utility modules; Forge distinguishes library (skills-only) from customer-facing (skills + agents + prompts)
+4. **Distribution:** Anthropic relies on open-source repos; Forge uses `plugin.json` + npm/GitHub Pages + PLUGINS.md registry
+
+#### Decision
+
+**No Forge changes required.** Our model is orthogonal to Anthropic's, not contradictory:
+
+- Forge's agent skill concept already matches Anthropic's Claude skill structure (SKILL.md + resources)
+- Forge's `plugin.json` adds a distribution/packaging layer (non-conflicting)
+- Forge's skill types add business framing; Anthropic doesn't define this
+- Forge's registry adds discoverability; Anthropic uses GitHub repos
+
+#### Possible Future Inspiration (Non-Blocking)
+
+1. **Skill Creator workflow** (Create → Eval → Improve → Benchmark) could inspire future skill scaffolding tooling in Forge
+   - Currently Forge recommends manual SKILL.md + Excel MCP template
+   - Optional for v1; already well-scoped
+
+2. **Progressive disclosure pattern** already adopted by Forge (metadata + instructions + optional resources)
+   - No change needed — both systems converge
+
+3. **Evaluation framework** could inform future skill testing guides
+   - Out of scope for v1; could be optional best practice doc
+
+#### Conclusion
+
+Anthropic's Skill Creator is a reference implementation for authoring modular skills that Forge already defines architecturally. Forge's framing goes further by adding skill distributions, packaging/versioning layers, and a registry — but these are complementary, not contradictory.
+
+**Anthropic's model validates Forge's foundational concepts without requiring redesign.**
+
+---
