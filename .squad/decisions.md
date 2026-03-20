@@ -3065,3 +3065,152 @@ Forge currently focuses on **authoring and distributing agent skills**. The prod
 
 ---
 
+
+---
+
+## Leia: Decisions from 2026-03-20 Session
+
+### Decision: Resolve Dangling APM Acronym in Forge Charter
+
+**By:** Leia (GitHub Integrator)  
+**Date:** 2026-03-20  
+**Status:** Implemented
+
+#### Problem
+
+The Forge squad charter (`squads/forge/CHARTER.md`) referenced **APM** twice without defining the acronym.
+
+#### Solution
+
+Added definition of APM (Advanced Plugin Management) to Forge charter with:
+- Glossary footer explaining APM scope and when it's needed
+- Clarified first mention in section heading
+- Cross-reference to `docs/FORGE.md` for architecture recommendation flow
+
+#### Rationale
+
+Ensures Forge readers understand APM without external context or leaving the charter.
+
+#### Files Changed
+
+- `squads/forge/CHARTER.md` — Added APM definition and clarified mention in section heading
+
+---
+
+### Decision: Forge Plugin Home Implementation
+
+**By:** Leia (GitHub Integrator)  
+**Date:** 2026-03-19  
+**Status:** Implemented
+
+#### Scope
+
+Implemented GitHub/workflow/documentation surfaces for Forge plugin ecosystem with Excel MCP Server as reference library plugin.
+
+#### Work Completed
+
+1. **Forge home area** (`forge/README.md`) — Central hub for plugin development
+2. **Plugin registry** (`forge/PLUGINS.md`) — Tracker for published plugins
+3. **Authoring guide** (`forge/EXCEL_MCP_AUTHORING.md`) — Step-by-step template using Excel MCP
+4. **Release workflow** (`forge/RELEASE_WORKFLOW.md`) — Publication process documentation
+5. **GitHub Actions** (`.github/workflows/forge-plugin-validate.yml`) — Automated registry validation
+
+#### Key Decisions
+
+- **Forge home structure**: `forge/` directory serves as plugin ecosystem hub
+- **PLUGINS.md as registry**: Human-writable, scannable table format with status field
+- **Reference plugin**: Excel MCP Server as first documented library plugin (skills-only, lean path, no APM needed)
+- **Two publication models**: Library plugins → npm; customer-facing → GitHub Pages or static hosting
+
+#### Principles Preserved
+
+✓ Lean by default — Excel MCP Server needs zero APM  
+✓ Standalone-first — Skills work independently  
+✓ APM only when required — Clear guidance on architecture decisions
+
+#### Files Created
+
+- `forge/README.md` (264 lines)
+- `forge/PLUGINS.md` (80 lines)
+- `forge/EXCEL_MCP_AUTHORING.md` (373 lines)
+- `forge/RELEASE_WORKFLOW.md` (323 lines)
+- `.github/workflows/forge-plugin-validate.yml` (2.8 KB)
+
+#### Verification
+
+✅ `npm run validate` passes  
+✅ All referenced documentation files exist  
+✅ Cross-document links verified
+
+---
+
+### Decision: Forge PR Branch Ready
+
+**By:** Leia (GitHub Integrator)  
+**Date:** 2026-03-20  
+**Status:** Complete
+
+#### Outcome
+
+Feature branch `feat/forge-docs-validated` is PR-ready with all Forge documentation and agent history changes staged and committed.
+
+#### Branch Details
+
+- **Branch:** `feat/forge-docs-validated`
+- **Commit SHA:** `ab4b126f0ddb42f82ac20c61773b5a7d28817f76`
+- **Files:** 14 committed (Forge squad docs, agent specs, documentation, registry update)
+- **Working tree:** Clean
+
+#### No Blockers
+
+- All modifications staged with Co-authored-by trailer
+- No uncommitted changes
+- Ready for push to origin and PR creation
+
+---
+
+### Decision: Forge Plugin Workflow & Documentation
+
+**By:** Leia (GitHub Integrator)  
+**Date:** 2026-03-19  
+**Status:** Implemented
+
+#### What
+
+Created comprehensive Forge plugin architecture documentation covering classification, repo topology, registry, manifest schema, release workflow, and architecture recommendation flow.
+
+#### Why
+
+Teams need lean, clear guidance on plugin architecture without forcing unnecessary complexity (APM). Documentation clarifies distinction between library and customer-facing plugins, provides concrete workflows, and uses Excel MCP Server as real-world reference.
+
+#### Key Decisions
+
+- **Plugin classification**: Library plugins (skills-only) vs customer-facing (skills + agents + prompts)
+- **Repo topology**: Dev repo (central), published repo (distributed), plugin home repo (registry)
+- **PLUGINS.md tracking**: Human-readable registry, auto-generated from plugin.json entries
+- **APM flow**: Lean questionnaire to determine when APM is needed (often it's not)
+- **Reference**: Excel MCP Server as exemplar library plugin (no APM required)
+
+#### Principles
+
+✓ Lean by default  
+✓ Standalone-first  
+✓ APM only when required  
+✓ Real-world grounding (concrete example vs abstract)
+
+#### Files Created/Updated
+
+- `docs/FORGE.md` — Architecture overview with Excel reference
+- `docs/PLUGIN_MANIFEST.md` — Schema with library example
+- `docs/FORGE_SETUP.md` — Setup guide with Excel walkthrough
+- `docs/FORGE_QUICK_REF.md` — Quick reference
+- `docs/FORGE_DESIGN_PHILOSOPHY.md` — Design rationale
+- `docs/README.md` — Index with Excel MCP Server reference
+- `README.md` — Link to Forge documentation
+
+#### Next Steps
+
+- Interactive CLI for plugin architecture recommendations
+- Plugin home repo template
+- Excel MCP Server as working reference plugin (if needed)
+

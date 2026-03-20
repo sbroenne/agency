@@ -164,3 +164,52 @@ Consolidate `scripts/`, `tests/`, `schema/`, and `test/` into a single `tooling/
 **Result:** Marketplace noise reduced; root directories now 8 visible (down from 12)
 
 ---
+
+## 2026-03-20: Forge Documentation PR Preparation
+
+**Event:** Made Forge documentation changes PR-ready  
+**Date:** 2026-03-20T{TIMESTAMP}Z
+
+**Context:** Mon Mothma and C-3PO completed validation of Forge content. Changes were committed to `main` with dirty working tree. Task: make it PR-ready locally.
+
+**Work Completed:**
+- Inspected git state: 13 modified Forge/docs/history files, 7 commits ahead of origin
+- Created feature branch: `feat/forge-docs-validated`
+- Staged and committed all changes with Co-authored-by trailer
+- Verified clean working tree
+
+**Result:**
+- **Branch:** `feat/forge-docs-validated`
+- **Commit SHA:** `ab4b126f0ddb42f82ac20c61773b5a7d28817f76`
+- **Files committed:** 14 (Forge docs, PLUGIN_MANIFEST, Excel MCP authoring, release workflows, agent histories, public/squads.json)
+- **Working tree:** Clean, PR-ready
+- **Blockers:** None identified
+
+**Notes:** No technical blockers remain. Branch is ready for PR push or local inspection.
+
+---
+
+## 2026-03-20: Forge PR Readiness Completed (Scribe Session)
+
+**Event:** Orchestration and logging of Forge PR readiness session  
+**Date:** 2026-03-20T09:08:16Z  
+**Status:** Complete
+
+**Session Summary:**
+Scribe conducted orchestration logging for completed Forge documentation session. All decisions from Leia's inbox entries merged into `.squad/decisions.md`:
+
+1. **APM Acronym Resolution** — Added glossary definition to `squads/forge/CHARTER.md`
+2. **Plugin Home Implementation** — Documented 5 files (README, PLUGINS, authoring guide, release workflow, GitHub Actions)
+3. **PR Branch Validation** — Verified `feat/forge-docs-validated` clean and PR-ready
+4. **Workflow Documentation** — Captured plugin architecture decisions and principles
+
+**Work Products:**
+- Orchestration log: `.squad/orchestration-log/2026-03-20T09:08:16Z-leia.md`
+- Session log: `.squad/log/2026-03-20T09:08:16Z-forge-pr-readiness.md`
+- Decisions merged (4 entries from inbox → decisions.md)
+- Inbox cleaned (5 files deleted)
+
+**Key Outcome:**
+Feature branch `feat/forge-docs-validated` (commit `ab4b126f0ddb42f82ac20c61773b5a7d28817f76`) is fully logged and ready for team handoff. All validation passes; no blockers remain.
+
+---

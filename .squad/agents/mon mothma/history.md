@@ -443,3 +443,17 @@ These are organized into **skill distributions** (library or customer-facing) us
 
 **PR Readiness:** ✅ Repository is ready for pull request — all checks pass, documentation is accurate and internally consistent, product story is clear.
 
+
+---
+
+## 2026-03-20: Orchestration Logging (Scribe Session)
+
+**Event:** Final orchestration logging for Forge validation session  
+**Date:** 2026-03-20T09:08:16Z
+
+**Context:** Scribe merged all session decisions and created orchestration/session logs for team handoff.
+
+**Your Record:** Mon Mothma's product boundary correction and full project review (7 friction points identified, 2 blockers and 5 should-do items) were foundational to Forge validation work. Decisions merged into decisions.md.
+
+**Team Outcome:** Feature branch `feat/forge-docs-validated` (commit `ab4b126f0ddb42f82ac20c61773b5a7d28817f76`) addresses all Forge surface alignment and is PR-ready.
+
