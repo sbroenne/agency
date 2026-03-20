@@ -2,7 +2,7 @@
 
 Welcome to **Forge**, the authoring and distribution system for reusable prompts, custom agents, and agent skills in the Agency squad ecosystem.
 
-Forge provides the architecture, workflows, and guidance for authoring prompts, custom agents (AGENT.md-style), and agent skills, organizing them into skill distributions, and packaging them for GitHub Copilot plugins. This directory is the canonical Forge knowledge pack — containing the skill registry, authoring guides, reference scaffolds, and release workflow templates that ship with the squad.
+Forge provides the architecture, workflows, and guidance for authoring prompts, custom agents (AGENT.md-style), and agent skills, organizing them into distributions, and packaging them for GitHub Copilot plugins. This directory is the canonical Forge knowledge pack — containing the distribution registry, authoring guides, reference scaffolds, and release workflow templates that ship with the squad.
 
 ## Quick Start
 
@@ -20,15 +20,15 @@ Forge helps you author and organize three types of reusable assets:
 
 These authoring units can be organized into:
 
-- **Skill Distribution** — Organized collection of skills (with or without agents and prompts), packaged as `plugin.json` and distributed via npm or GitHub
-- **GitHub Copilot Plugin** — Installable bundle that includes one or more skill distributions, custom agents, prompts, and hooks for Copilot marketplace installation
+- **Distribution** — Organized package of prompts, custom agents, and/or skills, packaged as `plugin.json` and distributed via npm or GitHub
+- **GitHub Copilot Plugin** — Installable bundle that includes one or more Forge distributions, custom agents, prompts, and hooks for Copilot marketplace installation
 
 ### I want to author a prompt or agent
 
 Start with Forge basics:
 
 1. Read [Forge architecture overview](../../docs/FORGE.md) — Understand authoring units (prompts, agents, skills) and distribution types
-2. Review the structure in [CHARTER.md](./CHARTER.md) — See how prompts and agents fit into skill distributions
+2. Review the structure in [CHARTER.md](./CHARTER.md) — See how prompts and agents fit into distributions
 3. Check [PLUGINS.md](./PLUGINS.md) — See what's already published
 
 ### I want to author an agent skill
@@ -40,7 +40,7 @@ Start with the **Excel MCP Server template**:
 3. Check [PLUGINS.md](./PLUGINS.md) — See what's already published
 4. Copy [workflows/excel-mcp-server/release-plugin-repo.yml](./workflows/excel-mcp-server/release-plugin-repo.yml) into your dev repo when ready to distribute
 
-### I want to package authoring units into a skill distribution
+### I want to package authoring units into a distribution
 
 Follow the **distribution workflow**:
 
@@ -63,17 +63,17 @@ Read the **design documentation**:
 | File | Purpose |
 |---|---|
 | **squad.json** | Forge squad manifest (this is a Squad too!) |
-| **PLUGINS.md** | Registry of all published skills and distributions |
-| **EXCEL_MCP_AUTHORING.md** | Template & walkthrough for Excel MCP library skill |
+| **PLUGINS.md** | Registry of all published distributions |
+| **EXCEL_MCP_AUTHORING.md** | Template & walkthrough for Excel MCP library distribution |
 | **RELEASE_WORKFLOW.md** | Publication process from dev to npm/GitHub Pages |
 | **README.md** | This file |
-| **home/** | Tracking area for created skills and reuse opportunities |
+| **home/** | Tracking area for created distributions and reuse opportunities |
 | **scaffolds/** | Starter artifacts (copy into your dev repo) |
 | **workflows/** | Decision flows, architecture recommendations, and release workflow templates |
 
-## Skill Distribution Types
+## Distribution Types
 
-Forge supports two skill distribution categories:
+Forge supports two categories:
 
 ### Library Distributions (Skills-Only)
 
@@ -100,12 +100,12 @@ Reusable utilities with **skills only**; no custom agents or prompts. Skills are
 
 **When to choose:** You're building a complete workflow with a specialized agent persona and guiding prompts, not just reusable utilities.
 
-## Skill Distribution Registry
+## Distribution Registry
 
-The **PLUGINS.md** file tracks all published skill distributions:
+The **PLUGINS.md** file tracks all published distributions:
 
 - **Status tracking** — dev / beta / stable / deprecated
-- **Discovery** — Browse available skill distributions
+- **Discovery** — Browse available distributions and their contents
 - **Versioning** — Know which version is production-ready
 - **Maintenance** — See who owns each distribution
 
@@ -124,7 +124,7 @@ Expected in Q2:
 1. **Understand the model** — Read [docs/FORGE.md](../../docs/FORGE.md) to see how prompts and agents fit into distributions
 2. **Author your artifact** — Create prompts/ or agents/ in your dev repo
 3. **Test locally** — Verify with `npm test`
-4. **Package** — Include in a skill distribution with related agent skills
+4. **Package** — Include in a distribution with related agent skills
 5. **Register** — Update [PLUGINS.md](./PLUGINS.md) and `home/catalog.json` when published
 
 ### For Authoring Agent Skills
@@ -133,13 +133,13 @@ Expected in Q2:
 2. **Author your skill** — Use [EXCEL_MCP_AUTHORING.md](./EXCEL_MCP_AUTHORING.md) as template
 3. **Test locally** — `npm test`, `npm run validate`
 4. **Organize into distribution** — Group related skills and any agents/prompts
-5. **Publish** — Use the release workflow template to distribute your skill distribution into a dedicated repo, then publish from there
+5. **Publish** — Use the release workflow template to prepare and publish your distribution from its dedicated repo
 6. **Register** — Update [PLUGINS.md](./PLUGINS.md) and `home/catalog.json`
 
-### For Teams Consuming Skill Distributions
+### For Teams Consuming Distributions
 
 1. **Browse distributions** — Check [PLUGINS.md](./PLUGINS.md) for available options
-2. **Review documentation** — Each skill distribution has a README with full API docs and setup guide
+2. **Review documentation** — Each published distribution has a README with full API docs and setup guide
 3. **Install** — `npm install @bradygaster/skill-distribution-name` (library) or import from published site
 4. **Integrate** — Follow distribution documentation for integration into your agents or workflows
 
@@ -149,7 +149,7 @@ Key decisions baked into Forge:
 
 1. **Lean by default** — Start simple, add APM only when needed
 2. **Standalone-first** — Skills should work independently
-3. **Skill-focused** — Library distributions emphasize reusable utilities
+3. **Distribution-aware** — Library distributions emphasize reusable utilities; customer-facing distributions combine prompts, agents, and skills
 4. **Clear typing** — Every skill has a complete JSON Schema
 5. **Questionnaire-based** — Architecture recommendations, not requirements
 
@@ -244,20 +244,20 @@ See [.github/workflows/forge-plugin-validate.yml](../../.github/workflows/forge-
 
 Excel MCP Server demonstrates the simple path — zero APM needed.
 
-### Q: What's the difference between an agent skill, a skill distribution, and a Copilot plugin?
+### Q: What's the difference between an agent skill, a distribution, and a Copilot plugin?
 
 **A:**
 - **Agent Skill** — A reusable capability with tools and resources (e.g., "Excel file operations"; author one or group multiple)
 - **Prompt** — System prompt, few-shot examples, or conversation starter for agent use cases (author alongside skills)
 - **Custom Agent** — AGENT.md-style agent definition with instructions and behavior (author alongside skills and prompts)
-- **Skill Distribution** — Package that organizes one or more skills, and optionally agents and prompts (e.g., "Excel MCP Server" = skills only; "Code Reviewer" = skills + custom agent + prompts)
-- **GitHub Copilot Plugin** — Installable bundle that includes one or more skill distributions, custom agents, prompts, hooks, and slash commands for Copilot marketplace installation
+- **Distribution** — Package that organizes prompts, agents, and/or skills (e.g., "Excel MCP Server" = skills only; "Code Reviewer" = skills + custom agent + prompts)
+- **GitHub Copilot Plugin** — Installable bundle that includes one or more Forge distributions, custom agents, prompts, hooks, and slash commands for Copilot marketplace installation
 
-Skill distributions are how you organize authoring units. Copilot plugins are how you deliver distributions to Copilot users.
+Distributions are how you organize authoring units. Copilot plugins are how you deliver them to Copilot users.
 
-### Q: Can I publish a skill distribution without going through this repo?
+### Q: Can I publish a distribution without going through this repo?
 
-**A:** Yes. The Forge registry is optional — skill distributions can be published directly to npm or GitHub Pages. To be **discoverable** in the Forge ecosystem, register in PLUGINS.md.
+**A:** Yes. The Forge registry is optional — distributions can be published directly to npm or GitHub Pages. To be **discoverable** in the Forge ecosystem, register in PLUGINS.md.
 
 ### Q: How often should I update PLUGINS.md?
 
@@ -265,9 +265,9 @@ Skill distributions are how you organize authoring units. Copilot plugins are ho
 
 ## Contributing
 
-To add a skill distribution to the Forge registry:
+To add a distribution to the Forge registry:
 
-1. Publish your skill distribution to npm (library distribution) or GitHub Pages (customer-facing distribution)
+1. Publish your distribution to npm (library distribution) or GitHub Pages (customer-facing distribution)
 2. Fork this repository
 3. Update [PLUGINS.md](./PLUGINS.md) following the template format
 4. Open a PR with description of your distribution

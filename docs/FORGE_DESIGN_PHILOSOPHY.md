@@ -8,9 +8,9 @@ This document explains the design principles behind Forge and the decisions that
 
 Forge starts simple. Teams authoring plugins should not need to understand or implement advanced features until they actually need them.
 
-**Example:** A team building an Excel MCP Server wrapper (library plugin) doesn't need to learn about Advanced Plugin Management (APM), stateful workflows, or message queues. They wrap skills and publish.
+**Example:** A team building an Excel MCP Server wrapper (library distribution—skills only) doesn't need to learn about Advanced Plugin Management (APM), stateful workflows, or message queues. They package skills and publish.
 
-A team building a multi-turn code review agent *does* need APM to manage conversation state — but they're warned upfront, not surprised mid-implementation.
+A team building a multi-turn code review agent with specialized behavior and system prompts (customer-facing distribution) *does* need APM to manage conversation state — but they're warned upfront, not surprised mid-implementation.
 
 **Design consequence:** The architecture recommendation flow asks explicit questions to determine complexity level. This prevents premature optimization and keeps the plugin authoring experience frictionless for the common case.
 

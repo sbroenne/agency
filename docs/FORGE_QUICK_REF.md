@@ -1,27 +1,41 @@
 # Forge Quick Reference
 
-Quick-reference guide for agent skill decisions and workflows.
+Quick-reference guide for authoring and distribution decisions across prompts, custom agents, and agent skills.
 
 **Concrete starter in this repo:** `squads/forge/workflows/excel-mcp-server/workflow.json` + `squads/forge/scaffolds/excel-mcp-server/` + `squads/forge/home/catalog.json`
 
-**Boundary:** Forge knowledge stays here in `agency`; the actual skill working repo gets created locally when authoring starts.
+**Boundary:** Forge knowledge stays here in `agency`; the actual working repo gets created locally when authoring starts.
 
-## Skill Type Decision Tree
+## Distribution Type Decision Tree
 
 ```
 ┌─ What are you building?
 │
+├─ Reusable prompts or system instructions for agent workflows
+│  └─→ PROMPT LIBRARY ✓
+│      • System prompts, few-shot examples, conversation starters
+│      • No agents, no skills; just guidance
+│      • Share as markdown files or `.txt` prompts
+│      • Example: specialized review prompt for code reviewer agent
+│
+├─ A custom agent persona with specialized behavior
+│  └─→ CUSTOM AGENT (AGENT.md) ✓
+│      • Instructions, behaviors, tool bindings
+│      • Optionally paired with prompts and skills
+│      • Publishable as standalone or within a distribution
+│      • Example: Code Reviewer agent with review expertise
+│
 ├─ Single reusable utility (Excel automation, JSON formatter, HTTP client, etc.)
-│  └─→ LIBRARY SKILL ✓
-│      • Skills only, no agents/prompts
+│  └─→ LIBRARY DISTRIBUTION (Skills-Only) ✓
+│      • Agent skills only, no agents/prompts
 │      • No UI, purely functional
 │      • Publish to npm or private registry
 │      • Example: excel-mcp-server (Excel MCP Server wrapper)
 │      • Example: @myorg/skill-json-parser
 │
-└─ Complete workflow with agent behavior (code reviewer, doc generator, etc.)
-   └─→ CUSTOMER-FACING SKILL PACKAGE ✓
-       • Skills + agents + system prompts
+└─ Complete workflow with multiple assets (skills + agents + prompts)
+   └─→ CUSTOMER-FACING DISTRIBUTION ✓
+       • Skills + custom agents + system prompts
        • May include UI/UX decisions
        • Does it need complex state/routing?
        │
@@ -34,7 +48,25 @@ Quick-reference guide for agent skill decisions and workflows.
 
 ## File Structure Quick Reference
 
-### Minimal Library Skill
+### Minimal Prompt Library
+
+```
+my-prompts/
+├── system-prompt.txt
+├── examples.md
+└── README.md
+```
+
+### Minimal Custom Agent
+
+```
+my-agent/
+├── agent.md
+├── package.json
+└── README.md
+```
+
+### Minimal Library Distribution (Skills-Only)
 
 ```
 my-skill/
@@ -43,7 +75,7 @@ my-skill/
 └── README.md
 ```
 
-### Minimal Customer-Facing Skill Package
+### Minimal Customer-Facing Distribution
 
 ```
 my-skill/

@@ -4,7 +4,7 @@ Forge is a structured system for creating, tracking, and publishing reusable pro
 
 ## Overview
 
-Forge helps teams author three types of reusable assets and organize them into skill distributions:
+Forge helps teams author three types of reusable assets and organize them into distributions:
 
 - **Prompts** — System prompts, few-shot examples, and conversation starters for agent use cases
 - **Custom Agents** — AGENT.md-style agent definitions with instructions, behaviors, and tool bindings
@@ -22,9 +22,9 @@ When discussing Forge:
 - Use **Prompt** for system prompts and few-shot examples
 - Use **Custom Agent** (or **agent**) for AGENT.md-style definitions
 - Use **Agent Skill** as the primary unit of reusable capability
-- Use **Skill Distribution** or **distribution** for how authoring units are organized and packaged
+- Use **Distribution** for how authoring units are organized and packaged; use **Skill Distribution** only when describing a skills-led package shape specifically
 - Use **`plugin.json`** only when referencing the specific packaging format (it's an implementation detail)
-- Refer to bundled Copilot installations as **GitHub Copilot Plugins** (distinct from skill distributions)
+- Refer to bundled Copilot installations as **GitHub Copilot Plugins** (distinct from Forge distributions)
 
 ## Canonical Forge Knowledge in This Repo
 

@@ -5,14 +5,15 @@
   "slug": "forge",
   "name": "Forge",
   "status": "live",
-  "tagline": "Helps you author and package agent skills for AI workflows.",
-  "summary": "Forge guides you from concept to a working agent skill. It asks what you want to build, recommends the right architecture, and helps you package skills into distributions for reuse.",
-  "mission": "Accelerate agent skill authoring by providing architecture guidance, skill organization patterns, and reference examples like Excel MCP Server.",
+  "tagline": "Author and distribute prompts, custom agents, and agent skills for Copilot.",
+  "summary": "Forge guides you from concept to working reusable assets. It asks what you want to build—prompts, custom agents, or agent skills—recommends the right architecture, and helps you package them into distributions for GitHub Copilot plugins and other use cases.",
+  "mission": "Accelerate authoring of prompts, custom agents, and agent skills by providing architecture guidance, organization patterns, reference examples like Excel MCP Server, and distribution workflows.",
   "focus": [
-    "skill authoring",
-    "skill distribution",
-    "MCP integration",
-    "asset tracking",
+    "prompt authoring",
+    "custom agent authoring",
+    "agent skill authoring",
+    "distribution patterns",
+    "Copilot plugin packaging",
     "reference scaffolding"
   ],
   "source": {

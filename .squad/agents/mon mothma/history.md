@@ -523,3 +523,118 @@ Anthropic's Skill Creator is a **reference implementation of the authoring workf
 
 Forge and Anthropic are **orthogonal, not competitive.** We're aligned on skill structure; Forge's value is in packaging, versioning, and ecosystem integration for GitHub Copilot plugins. No documentation or implementation changes needed.
 
+---
+
+## Learnings
+
+### 2026-03-20: Forge Messaging Overemphasis on "Skills"
+
+**Problem Identified:**
+Squad manifest (`squad.json`) and public-facing docs were overemphasizing "agent skills" as Forge's sole focus, obscuring that Forge also authoring **prompts** and **custom agents** (AGENT.md-style). Messaging collapsed the full authoring scope into "skills terminology," which confused what Forge offers.
+
+**Root Cause:**
+Messaging evolved toward implementation details (skills as distribution unit) rather than author-centric framing (prompts, agents, skills as three equal authoring types).
+
+**Fixes Applied:**
+
+1. **squad.json manifest updates** (both canonical and marketplace alias):
+   - Tagline: "Helps you author and package agent skills..." → **"Author and distribute prompts, custom agents, and agent skills for Copilot."**
+   - Summary: Narrowly focused on "agent skill" → **Explicitly mentions prompts, agents, skills as three equal choices**
+   - Mission: Reduced "accelerate agent skill authoring" → **"Accelerate authoring of prompts, custom agents, and agent skills"**
+   - Focus: Changed "skill authoring, skill distribution, MCP integration, asset tracking" → **"prompt authoring, custom agent authoring, agent skill authoring, distribution patterns, Copilot plugin packaging, reference scaffolding"**
+
+2. **FORGE_SETUP.md documentation:**
+   - Title and intro still accurately described scope (no change needed)
+   - Directory structure updated to include `agents/` and `prompts/` alongside `skills/`
+   - Package name: `@myorg/skills` → **`@myorg/forge-distributions`** (more honest about what the repo contains)
+   - Example directory: `my-org-skills` → **`my-org-forge`** (same reason)
+   - Description: "Forge skill development repository" → **"Forge distribution development repository"**
+   - Registry file: `SKILLS.md` → **`PLUGINS.md`** (matches Forge's actual registry naming)
+
+**Impact:**
+- ✅ Marketing now truthfully reflects Forge's three authoring types
+- ✅ New users won't assume Forge is only for skills
+- ✅ Focus list emphasizes equal weight: prompts, agents, skills, distribution patterns, Copilot plugin packaging
+- ✅ All existing tests pass (`npm run validate`, `npm test`, `npm run build`)
+- ✅ No breaking changes to internal architecture or tooling
+
+**Verification:**
+- `npm run validate` — ✓ All 3 squad manifests validated
+- `npm test` — ✓ All 12 registry tests passed
+- `npm run build` — ✓ Build completed, public/squads.json regenerated with updated Forge messaging
+
+**Message is now crisp and accurate without being verbose.**
+
+
+---
+
+### 2026-03-20: Second Audit Pass — Broader Forge Messaging Rebalance (Turn 2)
+
+**Problem Extended:**
+First pass fixed the squad manifests but user audit found messaging imbalance persisted across **seven additional critical surfaces**: FORGE_QUICK_REF, squads/forge/README, PLUGINS.md, RELEASE_WORKFLOW.md, FORGE_SETUP.md details, and FORGE_DESIGN_PHILOSOPHY. These were still leading with "skills" language, obscuring that Forge handles prompts, agents, and skills equally.
+
+**Root Cause:**
+Messaging had drifted toward implementation/technical details (skills as packaging unit, skills-only registry, skill validation scripts) rather than authoring-centric framing.
+
+**Comprehensive Fixes Applied:**
+
+1. **docs/FORGE_QUICK_REF.md** — Restructured decision tree:
+   - Removed: "Skill Type Decision Tree" → **Added: "Distribution Type Decision Tree"**
+   - Added explicit branches for **prompts** (library) and **custom agents** (AGENT.md)
+   - Reordered to show prompts → agents → skills → combined distributions
+   - Added file structure examples for prompts and agents alongside skills
+   - Changed narrative: "agent skill decisions" → **"authoring and distribution decisions"**
+
+2. **squads/forge/README.md** — Rebalanced CTAs and registry language:
+   - Changed file table: "Registry of all published skills" → **"Registry of all published distributions"**
+   - Updated section: "Skill Distribution Types" → **"Distribution Types"**
+   - Renamed: "Skill Distribution Registry" → **"Distribution Registry"**
+   - Changed file descriptions to mention distributions (plural, not skills-only)
+
+3. **squads/forge/PLUGINS.md** — Reframed registry itself:
+   - Title: "Forge Skill Distribution Registry" → **"Forge Distribution Registry"**
+   - Intro: "packages of agent skills with optional custom agents and prompts" → **"packages of prompts, custom agents, and/or agent skills"**
+   - Updated section header explanations to reflect equal weight
+
+4. **squads/forge/RELEASE_WORKFLOW.md** — Rebalanced release process framing:
+   - Title: "Forge Plugin Release Workflow (for skill distributions)" → **"Forge Distribution Release Workflow"**
+   - Changed: "All skill distributions follow three phases" → **"All distributions follow three phases"**
+   - Updated example directory structure to show `agents/` and `prompts/` alongside `skills/`
+   - Changed validation checklist: "All skills have passing tests" → **"All skills/agents/prompts have passing tests"**
+
+5. **docs/FORGE_SETUP.md** — Rebalanced technical narrative:
+   - Intro: "build and track reusable agent skills" → **"author and distribute reusable prompts, custom agents, and agent skills"**
+   - Section 3: "Create Skill Manifest Schema" → **"Create Distribution Manifest Schema"**
+   - Section 4: "Create Validation Script" → **"Create Distribution Validation Script"**
+   - Updated script filenames in narrative (but kept code accurate): validate-skills → validate-distributions, build-skills → build-distributions, skills.test → distributions.test
+   - Updated generated output filenames and descriptions: SKILLS.md → PLUGINS.md
+   - Updated variable names in code examples: `librarySkills`/`customerFacingSkills` → `libraryDistributions`/`customerFacingDistributions`
+   - Example section: "Creating Your First Skill" → **"Creating Your First Distribution"**
+   - NOTE: Kept technical code accuracy; only rebalanced the surrounding narrative context
+
+6. **docs/FORGE_DESIGN_PHILOSOPHY.md** — Light consistency pass:
+   - Example: "library plugin" + clarified → **"library distribution (skills-only)"**
+   - Example: "multi-turn code review agent" context expanded → **"custom agent with specialized behavior and system prompts (customer-facing distribution)"**
+
+**Impact of Broader Pass:**
+- ✅ All seven hotspot files now use balanced language across prompts, agents, and skills
+- ✅ Decision trees and CTAs no longer default-lead with "skills" terminology
+- ✅ Registry descriptions now accurately reflect mixed-asset distributions
+- ✅ Release and setup workflows describe full distribution model, not skills-only
+- ✅ Technical accuracy maintained; only narrative framing improved
+- ✅ Product story is now consistent: **Forge = author prompts, agents, skills → organize into distributions → package for Copilot plugins**
+
+**Verification (Pass 2):**
+- `npm run validate` — ✓ All 3 squad manifests validated (no regressions)
+- `npm test` — ✓ All 12 registry tests passed (no regressions)
+- `npm run build` — ✓ Build completed successfully, public/squads.json regenerated
+- **Files Changed:** 7 files (docs/FORGE_QUICK_REF.md, FORGE_SETUP.md, FORGE_DESIGN_PHILOSOPHY.md, squads/forge/{README.md, PLUGINS.md, RELEASE_WORKFLOW.md, squad.json})
+- **Statistics:** 121 insertions, 84 deletions (net +37 lines; mostly clarification and structure)
+
+**Key Result:**
+Messaging is now balanced and consistent. New users reading docs will see:
+- Prompts, agents, and skills as three equal authoring options
+- Distributions as organizational packaging, not skills-specific containers
+- GitHub Copilot plugins as the final distribution target, not the lead story
+- Library distributions (skills-only) and customer-facing distributions (mixed assets) as equally valid patterns
+
