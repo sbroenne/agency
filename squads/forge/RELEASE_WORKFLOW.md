@@ -1,10 +1,10 @@
 # Forge Plugin Release Workflow
 
-This guide describes the release process for Forge plugins from development through publication and registry updates. Here, **plugin** means the Forge package model tracked in `plugin.json`.
+This guide describes the release process for skill distributions from development through publication and registry updates. Here, **plugin** means the Forge package model tracked in `plugin.json`.
 
 ## Release Phases
 
-All Forge plugins follow three phases:
+All skill distributions follow three phases:
 
 1. **Development** — Plugin development in dev repo
 2. **Publishing** — Release to public npm/GitHub registry

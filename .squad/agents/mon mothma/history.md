@@ -361,3 +361,85 @@ Researched and documented GitHub Copilot plugins in response to Stefan Broenner'
 
 **Status:** Documented; decision captured for team reference.
 
+
+## 2026-03-20: Forge Documentation & Manifest Refresh
+
+**Session:** PR Readiness — Forge Terminology & Product Accuracy  
+**Date:** 2026-03-20T10:15:30Z  
+**Status:** ✅ Complete
+
+**Task:** Fix everything — Update Forge documentation and agent surfaces to accurately describe Forge as authoring prompts, custom agents, and agent skills with packaging/distribution into GitHub Copilot plugins.
+
+**Key Issue:** Documentation conflated three distinct concepts:
+1. **Authoring units:** prompts, custom agents (AGENT.md-style), agent skills
+2. **Organizational layer:** skill distributions (collections of authoring units)
+3. **Distribution mechanism:** GitHub Copilot plugins (installable bundles)
+
+**Solution:** Rewrote all Forge-facing docs and manifests to establish clear terminology hierarchy.
+
+**Documentation Changes:**
+
+1. **squads/forge/README.md** — Updated core sections:
+   - Title: "Forge: Authoring Prompts, Agents, and Skills for Distribution"
+   - Core Concepts: Added prompts, custom agents as first-class authoring units
+   - Workflow sections: Separated "author prompts/agents" from "author skills"
+   - Distribution types: Library vs Customer-facing (with clear contents)
+   - Registry: Clarified as "Skill Distribution Registry"
+   - FAQ: Updated all terminology; added plugin vs distribution distinction
+
+2. **squads/forge/CHARTER.md** — Rewrote charter:
+   - Mission: "Authoring prompts, custom agents, and agent skills"
+   - Terminology: Explicit definitions for Prompt, Custom Agent, Agent Skill, Skill Distribution, Copilot Plugin
+   - Diagram: Updated to "Library Distribution" (skills only) vs "Customer-Facing Distribution" (skills + agents + prompts)
+   - Operating model: Aligned with new terminology
+
+3. **squads/forge/PLUGINS.md** — Registry updates:
+   - Title: "Forge Skill Distribution Registry"
+   - Sections: "Library Distributions" and "Customer-Facing Distributions"
+   - Entry descriptions: Clarified what authoring units each distribution contains
+   - Workflow: "Library Distribution Workflow" and "Customer-Facing Distribution Workflow"
+
+4. **docs/FORGE.md** — Core architecture document:
+   - Title: "Authoring Prompts, Custom Agents, and Agent Skills"
+   - Overview: Three authoring unit types + two distribution types
+   - Terminology: Comprehensive definitions
+   - Repo topology: Updated "Dev Repo Structure" to include agents/ and prompts/ for customer-facing
+   - Distribution classification: Clear distinction with examples
+   - Registry: Updated to "Skill Distribution Registry"
+
+5. **.github/agents/forge.agent.md** — Agent definition:
+   - Description: Expanded to include prompts, agents, and skills
+   - "What you do": Added agent and prompt authoring guidance
+   - "Core responsibilities": Added "Authoring guidance" section; distinguished distributions from plugins
+   - Clarified Forge's role in enabling full value chain
+
+6. **squads/forge/EXCEL_MCP_AUTHORING.md** — Reference guide:
+   - Updated title: "Agent Skill Authoring Guide"
+   - Distribution framing: Described as "library distribution" (skills only)
+   - Structure: Clarified as distribution structure with skills/
+
+**Validation Results:**
+- ✅ `npm run validate` — 3 squad manifests pass
+- ✅ `npm test` — 12/12 tests pass (registry, manifest, schema tests)
+- ✅ `npm run build` — Clean build; registry generated correctly
+
+**Product Story Now:**
+Forge helps teams author three types of reusable assets:
+1. **Prompts** — System prompts, few-shot examples, conversation starters
+2. **Custom Agents** — AGENT.md-style agent definitions with specialized behavior
+3. **Agent Skills** — Reusable capabilities with tools and resources
+
+These are organized into **skill distributions** (library or customer-facing) using the `plugin.json` packaging format. Skill distributions can then be wrapped into **GitHub Copilot plugins** for marketplace installation.
+
+**Distinction Clarification:**
+- Skill distributions are organizational packages for related authoring units
+- Copilot plugins are installable bundles for end-user distribution
+- Forge authors skills and packages them; Copilot plugins are the distribution mechanism
+
+**Files Updated:** 11
+- Docs: `docs/FORGE.md` (230+ lines of rewrites)
+- Manifests: `squads/forge/README.md`, `squads/forge/CHARTER.md`, `squads/forge/PLUGINS.md`, `.github/agents/forge.agent.md`
+- Guides: `squads/forge/EXCEL_MCP_AUTHORING.md`, `squads/forge/RELEASE_WORKFLOW.md`
+
+**PR Readiness:** ✅ Repository is ready for pull request — all checks pass, documentation is accurate and internally consistent, product story is clear.
+

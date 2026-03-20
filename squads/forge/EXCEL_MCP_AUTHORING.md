@@ -1,33 +1,33 @@
-# Excel MCP Server Plugin Authoring Guide
+# Excel MCP Server Agent Skill Authoring Guide
 
-This guide walks you through creating a Forge library plugin using **Excel MCP Server** as the template. Excel MCP Server is a production-ready example of a lean, skills-only library plugin. In this guide, **plugin** means a Forge plugin, not a VS Code extension or GitHub CLI extension.
+This guide walks you through authoring a library distribution using **Excel MCP Server** as the template. Excel MCP Server is a production-ready example of a lean, tools-only library distribution. The `plugin.json` file is Forge's packaging format for organizing and distributing reusable agent skills.
 
 ## Overview
 
-**Excel MCP Server** provides Windows Excel automation via MCP (Model Context Protocol). It's a **library plugin** — meaning it's skills-only with no agents or custom UI. The plugin is distributed as an npm package and integrated into workflows that need Excel capabilities.
+**Excel MCP Server** provides Windows Excel automation via MCP (Model Context Protocol). It's a **library distribution** — meaning it contains agent skills only with no custom agents or prompts. The distribution is distributed as an npm package and integrated into workflows that need Excel capabilities.
 
 ### Why This Template?
 
 - ✅ **Lean by default** — minimal dependencies, no complex state management
-- ✅ **Skills-focused** — pure utility plugin, reusable anywhere
+- ✅ **Skills-focused** — pure utility distribution, reusable anywhere
 - ✅ **Windows-native** — uses COM interop for native Excel API access
 - ✅ **Production-ready** — published to npm, stable version released
 
-## Plugin Structure
+## Distribution Structure
 
-Excel MCP Server follows the Forge library plugin layout:
+Excel MCP Server follows the Forge library distribution layout:
 
 ```
 excel-mcp-server/
-├── package.json              # Plugin metadata and dependencies
-├── plugin.json               # Plugin manifest
+├── package.json              # Distribution metadata and dependencies
+├── plugin.json               # Distribution manifest
 ├── README.md                 # Usage documentation
 ├── skills/
 │   ├── excel-file-ops/
-│   │   ├── index.js         # File operations skill
+│   │   ├── index.js         # File operations agent skill
 │   │   └── schema.json      # Tool schema
 │   ├── excel-formatting/
-│   │   ├── index.js         # Formatting skill
+│   │   ├── index.js         # Formatting agent skill
 │   │   └── schema.json
 │   ├── power-query/
 │   │   ├── index.js         # Power Query M code generator
@@ -139,7 +139,7 @@ excel-mcp-server/
 
 ### Step 1: Initialize Your Dev Repository
 
-Create a new dev repo for Forge plugins:
+Create a new dev repo for skill distributions:
 
 ```bash
 mkdir my-forge-dev
@@ -357,7 +357,7 @@ Add your plugin to `squads/forge/PLUGINS.md`:
 
 ## Moving to Customer-Facing Plugins
 
-Once you're comfortable with library plugins, the next step is **customer-facing plugins**, which add:
+Once you're comfortable with library skills, the next step is **customer-facing skill distributions**, which add:
 
 - **Agents** — Custom agent definitions with specialized behavior
 - **Prompts** — System prompts and context templates

@@ -1,8 +1,8 @@
 # Setting Up a Forge Dev Repo
 
-This guide walks through creating a new Forge dev repository to build and track Forge plugins. Here, **plugin** means the Forge `plugin.json` package model, not a VS Code extension or GitHub CLI extension.
+This guide walks through creating a new Forge dev repository to build and track reusable agent skills. The `plugin.json` file is the implementation format for skill packaging — this guide demonstrates how to use it.
 
-> Want a concrete starting point first? Copy the in-repo Excel reference scaffold at `squads/forge/scaffolds/excel-mcp-server/` and use `squads/forge/workflows/excel-mcp-server/workflow.json` before expanding into the local working repo Forge creates for your plugin.
+> Want a concrete starting point first? Copy the in-repo Excel reference scaffold at `squads/forge/scaffolds/excel-mcp-server/` and use `squads/forge/workflows/excel-mcp-server/workflow.json` before expanding into the local working repo Forge creates for your skill.
 
 ## Prerequisites
 
@@ -15,32 +15,32 @@ This guide walks through creating a new Forge dev repository to build and track 
 ### 1. Create Repository Structure
 
 ```bash
-mkdir my-org-plugins && cd my-org-plugins
+mkdir my-org-skills && cd my-org-skills
 git init
 
-# Create plugin directory
-mkdir plugins
+# Create skill directory
+mkdir skills
 
 # Create tooling directory
 mkdir -p tooling/scripts tooling/tests
 
 # Create root files
-touch package.json PLUGINS.md README.md
+touch package.json SKILLS.md README.md
 ```
 
 ### 2. Initialize Package.json
 
 ```json
 {
-  "name": "@myorg/plugins",
+  "name": "@myorg/skills",
   "version": "1.0.0",
   "private": true,
   "type": "module",
-  "description": "Forge plugin development repository",
+  "description": "Forge skill development repository",
   "scripts": {
-    "validate": "node tooling/scripts/validate-plugins.mjs",
-    "build:plugins": "node tooling/scripts/build-plugins.mjs",
-    "test": "node --test tooling/tests/plugins.test.mjs",
+    "validate": "node tooling/scripts/validate-skills.mjs",
+    "build:skills": "node tooling/scripts/build-skills.mjs",
+    "test": "node --test tooling/tests/skills.test.mjs",
     "release:check": "npm run validate && npm test"
   },
   "devDependencies": {
@@ -53,14 +53,14 @@ touch package.json PLUGINS.md README.md
 }
 ```
 
-### 3. Create Plugin Manifest Schema
+### 3. Create Skill Manifest Schema
 
-Save as `tooling/schema/plugin-manifest.json`:
+Save as `tooling/schema/skill-manifest.json`:
 
 ```json
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "title": "Squad Plugin Manifest",
+  "title": "Forge Skill Manifest",
   "type": "object",
   "required": ["name", "version", "description", "type"],
   "properties": {
@@ -92,7 +92,7 @@ See `docs/PLUGIN_MANIFEST.md` for full schema.
 
 ### 4. Create Validation Script
 
-Save as `tooling/scripts/validate-plugins.mjs`:
+Save as `tooling/scripts/validate-skills.mjs`:
 
 ```javascript
 import { readFileSync, readdirSync } from 'fs';
@@ -103,19 +103,19 @@ import addFormats from 'ajv-formats';
 const ajv = new Ajv();
 addFormats(ajv);
 
-const schemaPath = resolve('tooling/schema/plugin-manifest.json');
+const schemaPath = resolve('tooling/schema/skill-manifest.json');
 const schema = JSON.parse(readFileSync(schemaPath, 'utf-8'));
 const validate = ajv.compile(schema);
 
-const pluginsDir = resolve('plugins');
-const pluginDirs = readdirSync(pluginsDir, { withFileTypes: true })
+const skillsDir = resolve('skills');
+const skillDirs = readdirSync(skillsDir, { withFileTypes: true })
   .filter(d => d.isDirectory())
   .map(d => d.name);
 
 let errors = 0;
 
-for (const dir of pluginDirs) {
-  const manifestPath = join(pluginsDir, dir, 'plugin.json');
+for (const dir of skillDirs) {
+  const manifestPath = join(skillsDir, dir, 'plugin.json');
   try {
     const manifest = JSON.parse(readFileSync(manifestPath, 'utf-8'));
     
@@ -133,76 +133,76 @@ for (const dir of pluginDirs) {
 }
 
 if (errors > 0) {
-  console.error(`\n${errors} plugin(s) failed validation.`);
+  console.error(`\n${errors} skill(s) failed validation.`);
   process.exit(1);
 } else {
-  console.log(`\n✓ All plugins passed validation.`);
+  console.log(`\n✓ All skills passed validation.`);
 }
 ```
 
 ### 5. Create Build Script
 
-Save as `tooling/scripts/build-plugins.mjs`:
+Save as `tooling/scripts/build-skills.mjs`:
 
 ```javascript
 import { readFileSync, readdirSync, writeFileSync } from 'fs';
 import { resolve, join } from 'path';
 
-const pluginsDir = resolve('plugins');
-const pluginDirs = readdirSync(pluginsDir, { withFileTypes: true })
+const skillsDir = resolve('skills');
+const skillDirs = readdirSync(skillsDir, { withFileTypes: true })
   .filter(d => d.isDirectory())
   .map(d => d.name);
 
 const registry = {
   lastUpdated: new Date().toISOString(),
-  libraryPlugins: [],
-  customerFacingPlugins: [],
+  librarySkills: [],
+  customerFacingSkills: [],
   all: []
 };
 
-for (const dir of pluginDirs) {
-  const manifestPath = join(pluginsDir, dir, 'plugin.json');
+for (const dir of skillDirs) {
+  const manifestPath = join(skillsDir, dir, 'plugin.json');
   const manifest = JSON.parse(readFileSync(manifestPath, 'utf-8'));
   
   registry.all.push(manifest);
   
   if (manifest.type === 'library') {
-    registry.libraryPlugins.push(manifest);
+    registry.librarySkills.push(manifest);
   } else {
-    registry.customerFacingPlugins.push(manifest);
+    registry.customerFacingSkills.push(manifest);
   }
 }
 
-// Generate PLUGINS.md
+// Generate SKILLS.md
 const now = new Date().toLocaleString();
-const md = `# Plugins Registry
+const md = `# Skills Registry
 
 > Last updated: ${now}
 
-## Library Plugins
+## Library Skills
 
 | Name | Version | Status | Maintainer |
 |------|---------|--------|-----------|
-${registry.libraryPlugins.map(p => `| \`${p.name}\` | ${p.version} | ${p.status} | ${p.maintainer?.name || 'N/A'} |`).join('\n')}
+${registry.librarySkills.map(p => `| \`${p.name}\` | ${p.version} | ${p.status} | ${p.maintainer?.name || 'N/A'} |`).join('\n')}
 
-## Customer-Facing Plugins
+## Customer-Facing Skills
 
 | Name | Version | Status | Maintainer |
 |------|---------|--------|-----------|
-${registry.customerFacingPlugins.map(p => `| \`${p.name}\` | ${p.version} | ${p.status} | ${p.maintainer?.name || 'N/A'} |`).join('\n')}
+${registry.customerFacingSkills.map(p => `| \`${p.name}\` | ${p.version} | ${p.status} | ${p.maintainer?.name || 'N/A'} |`).join('\n')}
 
 ---
 
-Generated by \`npm run build:plugins\`
+Generated by \`npm run build:skills\`
 `;
 
-writeFileSync('PLUGINS.md', md);
-console.log('✓ Generated PLUGINS.md');
+writeFileSync('SKILLS.md', md);
+console.log('✓ Generated SKILLS.md');
 ```
 
 ### 6. Create Test Suite
 
-Save as `tooling/tests/plugins.test.mjs`:
+Save as `tooling/tests/skills.test.mjs`:
 
 ```javascript
 import { test } from 'node:test';
@@ -210,15 +210,15 @@ import { strict as assert } from 'node:assert';
 import { readFileSync, readdirSync } from 'fs';
 import { resolve, join } from 'path';
 
-const pluginsDir = resolve('plugins');
-const pluginDirs = readdirSync(pluginsDir, { withFileTypes: true })
+const skillsDir = resolve('skills');
+const skillDirs = readdirSync(skillsDir, { withFileTypes: true })
   .filter(d => d.isDirectory())
   .map(d => d.name);
 
-test('Plugin manifests exist and are valid JSON', async (t) => {
-  for (const dir of pluginDirs) {
+test('Skill manifests exist and are valid JSON', async (t) => {
+  for (const dir of skillDirs) {
     await t.test(`${dir}/plugin.json is valid`, () => {
-      const manifestPath = join(pluginsDir, dir, 'plugin.json');
+      const manifestPath = join(skillsDir, dir, 'plugin.json');
       const content = readFileSync(manifestPath, 'utf-8');
       const manifest = JSON.parse(content);
       
@@ -230,15 +230,15 @@ test('Plugin manifests exist and are valid JSON', async (t) => {
   }
 });
 
-test('Library plugins have no agents', async (t) => {
-  for (const dir of pluginDirs) {
-    const manifestPath = join(pluginsDir, dir, 'plugin.json');
+test('Library skills have no agents', async (t) => {
+  for (const dir of skillDirs) {
+    const manifestPath = join(skillsDir, dir, 'plugin.json');
     const manifest = JSON.parse(readFileSync(manifestPath, 'utf-8'));
     
     if (manifest.type === 'library') {
       await t.test(`${dir} (library) has no agents`, () => {
         assert.ok(!manifest.agents || manifest.agents.length === 0,
-          'Library plugins must not have agents');
+          'Library skills must not have agents');
       });
     }
   }
@@ -258,15 +258,15 @@ git add .
 git commit -m "chore: initialize forge dev repo"
 ```
 
-## Creating Your First Plugin: Excel MCP Server Example
+## Creating Your First Skill: Excel MCP Server Example
 
-This example creates a library plugin wrapper for Excel MCP Server automation.
+This example creates a library skill wrapper for Excel MCP Server automation.
 
-### 1. Create Plugin Directory
+### 1. Create Skill Directory
 
 ```bash
-mkdir plugins/excel-mcp-server
-cd plugins/excel-mcp-server
+mkdir skills/excel-mcp-server
+cd skills/excel-mcp-server
 ```
 
 ### 2. Create plugin.json
@@ -319,14 +319,14 @@ This will check that plugin.json is well-formed and all required fields are pres
 ### 4. Build Registry
 
 ```bash
-npm run build:plugins
+npm run build:skills
 ```
 
-The `PLUGINS.md` file will be regenerated, showing your plugin in the library plugins section.
+The `SKILLS.md` file will be regenerated, showing your skill in the library skills section.
 
 ### 5. Next Steps
 
-- Add skill implementations in `plugins/excel-mcp-server/skills/`
+- Add skill implementations in `skills/excel-mcp-server/skills/`
 - Write tests for each skill
 - Document usage examples
 - When ready for publication: bump version to `1.0.0` and set status to `stable`
@@ -334,14 +334,14 @@ The `PLUGINS.md` file will be regenerated, showing your plugin in the library pl
 
 ### Why This Example Works With Forge
 
-**Excel MCP Server is a library plugin because:**
+**Excel MCP Server is a library skill because:**
 - It's a pure skills collection (no agents, no UI)
 - Skills are stateless — each call is independent
 - No APM required — workflows are simple
 - Teams will wrap these skills in their own agents as needed
 - Lean, focused, ready to use
 
-**When APM would NOT be needed:** Excel MCP Server itself stays simple — complex agent behavior (error recovery, retry logic, multi-step workflows) belongs in the agents that consume these skills, not in the plugin itself.
+**When APM would NOT be needed:** Excel MCP Server itself stays simple — complex agent behavior (error recovery, retry logic, multi-step workflows) belongs in the agents that consume these skills, not in the skill itself.
 
 **When someone might add agents:** A team could create a *separate* customer-facing plugin (`excel-agent-automation`) that uses Excel MCP Server skills plus agent logic for complex automation workflows. That's a different plugin — Forge supports both.
 

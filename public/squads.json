@@ -1,9 +1,9 @@
 {
-  "generatedAt": "2026-03-19T12:00:54.060Z",
+  "generatedAt": "2026-03-20T09:05:39.039Z",
   "counts": {
-    "squads": 2,
-    "members": 7,
-    "focusAreas": 8
+    "squads": 3,
+    "members": 9,
+    "focusAreas": 13
   },
   "squads": [
     {
@@ -89,6 +89,75 @@
           "ref": "main"
         },
         "manifestPath": "squads/agency/squad.json"
+      }
+    },
+    {
+      "id": "forge",
+      "slug": "forge",
+      "name": "Forge",
+      "status": "live",
+      "sourceLabel": "sbroenne/agency",
+      "location": "squads/forge",
+      "tagline": "Helps you author and package agent skills for AI workflows.",
+      "summary": "Forge guides you from concept to a working agent skill. It asks what you want to build, recommends the right architecture, and helps you package skills into distributions for reuse.",
+      "howTheyWork": "Accelerate agent skill authoring by providing architecture guidance, skill organization patterns, and reference examples like Excel MCP Server.",
+      "focus": [
+        "asset tracking",
+        "MCP integration",
+        "reference scaffolding",
+        "skill authoring",
+        "skill distribution"
+      ],
+      "links": [
+        {
+          "label": "Repository",
+          "url": "https://github.com/sbroenne/agency"
+        },
+        {
+          "label": "Homepage",
+          "url": "https://sbroenne.github.io/agency/"
+        },
+        {
+          "label": "Forge Guide",
+          "url": "https://github.com/sbroenne/agency/tree/main/squads/forge"
+        },
+        {
+          "label": "Excel Reference",
+          "url": "https://github.com/sbroenne/agency/tree/main/squads/forge/workflows/excel-mcp-server"
+        }
+      ],
+      "members": [
+        {
+          "name": "Anvil",
+          "role": "Architecture Advisor",
+          "expertise": [
+            "distribution patterns",
+            "skill architecture",
+            "standalone vs APM"
+          ],
+          "github": null
+        },
+        {
+          "name": "Crucible",
+          "role": "Skill Author",
+          "expertise": [
+            "MCP skills",
+            "schema design",
+            "tool implementation"
+          ],
+          "github": null
+        }
+      ],
+      "source": {
+        "repository": "https://github.com/sbroenne/agency",
+        "directory": "squads/forge",
+        "homepage": "https://sbroenne.github.io/agency/",
+        "import": {
+          "type": "manual",
+          "path": "squads/forge/squad.json",
+          "ref": "main"
+        },
+        "manifestPath": "squads/forge/squad.json"
       }
     },
     {

@@ -1,10 +1,8 @@
 # Plugin Manifest Schema
 
-The `plugin.json` manifest describes a Forge plugin's metadata, capabilities, and publishing details.
+The `plugin.json` manifest is the technical packaging format for organizing and distributing reusable agent skills within Forge. It describes an agent skill's metadata, capabilities, and publishing details.
 
-## Terminology Note
-
-This `plugin.json` is for **Forge plugins**. It is not the VS Code extension `package.json` format, and it is not a GitHub CLI extension package definition. Agent Skills remain separate reusable units that can be referenced inside a Forge plugin.
+**Key distinction:** `plugin.json` is how you package skills for distribution; **agent skills** are what you build.
 
 ## Schema Definition
 
@@ -158,7 +156,7 @@ This `plugin.json` is for **Forge plugins**. It is not the VS Code extension `pa
 }
 ```
 
-## Example: Library Plugin (Excel MCP Server)
+## Example: Library Distribution (Excel MCP Server)
 
 ```json
 {
@@ -239,7 +237,7 @@ This `plugin.json` is for **Forge plugins**. It is not the VS Code extension `pa
 }
 ```
 
-## Example: Library Plugin (Generic Alternative: JSON Formatter)
+## Example: Library Distribution (Generic Alternative: JSON Formatter)
 
 ```json
 {
@@ -310,7 +308,7 @@ This `plugin.json` is for **Forge plugins**. It is not the VS Code extension `pa
 }
 ```
 
-## Example: Customer-Facing Plugin
+## Example: Customer-Facing Distribution
 
 ```json
 {
@@ -360,8 +358,8 @@ This `plugin.json` is for **Forge plugins**. It is not the VS Code extension `pa
 2. **Version**: Must follow semver (X.Y.Z)
 3. **Type**: Must be `library` or `customer-facing`
 4. **Status**: Valid values are `dev`, `beta`, `stable`, `deprecated`
-5. **Library plugins**: No `agents` or `prompts` allowed
-6. **Customer-facing plugins**: Must have at least one skill and one agent
+5. **Library distributions**: No `agents` or `prompts` allowed (skills only)
+6. **Customer-facing distributions**: Must have at least one skill and one agent
 7. **Published field**: Required if status is `stable`
 
 ## Extending the Schema

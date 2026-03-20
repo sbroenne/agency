@@ -1,10 +1,10 @@
 # Forge — Charter
 
-> Helps you author agent skills and Forge plugins the right way.
+> Helps teams author prompts, custom agents, and agent skills for distribution into GitHub Copilot plugins and other Copilot use cases.
 
 ## Mission
 
-Accelerate agent skill authoring by providing architecture guidance, skill organization patterns, and reference examples like Excel MCP Server.
+Accelerate authoring of reusable prompts, custom agents, and agent skills by providing architecture guidance, organization patterns, reference examples (like Excel MCP Server), and distribution workflows.
 
 ## Canonical Knowledge Pack
 
@@ -20,9 +20,13 @@ The root `forge/squad.json` path remains only as the marketplace alias that poin
 
 ## Terminology Boundary
 
-- Use **Agent Skill** for reusable capabilities that can stand alone or be packaged.
-- Use **skill distribution** or **package** for how skills are organized and published.
-- Use **`plugin.json`** only when discussing the specific packaging format.
+Use these terms consistently:
+- **Prompt** — System prompt, few-shot example, or conversation starter for agent use cases
+- **Custom Agent** — AGENT.md-style agent definition with instructions and behavior
+- **Agent Skill** — Reusable capability with tools and resources that stands alone or is packaged
+- **Skill Distribution** — Organized package of one or more agent skills, optionally with prompts and custom agents
+- **GitHub Copilot Plugin** — Installable bundle that includes skill distributions, custom agents, prompts, hooks, and commands for Copilot marketplace installation
+- Use **`plugin.json`** only when discussing the specific packaging format
 
 ## Operating Model
 
@@ -49,7 +53,7 @@ Forge always begins by asking what you want to author:
                     │                           │
                     ▼                           ▼
         ┌───────────────────┐       ┌───────────────────────────┐
-        │  LIBRARY PLUGIN   │       │  CUSTOMER-FACING PLUGIN   │
+        │  LIBRARY SKILL   │       │  CUSTOMER-FACING SKILL   │
         │  (skills only)    │       │  (skills + agents + UX)   │
         └───────────────────┘       └───────────────────────────┘
                     │                           │
@@ -78,21 +82,21 @@ Forge knowledge stays here, but authoring happens in a working repository on the
 - You need agent-to-agent coordination
 - The complexity justifies the overhead
 
-### 5. Plugin Type Distinction
+### 5. Skill Distribution Type Distinction
 
 | Type | Contains | Use Case |
 |------|----------|----------|
-| **Library Plugin** | Skills only (tools, resources) | Other agents consume these; no UX layer |
-| **Customer-Facing Plugin** | Skills + Agents + Prompts | End users interact directly; needs UX design |
+| **Library Distribution** | Agent skills only | Other agents/workflows consume these; no UX layer |
+| **Customer-Facing Distribution** | Skills + Agents + Prompts | End users interact directly; needs specialized agent personas and conversation design |
 
-**Library Plugin Example:** A Forge plugin that packages Excel MCP Server spreadsheet skills. Other agents call it; no prompts needed.
+**Library Distribution Example:** Excel MCP Server — a distribution that packages spreadsheet tools as agent skills. Other agents call it; no custom agents or prompts needed.
 
-**Customer-Facing Plugin Example:** A full squad with agents that guide users through a workflow, including prompts and conversation design.
+**Customer-Facing Distribution Example:** A complete squad with specialized agents guided by system prompts, including example workflows and integration guides.
 
 ## What Forge Tracks Here
 
 - Reusable reference scaffolds and workflows
-- The living plugin registry in `squads/forge/PLUGINS.md`
+- The living skill distribution registry in `squads/forge/PLUGINS.md`
 - Reference artifacts and reuse signals in `squads/forge/home/catalog.json`
 - The operating rules that decide when to stay lean vs. when to introduce more structure
 
@@ -100,7 +104,7 @@ Forge knowledge stays here, but authoring happens in a working repository on the
 
 | Member | Role | Focus |
 |--------|------|-------|
-| **Anvil** | Architecture Advisor | Plugin patterns, architecture decisions, standalone vs APM |
+| **Anvil** | Architecture Advisor | Skill architecture patterns, architecture decisions, standalone vs APM |
 | **Crucible** | Skill Author | MCP skills, tool implementation, schema design |
 
 ## Principles

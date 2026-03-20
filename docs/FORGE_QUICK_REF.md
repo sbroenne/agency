@@ -1,20 +1,18 @@
 # Forge Quick Reference
 
-Quick-reference guide for Forge plugin decisions and workflows.
-
-Use **Forge plugin** for the `plugin.json` package model in this repo, and keep that term separate from **VS Code extensions**, **GitHub CLI extensions**, and **Agent Skills**.
+Quick-reference guide for agent skill decisions and workflows.
 
 **Concrete starter in this repo:** `squads/forge/workflows/excel-mcp-server/workflow.json` + `squads/forge/scaffolds/excel-mcp-server/` + `squads/forge/home/catalog.json`
 
-**Boundary:** Forge knowledge stays here in `agency`; the actual plugin working repo gets created locally when authoring starts.
+**Boundary:** Forge knowledge stays here in `agency`; the actual skill working repo gets created locally when authoring starts.
 
-## Plugin Type Decision Tree
+## Skill Type Decision Tree
 
 ```
 ┌─ What are you building?
 │
 ├─ Single reusable utility (Excel automation, JSON formatter, HTTP client, etc.)
-│  └─→ LIBRARY PLUGIN ✓
+│  └─→ LIBRARY SKILL ✓
 │      • Skills only, no agents/prompts
 │      • No UI, purely functional
 │      • Publish to npm or private registry
@@ -22,7 +20,7 @@ Use **Forge plugin** for the `plugin.json` package model in this repo, and keep 
 │      • Example: @myorg/skill-json-parser
 │
 └─ Complete workflow with agent behavior (code reviewer, doc generator, etc.)
-   └─→ CUSTOMER-FACING PLUGIN ✓
+   └─→ CUSTOMER-FACING SKILL PACKAGE ✓
        • Skills + agents + system prompts
        • May include UI/UX decisions
        • Does it need complex state/routing?
@@ -36,19 +34,19 @@ Use **Forge plugin** for the `plugin.json` package model in this repo, and keep 
 
 ## File Structure Quick Reference
 
-### Minimal Library Plugin
+### Minimal Library Skill
 
 ```
-my-plugin/
+my-skill/
 ├── plugin.json
 ├── package.json
 └── README.md
 ```
 
-### Minimal Customer-Facing Plugin
+### Minimal Customer-Facing Skill Package
 
 ```
-my-plugin/
+my-skill/
 ├── plugin.json
 ├── package.json
 ├── skills/
@@ -62,7 +60,7 @@ my-plugin/
 
 ## plugin.json Essentials
 
-### Library Plugin: Excel MCP Server Example
+### Library Skill: Excel MCP Server Example
 
 ```json
 {
@@ -100,7 +98,7 @@ my-plugin/
 }
 ```
 
-### Customer-Facing Plugin
+### Customer-Facing Skill Package
 
 ```json
 {
@@ -163,23 +161,23 @@ npm run release:check
 
 ## Release Checklist
 
-- [ ] All plugins pass `npm run validate`
+- [ ] All skills pass `npm run validate`
 - [ ] Tests pass: `npm test`
 - [ ] CHANGELOG.md updated with version and release notes
 - [ ] Version bumped in `plugin.json` and `package.json`
-- [ ] `PLUGINS.md` shows new version
-- [ ] Commit and tag: `git tag plugin-name@1.0.0`
+- [ ] `SKILLS.md` shows new version
+- [ ] Commit and tag: `git tag skill-name@1.0.0`
 - [ ] Push tag to trigger CI release workflow
 - [ ] Verify published to registry (npm, GitHub releases, etc.)
 - [ ] Update Agency's Forge registry entry with published URL
 
 ## Common Mistakes
 
-❌ **Library plugin with agents** — Library plugins must be skills-only  
-✓ **Skills only in library plugin**
+❌ **Library skill with agents** — Library skills must be tools-only  
+✓ **Skills only in library skill**
 
-❌ **Customer-facing plugin with no agents** — Customer-facing requires at least one agent  
-✓ **Customer-facing plugin has agents**
+❌ **Customer-facing skill with no agents** — Customer-facing requires at least one agent  
+✓ **Customer-facing skill has agents**
 
 ❌ **Status other than dev/beta/stable/deprecated** — Invalid status value  
 ✓ **Status is one of the four allowed values**
@@ -187,8 +185,8 @@ npm run release:check
 ❌ **Version doesn't follow semver** — Not a valid semantic version  
 ✓ **Version follows X.Y.Z format (e.g., 1.0.0)**
 
-❌ **PLUGINS.md drifts from reality** — stale registry entries confuse release decisions  
-✓ **Either regenerate `PLUGINS.md` via `npm run build:plugins` or update it alongside the home tracker in lean repos**
+❌ **SKILLS.md drifts from reality** — stale registry entries confuse release decisions  
+✓ **Either regenerate `SKILLS.md` via `npm run build:skills` or update it alongside the home tracker in lean repos**
 
 ## When to Add APM (Advanced Plugin Management)
 

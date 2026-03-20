@@ -1,20 +1,17 @@
 # Forge Documentation Index
 
-Complete guide to Forge plugin architecture and workflows.
+Complete guide to authoring reusable agent skills and skill distribution for the squad ecosystem.
 
-**Reference Plugin:** [Excel MCP Server](https://excelmcpserver.dev) — A library Forge plugin example showing how to wrap Windows Excel automation as reusable skills.
+**Reference Skill:** [Excel MCP Server](https://excelmcpserver.dev) — A library skill example showing how to wrap Windows Excel automation as reusable tools for agents.
 
-## Terminology Boundary
+## Core Concepts
 
-Forge uses a few nearby terms that should not be collapsed together:
+Forge focuses on helping you author and distribute reusable agent skills:
 
-- **VS Code extension** — editor extension package for VS Code
-- **GitHub CLI extension** — `gh` custom command package
-- **Claude plugin** — Claude Code plugin bundle
-- **Forge plugin** — this repo's `plugin.json`-based package model
-- **Agent Skill** — reusable capability that can live on its own or inside a plugin
-
-In Forge docs, plain **plugin** means **Forge plugin** unless a cross-ecosystem comparison says otherwise.
+- **Agent Skill** — A reusable capability with tools, resources, and instructions that can stand alone or be packaged
+- **Skill distribution** — How skills are organized and packaged (using `plugin.json` as the implementation format)
+- **Library skill** — Reusable utilities with no UI (tools-only packages)
+- **Customer-facing skill package** — Complete workflows with agents, prompts, and optionally UI
 
 ## In-Repo Reference Surfaces
 
@@ -30,7 +27,7 @@ The canonical Forge knowledge pack in this repository lives under [`/squads/forg
 
 **Start here if you're new to Forge:**
 
-1. **[FORGE.md](./FORGE.md)** — Overview of Forge plugin architecture and core concepts
+1. **[FORGE.md](./FORGE.md)** — Overview of agent skill authoring and core concepts
    - Plugin types (library vs customer-facing)
    - Repo topology (dev vs published)
    - Release workflows
@@ -138,47 +135,47 @@ The canonical Forge knowledge pack in this repository lives under [`/squads/forg
 
 ### Scenario 1: "I'm building a reusable code formatter"
 
-You're building a **library plugin**.
+You're building a **library skill**.
 
 → Follow [FORGE_SETUP.md](./FORGE_SETUP.md) to set up dev repo  
-→ Reference [PLUGIN_MANIFEST.md library example](./PLUGIN_MANIFEST.md#example-library-plugin)  
-→ Use [FORGE_QUICK_REF.md "Minimal Library Plugin" structure](./FORGE_QUICK_REF.md#minimal-library-plugin)  
+→ Reference [PLUGIN_MANIFEST.md library example](./PLUGIN_MANIFEST.md#example-library-skill)  
+→ Use [FORGE_QUICK_REF.md "Minimal Library Skill" structure](./FORGE_QUICK_REF.md#minimal-library-skill)  
 → Publish to npm as `@myorg/skill-code-formatter`
 
 ### Scenario 2: "I'm building a code review bot"
 
-You're building a **customer-facing plugin**.
+You're building a **customer-facing skill package**.
 
 → Determine APM needs using [FORGE.md recommendation flow](./FORGE.md#architecture-recommendation-flow)  
 → Set up dev repo with [FORGE_SETUP.md](./FORGE_SETUP.md)  
-→ Reference [PLUGIN_MANIFEST.md customer-facing example](./PLUGIN_MANIFEST.md#example-customer-facing-plugin)  
+→ Reference [PLUGIN_MANIFEST.md customer-facing example](./PLUGIN_MANIFEST.md#example-customer-facing-skill-package)  
 → Publish with agents and system prompts  
 
 ### Scenario 3: "I need to understand why Forge is structured this way"
 
 → Read [FORGE_DESIGN_PHILOSOPHY.md](./FORGE_DESIGN_PHILOSOPHY.md)  
-→ Look for relevant decision (e.g., "Decision 1: Two Plugin Types")
+→ Look for relevant decision (e.g., "Decision 1: Two Skill Types")
 
-### Scenario 4: "I have an existing plugin repo and want to migrate to Forge"
+### Scenario 4: "I have an existing skill repo and want to migrate to Forge"
 
 → Audit current structure  
-→ Classify as library or customer-facing using [FORGE_QUICK_REF.md decision tree](./FORGE_QUICK_REF.md#plugin-type-decision-tree)  
+→ Classify as library or customer-facing using [FORGE_QUICK_REF.md decision tree](./FORGE_QUICK_REF.md#skill-type-decision-tree)  
 → Restructure to match [FORGE.md dev repo structure](./FORGE.md#dev-repo-structure)  
 → Create plugin.json using [PLUGIN_MANIFEST.md](./PLUGIN_MANIFEST.md)  
 → Set up tooling from [FORGE_SETUP.md](./FORGE_SETUP.md)
 
 ## Key Concepts
 
-### Plugin Types
+### Skill Types
 
-- **Library Plugin:** Skills only, no agents or UI. Reusable utilities.
-- **Customer-Facing Plugin:** Skills + agents + prompts. Complete workflows.
+- **Library Skill:** Tools and resources only, no agents or UI. Reusable utilities.
+- **Customer-Facing Skill Package:** Skills + agents + prompts. Complete workflows.
 
 ### Repositories
 
-- **Dev Repo:** Central build location where plugins are created and tested.
+- **Dev Repo:** Central build location where skills are created and tested.
 - **Published Repo:** Distributed, versioned package (npm, GitHub releases, etc.).
-- **Plugin Home Repo:** Organization-wide registry tracking all plugins.
+- **Skill Home Repo:** Organization-wide registry tracking all skills and distributions.
 
 ### Status Lifecycle
 
@@ -189,7 +186,7 @@ You're building a **customer-facing plugin**.
 
 ### PLUGINS.md
 
-Human-readable registry file showing plugins, versions, status, and maintainers. In larger dev repos it is often generated; in lean repos it can be tracked directly.
+Human-readable registry file showing published skills, versions, status, and maintainers. In larger dev repos it is often generated; in lean repos it can be tracked directly.
 
 ## Getting Help
 
