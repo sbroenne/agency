@@ -1,8 +1,8 @@
-# Forge: Authoring Prompts, Agents, and Skills for Distribution
+# Forge: Authoring Prompts, Agents, and Skills for Plugins
 
-Welcome to **Forge**, the authoring and distribution system for reusable prompts, custom agents, and agent skills in the Agency squad ecosystem.
+Welcome to **Forge**, the authoring and plugin system for reusable prompts, custom agents, and agent skills in the Agency squad ecosystem.
 
-Forge provides the architecture, workflows, and guidance for authoring prompts, custom agents (AGENT.md-style), and agent skills, organizing them into distributions, and packaging them for GitHub Copilot plugins. This directory is the canonical Forge knowledge pack — containing the distribution registry, authoring guides, reference scaffolds, and release workflow templates that ship with the squad.
+Forge provides the architecture, workflows, and guidance for authoring prompts, custom agents (AGENT.md-style), and agent skills, packaging them as plugins for GitHub Copilot. This directory is the canonical Forge knowledge pack — containing the plugin registry, authoring guides, reference scaffolds, and release workflow templates that ship with the squad.
 
 ## Quick Start
 
@@ -18,10 +18,10 @@ Forge helps you author and organize three types of reusable assets:
 - **Custom Agents** — AGENT.md-style agent definitions with instructions, behaviors, and tool bindings
 - **Agent Skills** — Reusable capabilities with tools, resources, and instructions that stand alone or are packaged
 
-These authoring units can be organized into:
+These authoring units can be packaged as:
 
-- **Distribution** — Organized package of prompts, custom agents, and/or skills, packaged as `plugin.json` and distributed via npm or GitHub
-- **GitHub Copilot Plugin** — Installable bundle that includes one or more Forge distributions, custom agents, prompts, and hooks for Copilot marketplace installation
+- **Plugin** — User-facing deliverable of prompts, custom agents, and/or skills, packaged as `plugin.json` and distributed via npm or GitHub
+- **Distribution Type** — Internal classification: library (skills only) or customer-facing (complete workflows)
 
 ### I want to author a prompt or agent
 

@@ -1,8 +1,8 @@
 # Plugin Manifest Schema
 
-The `plugin.json` manifest is the technical packaging format for organizing and distributing reusable agent skills within Forge. It describes an agent skill's metadata, capabilities, and publishing details.
+The `plugin.json` manifest defines a **plugin** — the user-facing deliverable of prompts, custom agents, and/or agent skills. It describes an agent skill's metadata, capabilities, and publishing details.
 
-**Key distinction:** `plugin.json` is how you package skills for distribution; **agent skills** are what you build.
+**Key distinction:** `plugin.json` is the manifest for a **plugin**; **agent skills** are reusable capabilities within it.
 
 ## Schema Definition
 

@@ -638,3 +638,106 @@ Messaging is now balanced and consistent. New users reading docs will see:
 - GitHub Copilot plugins as the final distribution target, not the lead story
 - Library distributions (skills-only) and customer-facing distributions (mixed assets) as equally valid patterns
 
+## Learnings
+
+### Plugin vs. Distribution Terminology (Research Pass, Mar 2025)
+
+**Finding:** User correctly identified terminology gap. Latest official docs (GitHub Copilot, Claude Code, GitHub CLI) all use **"plugin"** as the user-facing term for distributable packages.
+
+**Evidence:**
+- **GitHub CLI**: Official docs use only "extension" (not plugin)
+- **GitHub Copilot**: "Plugin" = marketplace-installable bundle; "Skill" = capability; "Agent" = assistant persona
+- **Claude Code**: "Plugin" = distribution wrapper for extensions (skills, hooks, MCP)
+
+**Current Forge state:**
+- Uses "distribution" as primary term (internal organizing concept)
+- Mentions "plugin" only as "implementation detail" in `plugin.json`
+- Creates ambiguity: users don't know "Am I publishing a distribution or a plugin?"
+
+**Decision:** Plugin is the correct user-facing term. Distribution is architecture-internal. Recommendation level: HIGH (affects product messaging, user onboarding).
+
+**Affected files identified:**
+- docs/FORGE.md (lines 7, 13, 25-26, 34-35)
+- squads/forge/README.md (lines 4, 23-24, 45-50)
+- docs/PLUGIN_MANIFEST.md (lines 1-2, 5)
+
+**What NOT to change:**
+- "Distribution type" (library vs. customer-facing) — internal classification, correct as-is
+- "Agent Skill" terminology — distinct unit term, correct
+- Directory structure `/skills/` — no migration needed
+
+**Status:** Recommendation documented; awaiting decision before code changes.
+
+---
+
+## 2026-03-20: Forge Plugin Terminology Fix
+
+**Event:** Implemented user-facing terminology correction: "distribution" → "plugin"  
+**Date:** 2026-03-20T12:15:00Z  
+**Status:** ✅ COMPLETE  
+**Validation:** npm run validate ✅ | npm test (12/12 pass) ✅ | npm run build ✅  
+
+**Changes made (4 surgical edits):**
+
+1. **docs/FORGE.md** — Overview section
+   - Line 7: "organize them into distributions" → "package them as plugins"
+   - Line 25-27: Terminology block — redefined "Plugin" as user-facing deliverable; "distribution type" as internal classification
+   - Removed artificial distinction between "Forge distributions" and "GitHub Copilot Plugins" (they're the same thing)
+
+2. **squads/forge/README.md** — Core Concepts
+   - Lines 23-24: Replaced dual "Distribution" + "GitHub Copilot Plugin" definitions with unified "Plugin" definition
+   - Clarified internal taxonomy: "Distribution Type" is the internal classification
+
+3. **docs/PLUGIN_MANIFEST.md** — Introduction
+   - Line 3: Redefined manifest purpose: "technical packaging format" → "defines a **plugin** (user-facing deliverable)"
+   - Line 5: Key distinction reframed from "how you package" → "manifest for a plugin"
+
+**Architectural decisions preserved:**
+- ✅ Internal taxonomy ("distribution type": library vs. customer-facing) unchanged
+- ✅ "Agent Skill" terminology intact
+- ✅ Directory structure (`/skills/`, etc.) unchanged
+- ✅ `plugin.json` filename correct
+
+**Outcome:** Top-level user narrative now aligns with GitHub Copilot & Claude Code official terminology (Feb-Mar 2025 docs). Users see "plugin" as the primary deliverable; internal architecture clarity maintained.
+
+**PR branch:** feat/forge-messaging-fixes (updated)  
+**Next:** Leia will merge after this patch lands.
+
+## Learnings
+
+1. **Plugin vs. Distribution**: The user-facing top-level term should match upstream platform terminology (GitHub Copilot plugins, Claude Code plugins). Internal taxonomy (distribution types) remains useful for architecture communication.
+
+2. **Terminology precision in product docs**: Ambiguity between user-facing deliverables and internal implementation details creates onboarding friction. A clear, unified user narrative reduces cognitive load and increases adoption confidence.
+
+3. **Minimal targeted edits > structural refactoring**: When correcting terminology, surgical edits (4 locations across 3 files) are safer and faster than restructuring directories or renaming patterns. Validation run confirms integrity.
+
+4. **Decision documentation drives implementation confidence**: Having the decision.md clearly written with "What NOT to change" section allowed me to implement with precision and confidence that architectural integrity was maintained.
+
+---
+
+## 2026-03-20: Forge Plugin Terminology — Final Consistency Pass
+
+**Event:** Surgical pass to eliminate remaining "distribution" language from top-level entry points  
+**Date:** 2026-03-20T12:20:00Z  
+**Status:** ✅ COMPLETE  
+**Validation:** npm run validate ✅ | npm test (12/12 pass) ✅ | npm run build ✅  
+
+**Changes made (3 additional surgical edits):**
+
+1. **squads/forge/README.md** Line 1: Title
+   - "for Distribution" → "for Plugins"
+
+2. **squads/forge/README.md** Line 3-5: Intro (2 edits)
+   - "authoring and distribution system" → "authoring and plugin system"
+   - "organizing them into distributions, and packaging them for GitHub Copilot plugins" → "packaging them as plugins for GitHub Copilot"
+   - "distribution registry" → "plugin registry"
+
+3. **docs/FORGE.md** Line 17: Published state
+   - "published distributions" → "published plugins"
+
+**Result:** Top-level user-facing language now consistently uses "plugin" as primary term. All entry-point lines (title, intro, section headers) align. Internal "distribution type" classification preserved for architecture communication.
+
+**Total patch scope:** 7 edits across 2 files, all validation gates pass.
+
+
+
