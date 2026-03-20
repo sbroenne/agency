@@ -1,0 +1,98 @@
+name: Release plugin to plugin repo
+
+on:
+  workflow_dispatch:
+    inputs:
+      plugin_version:
+        description: Version being published from the dev repo
+        required: true
+      plugin_path:
+        description: Path to the plugin directory inside the dev repo
+        required: true
+        default: plugins/excel-mcp-server
+  push:
+    tags:
+      - 'excel-mcp-server@*'
+
+permissions:
+  contents: read
+
+jobs:
+  publish-plugin-repo:
+    runs-on: ubuntu-latest
+    env:
+      DEFAULT_PLUGIN_PATH: plugins/excel-mcp-server
+      TARGET_REPO: ${{ vars.FORGE_PLUGIN_REPO }}
+    steps:
+      - name: Checkout dev repo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Resolve plugin path
+        id: plugin-path
+        shell: bash
+        run: |
+          PLUGIN_PATH="${{ github.event.inputs.plugin_path }}"
+          if [ -z "$PLUGIN_PATH" ]; then
+            PLUGIN_PATH="$DEFAULT_PLUGIN_PATH"
+          fi
+
+          if [ ! -d "$PLUGIN_PATH" ]; then
+            echo "Plugin path '$PLUGIN_PATH' does not exist in this dev repo." >&2
+            exit 1
+          fi
+
+          echo "path=$PLUGIN_PATH" >> "$GITHUB_OUTPUT"
+
+      - name: Require target plugin repo configuration
+        shell: bash
+        run: |
+          if [ -z "$TARGET_REPO" ]; then
+            echo "Set repository variable FORGE_PLUGIN_REPO to owner/name of the published plugin repo." >&2
+            exit 1
+          fi
+
+      - name: Export plugin payload only
+        shell: bash
+        run: |
+          mkdir -p /tmp/forge-plugin-release
+          rsync -a --delete \
+            --exclude '.git' \
+            --exclude 'node_modules' \
+            --exclude 'coverage' \
+            "${{ steps.plugin-path.outputs.path }}/" \
+            /tmp/forge-plugin-release/
+
+      - name: Checkout published plugin repo
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ vars.FORGE_PLUGIN_REPO }}
+          ref: ${{ vars.FORGE_PLUGIN_BRANCH || 'main' }}
+          path: published-plugin
+          token: ${{ secrets.FORGE_PLUGIN_REPO_TOKEN }}
+
+      - name: Sync release payload into published repo
+        shell: bash
+        run: |
+          rsync -a --delete /tmp/forge-plugin-release/ published-plugin/
+
+      - name: Commit and push published plugin repo
+        shell: bash
+        working-directory: published-plugin
+        run: |
+          if git diff --quiet --exit-code; then
+            echo "No published plugin changes detected."
+            exit 0
+          fi
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          VERSION="${{ github.event.inputs.plugin_version }}"
+          if [ -z "$VERSION" ]; then
+            VERSION="${GITHUB_REF_NAME#excel-mcp-server@}"
+          fi
+
+          git add .
+          git commit -m "release: publish excel-mcp-server ${VERSION}"
+          git push origin "HEAD:${TARGET_BRANCH:-main}"

@@ -1,0 +1,10 @@
+{
+  "name": "@forge-examples/excel-mcp-server-reference",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Forge reference scaffold for Excel MCP Server library plugin authoring.",
+  "engines": {
+    "node": ">=20.0.0"
+  }
+}

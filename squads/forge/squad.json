@@ -1,0 +1,57 @@
+{
+  "$schema": "../../tooling/schema/squad.schema.json",
+  "specVersion": "1.0",
+  "id": "forge",
+  "slug": "forge",
+  "name": "Forge",
+  "status": "live",
+  "tagline": "Helps you author and package agent skills for AI workflows.",
+  "summary": "Forge guides you from concept to a working agent skill. It asks what you want to build, recommends the right architecture, and helps you package skills into distributions for reuse.",
+  "mission": "Accelerate agent skill authoring by providing architecture guidance, skill organization patterns, and reference examples like Excel MCP Server.",
+  "focus": [
+    "skill authoring",
+    "skill distribution",
+    "MCP integration",
+    "asset tracking",
+    "reference scaffolding"
+  ],
+  "source": {
+    "repository": "https://github.com/sbroenne/agency",
+    "directory": "squads/forge",
+    "homepage": "https://sbroenne.github.io/agency/",
+    "import": {
+      "type": "manual",
+      "path": "squads/forge/squad.json",
+      "ref": "main"
+    }
+  },
+  "links": [
+    {
+      "label": "Repository",
+      "url": "https://github.com/sbroenne/agency"
+    },
+    {
+      "label": "Forge Guide",
+      "url": "https://github.com/sbroenne/agency/tree/main/squads/forge"
+    },
+    {
+      "label": "Excel Reference",
+      "url": "https://github.com/sbroenne/agency/tree/main/squads/forge/workflows/excel-mcp-server"
+    }
+  ],
+  "team": {
+    "name": "Forge",
+    "members": [
+      {
+        "name": "Anvil",
+        "role": "Architecture Advisor",
+        "expertise": ["skill architecture", "distribution patterns", "standalone vs APM"]
+      },
+      {
+        "name": "Crucible",
+        "role": "Skill Author",
+        "expertise": ["MCP skills", "tool implementation", "schema design"]
+      }
+    ]
+  }
+}

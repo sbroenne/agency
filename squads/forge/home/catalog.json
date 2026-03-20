@@ -1,0 +1,61 @@
+{
+  "homeModelVersion": "1.0",
+  "description": "Lean Forge home tracker for reference plugins and reusable authoring artifacts.",
+  "trackedAt": "2026-03-19T22:00:00Z",
+  "plugins": [
+    {
+      "id": "excel-mcp-server-reference",
+      "slug": "excel-mcp-server-reference",
+      "displayName": "Excel MCP Server Reference Plugin",
+      "referenceTarget": {
+        "name": "Excel MCP Server",
+        "homepage": "https://excelmcpserver.dev"
+      },
+      "status": "reference",
+      "pluginTypeRecommendation": "library",
+      "runtimeRecommendation": "standalone-first",
+      "apm": {
+        "default": "not-required",
+        "introduceWhen": [
+          "cross-skill orchestration becomes a plugin concern",
+          "plugin-owned persistence is required",
+          "stateful routing across multiple agents is required"
+        ]
+      },
+      "artifacts": [
+        {
+          "kind": "workflow",
+          "path": "squads/forge/workflows/excel-mcp-server/workflow.json"
+        },
+        {
+          "kind": "release-workflow",
+          "path": "squads/forge/workflows/excel-mcp-server/release-plugin-repo.yml"
+        },
+        {
+          "kind": "scaffold",
+          "path": "squads/forge/scaffolds/excel-mcp-server/plugin.json"
+        },
+        {
+          "kind": "scaffold",
+          "path": "squads/forge/scaffolds/excel-mcp-server/package.json"
+        },
+        {
+          "kind": "scaffold",
+          "path": "squads/forge/scaffolds/excel-mcp-server/skills/index.mjs"
+        },
+        {
+          "kind": "tracker",
+          "path": "squads/forge/PLUGINS.md"
+        }
+      ],
+      "reuseSignals": [
+        "Workbook read/write skill shapes can be reused for other spreadsheet plugins.",
+        "Excel-specific prompts remain outside the library plugin unless a customer-facing workflow is intentionally added."
+      ],
+      "refactoringWatch": [
+        "Consolidate workbook operation schemas if future spreadsheet plugins repeat the same inputs.",
+        "Promote shared manifest fragments only after at least two plugins reuse them."
+      ]
+    }
+  ]
+}
