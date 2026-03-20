@@ -868,3 +868,70 @@ Messaging is now balanced and consistent. New users reading docs will see:
 - **Effort:** 3-4 doc edits + 1 scaffold template
 
 ---
+
+## Learnings
+
+### Implementation: Anthropic Skill-Authoring Mode for Forge (2026-03-20)
+
+**Decision:** Adopted Anthropic's SKILL.md portable format as the primary authoring layer for Forge skills while preserving plugin.json as the distribution packaging layer.
+
+**What was implemented:**
+
+1. **FORGE.md** — Added comprehensive three-layer architecture section:
+   - Layer 1: Agent skills authored with SKILL.md (portable, self-contained)
+   - Layer 2: Organized into distributions with plugin.json (metadata, coordination)
+   - Layer 3: Published as GitHub Copilot plugins (user-facing delivery)
+   - Clarified why all three layers matter despite potential redundancy perception
+
+2. **FORGE_SETUP.md** — Restructured guide to teach skill-first authoring:
+   - New section: "Creating Your First Skill: SKILL.md Format" (details frontmatter, structure, example)
+   - Renamed distribution creation section to clarify the progression
+   - Added explicit relationship map between SKILL.md and plugin.json
+
+3. **FORGE_QUICK_REF.md** — Added SKILL.md formatting section:
+   - Progressive disclosure pattern with frontmatter example
+   - Clarified where SKILL.md fits in the three-layer model
+   - Updated file structure examples to show SKILL.md in each skill directory
+
+4. **squads/forge/EXCEL_MCP_AUTHORING.md** — Reframed as three-layer walkthrough:
+   - Updated title and overview to emphasize portable skills + distribution packaging
+   - Added complete SKILL.md example for "Excel File Operations" skill
+   - Expanded plugin.json section to clarify its complementary role
+   - Added "Relationship to SKILL.md" callout
+
+5. **squads/forge/README.md** — Enhanced with layering clarity:
+   - Updated "I want to author an agent skill" section to teach three-layer model
+   - Expanded FAQ with five new Q&As covering SKILL.md/plugin.json relationships
+   - Clarified skill authoring as Layer 1 before distribution packaging
+
+6. **squads/forge/scaffolds/excel-mcp-server/skills/SKILL.md.template** — Created:
+   - Template demonstrating frontmatter, sections, and progressive disclosure
+   - Shows input/output schema patterns
+   - Includes best practices and error handling guidance
+
+**Key terminology preserved:**
+- "Agent Skill" remains the core unit (aligns with Anthropic/industry standard)
+- "Distribution" remains organizational layer (Forge-specific, valuable for GitHub Copilot)
+- "GitHub Copilot Plugin" remains user-facing deliverable
+- No changes to existing file names or directory structures
+
+**Architecture impact:**
+- Zero architectural changes to Forge itself
+- Docs and examples now teach skills-first mindset
+- plugin.json remains unchanged in schema and purpose
+- All existing tools (npm scripts, validation) continue working
+- Risk: Low (additive, non-breaking, docs-focused)
+
+**Validation:**
+- ✅ `npm run validate` passes
+- ✅ `npm test` passes (12/12 tests)
+- ✅ `npm run build` succeeds
+- ✅ All GitHub Copilot plugin vs. skill boundary knowledge preserved
+- ✅ No regression in existing Forge workflows
+
+**Team value:**
+- Aligns with Anthropic's portable skill model (ecosystem credibility)
+- Clearer mental model for skill authors (layer 1 vs. layer 2 concerns)
+- Lower cognitive load with progressive disclosure (SKILL.md frontmatter → full docs)
+- Portable skills can be understood independently or ported to other platforms
+- Validates our three-layer architecture as intentional, not accidental

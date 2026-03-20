@@ -33,12 +33,19 @@ Start with Forge basics:
 
 ### I want to author an agent skill
 
-Start with the **Excel MCP Server template**:
+Start with understanding **Forge's three-layer skill authoring model**:
 
-1. Read [EXCEL_MCP_AUTHORING.md](./EXCEL_MCP_AUTHORING.md) — Complete walkthrough using Excel MCP as the template
-2. Review [Forge architecture overview](../../docs/FORGE.md) — Understand skill types and design patterns
-3. Check [PLUGINS.md](./PLUGINS.md) — See what's already published
-4. Copy [workflows/excel-mcp-server/release-plugin-repo.yml](./workflows/excel-mcp-server/release-plugin-repo.yml) into your dev repo when ready to distribute
+1. **Layer 1 — Author Skills (SKILL.md format)** — Create portable, self-contained skill documentation
+2. **Layer 2 — Organize Distributions (plugin.json)** — Group related skills with metadata
+3. **Layer 3 — Publish Plugins** — Release as GitHub Copilot plugins
+
+Then follow these steps:
+
+1. Read [docs/FORGE_SETUP.md](../../docs/FORGE_SETUP.md) — Understand the three-layer model with examples
+2. Read [EXCEL_MCP_AUTHORING.md](./EXCEL_MCP_AUTHORING.md) — Complete walkthrough using Excel MCP as the template
+3. Create your first skill using the **SKILL.md format** (see scaffolds/excel-mcp-server/skills/SKILL.md.template)
+4. Review [docs/FORGE.md](../../docs/FORGE.md) — Understand skill types and design patterns
+5. Check [PLUGINS.md](./PLUGINS.md) — See what's already published
 
 ### I want to package authoring units into a distribution
 
@@ -236,6 +243,37 @@ See [.github/workflows/forge-plugin-validate.yml](../../.github/workflows/forge-
 
 ## FAQ
 
+### Q: What's the relationship between SKILL.md and plugin.json?
+
+**A:** They serve different layers:
+
+- **SKILL.md** (Layer 1) — Portable, standalone skill documentation that includes name, description, usage examples, and input/output schemas. Created for each individual skill. Can be understood independently and potentially used across platforms.
+
+- **plugin.json** (Layer 2) — Distribution manifest that coordinates multiple skills, agents, and prompts. Includes metadata (name, version, status), skill inventory, and publishing details. Used for packaging and release.
+
+**In practice:**
+```
+skills/excel-file-ops/
+  ├── SKILL.md         # "What is this skill?" (portable)
+  ├── index.js         # Implementation
+  └── schema.json      # Tool schema
+
+plugin.json           # "What skills does this distribution contain?" (packaging)
+```
+
+Both are needed. SKILL.md makes individual skills discoverable and reusable; plugin.json coordinates them for distribution.
+
+### Q: Do I start with SKILL.md or plugin.json?
+
+**A:** Start with **SKILL.md**. Each skill gets its own SKILL.md file as its canonical documentation. When ready to publish multiple skills together, add plugin.json as the organizational layer. See [FORGE_SETUP.md](../../docs/FORGE_SETUP.md) for step-by-step guidance.
+
+### Q: Can I use SKILL.md without plugin.json?
+
+**A:** Yes, for single skills or sharing individual skills. plugin.json is only needed when:
+- Packaging multiple skills into a distribution
+- Publishing to the Forge registry (PLUGINS.md)
+- Creating a customer-facing plugin with agents and prompts
+
 ### Q: Do I need APM for my plugin?
 
 **A:** Not initially. Use the questionnaire in [docs/FORGE.md](../../docs/FORGE.md):
@@ -247,10 +285,10 @@ Excel MCP Server demonstrates the simple path — zero APM needed.
 ### Q: What's the difference between an agent skill, a distribution, and a Copilot plugin?
 
 **A:**
-- **Agent Skill** — A reusable capability with tools and resources (e.g., "Excel file operations"; author one or group multiple)
+- **Agent Skill** — A reusable capability with tools and resources (e.g., "Excel file operations"; author one or group multiple). Documented with **SKILL.md**.
 - **Prompt** — System prompt, few-shot examples, or conversation starter for agent use cases (author alongside skills)
 - **Custom Agent** — AGENT.md-style agent definition with instructions and behavior (author alongside skills and prompts)
-- **Distribution** — Package that organizes prompts, agents, and/or skills (e.g., "Excel MCP Server" = skills only; "Code Reviewer" = skills + custom agent + prompts)
+- **Distribution** — Package that organizes prompts, agents, and/or skills (e.g., "Excel MCP Server" = skills only; "Code Reviewer" = skills + custom agent + prompts). Coordinated by **plugin.json**.
 - **GitHub Copilot Plugin** — Installable bundle that includes one or more Forge distributions, custom agents, prompts, hooks, and slash commands for Copilot marketplace installation
 
 Distributions are how you organize authoring units. Copilot plugins are how you deliver them to Copilot users.

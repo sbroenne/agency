@@ -71,6 +71,95 @@ excel-mcp-server/
 
 #### `skills/excel-file-ops/SKILL.md` (Portable Skill Documentation)
 
+Each skill starts with SKILL.md—a self-contained, portable documentation file:
+
+```markdown
+---
+name: "Excel File Operations"
+description: "Create, open, save, and manage Excel workbooks and sheets"
+tags: ["excel", "windows", "file-operations", "workbooks"]
+capabilities: ["create workbook", "open workbook", "save workbook", "add sheet", "close workbook"]
+---
+
+# Excel File Operations
+
+## Overview
+
+This skill provides core Excel file operations for creating, opening, and managing workbooks and sheets. It's the foundational skill for any Excel automation workflow.
+
+## What It Does
+
+- Create new Excel workbooks
+- Open existing workbooks from disk
+- Save workbooks with various formats
+- Add new worksheets
+- Close workbooks and free resources
+
+## Usage Example
+
+\`\`\`javascript
+import { createWorkbook, addSheet, saveWorkbook } from "excel-file-ops";
+
+// Create a new workbook
+const wb = await createWorkbook("report.xlsx");
+
+// Add a worksheet
+await addSheet(wb, { name: "Data", index: 0 });
+
+// Save to disk
+await saveWorkbook(wb, "C:\\Reports\\report.xlsx");
+\`\`\`
+
+## Input Schema
+
+\`\`\`json
+{
+  "createWorkbook": {
+    "type": "object",
+    "properties": {
+      "filename": { "type": "string", "description": "Name for new workbook" }
+    },
+    "required": ["filename"]
+  },
+  "openWorkbook": {
+    "type": "object",
+    "properties": {
+      "path": { "type": "string", "description": "Full path to workbook" }
+    },
+    "required": ["path"]
+  }
+}
+\`\`\`
+
+## Output Schema
+
+\`\`\`json
+{
+  "type": "object",
+  "properties": {
+    "workbookId": { "type": "string", "description": "Handle to opened/created workbook" },
+    "success": { "type": "boolean" },
+    "path": { "type": "string" }
+  }
+}
+\`\`\`
+
+## Best Practices
+
+- Always close workbooks after you're done to free COM resources
+- Use absolute paths for reliability
+- Handle errors gracefully in multi-sheet operations
+\`\`\`
+
+This SKILL.md is:
+- **Portable:** Can be understood independently, shared, or migrated to other platforms
+- **Self-contained:** Includes everything a user needs to understand the skill
+- **Progressive:** Basic summary up top, detailed input/output schemas below
+
+#### `plugin.json` (Distribution Manifest)
+
+The `plugin.json` coordinates all skills in the distribution. It lists metadata, skills, and publishing information:
+
 ```json
 {
   "id": "excel-mcp-server",
@@ -112,6 +201,13 @@ excel-mcp-server/
   },
   "status": "stable"
 }
+```
+
+**Relationship to SKILL.md:**
+- Each skill listed in `plugin.json` has a corresponding `skills/{skill-id}/SKILL.md` file
+- SKILL.md provides portable, detailed documentation
+- plugin.json provides distribution-level coordination and metadata
+- Together, they make skills both discoverable (SKILL.md) and packagable (plugin.json)
 ```
 
 #### `package.json`
