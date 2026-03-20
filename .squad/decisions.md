@@ -2980,3 +2980,88 @@ Forge validation surfaces are now terminology-aligned with Mon Mothma's product-
 - Build status: Clean
 
 **Next:** This change is orthogonal to other Forge work. Safe to merge and propagate to dependent squads (Scout, Agency).
+
+---
+
+### User Directive: Copilot Plugin Research
+
+**By:** Stefan Broenner (via Copilot)  
+**Date:** 2026-03-20T08:37:25Z  
+**Status:** Captured & Researched
+
+#### What
+
+Forge creates GitHub Copilot plugins, not only agent skills. Research what that is and remember it.
+
+#### Why
+
+User correction — clarify team understanding of GitHub Copilot plugins and product scope.
+
+---
+
+### Decision: GitHub Copilot Plugins and Agent Skills Boundary
+
+**Date:** 2026-03-20  
+**Decision Owner:** Mon Mothma  
+**Status:** Documented for team knowledge  
+**Requested by:** Stefan Broenner
+
+#### What We Discovered
+
+##### GitHub Copilot Plugin
+
+A **GitHub Copilot plugin** is a **bundled distribution package** that enables teams to share complete Copilot customizations through marketplaces like `awesome-copilot`:
+
+- **Contents**: Custom agents, agent skills, slash commands, hooks, MCP server integrations
+- **Distribution**: Installed from marketplace or Git repo
+- **Scope**: Complete toolkit bundled as a single package
+- **Installation**: One-click install makes all bundled capabilities available
+
+Examples:
+- "Test Suite" plugin (bundles test-runner skill + test-reviewer agent + report hooks)
+- "Code Review" plugin (bundles code-analysis skills + reviewer agent + commenting hooks)
+
+##### Agent Skill
+
+An **agent skill** is a **single, reusable capability**:
+
+- **Scope**: Discrete piece of work (e.g., "unit testing", "GitHub Actions debugging")
+- **Contents**: Instructions, resources, scripts
+- **Discovery**: Auto-loaded by relevance from `.github/skills` folders
+- **Distribution**: Can stand alone or be bundled into a plugin
+
+##### The Relationship
+
+```
+Agent Skill  →  (can be packaged into)  →  GitHub Copilot Plugin
+   ↓                                              ↓
+ What you build                          How you distribute it
+ (single capability)                     (bundled toolkit)
+```
+
+A GitHub Copilot plugin **bundles one or more agent skills** (plus agents, hooks, commands) into a single installable package.
+
+#### Forge's Scope
+
+Forge currently focuses on **authoring and distributing agent skills**. The product narrative should expand to clarify:
+
+1. **Forge helps authors create agent skills** — the core reusable capability
+2. **These skills can be packaged as GitHub Copilot plugins** — the distribution mechanism for Copilot installations
+3. **The distinction matters for architecture**: Skill = modular unit; Plugin = distribution bundle
+
+**Current state**: Forge documentation acknowledges "skill distributions" but does not explicitly connect this to GitHub Copilot plugins as an end-state distribution target.
+
+#### Recommendation
+
+**No immediate action required**, but the team should consider:
+
+1. **Clarify the value chain**: "Forge helps author agent skills that can be packaged and distributed as GitHub Copilot plugins"
+2. **When documenting Copilot plugin distribution**, reference how Forge's skill packaging aligns with Copilot plugin requirements
+3. **Update focus areas in `squads/forge/squad.json`** to include "Copilot plugin distribution" alongside "skill distribution"
+
+#### Key Takeaway
+
+**Forge does not create only agent skills.** It creates **agent skills that can be bundled into GitHub Copilot plugins** for distribution through Copilot marketplaces. The distinction between agent skills (what you build) and Copilot plugins (how you bundle and distribute them) is important for product clarity.
+
+---
+

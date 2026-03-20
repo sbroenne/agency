@@ -305,3 +305,58 @@ Forge helps teams author reusable agent skills and package/distribute them for t
 **Cross-Agent:** C-3PO validated terminology shift; zero schema-level issues; all 28 terminology references corrected; propagation ready for Scout and Agency squads.
 
 ---
+
+## 2026-03-20: GitHub Copilot Plugin Boundary Research
+
+**Event:** User correction: "Forge creates GitHub Copilot plugins, not only agent skills."  
+**Date:** 2026-03-20  
+**Status:** Researched & Documented
+
+### Key Finding: The Distinction
+
+**GitHub Copilot Plugin** = **Bundled distribution package** containing:
+- Custom agents (personas)
+- Agent skills (reusable capabilities)
+- Slash commands
+- Hooks/event triggers
+- MCP integrations
+- Installable from `awesome-copilot` or Git marketplaces
+
+**Agent Skill** = **Single reusable capability**:
+- Discrete piece of work (e.g., "unit testing", "code review")
+- Auto-discovered from `.github/skills`
+- Can stand alone OR be bundled into a plugin
+
+### The Relationship
+
+A GitHub Copilot plugin **bundles one or more agent skills** (plus agents, hooks, commands) into a single installable package for Copilot CLI, VS Code, or IDE.
+
+**Value chain:** Skill (what you build) → Skill Distribution (how you organize) → Copilot Plugin (how you ship to Copilot marketplace)
+
+### Forge's Position
+
+Current framing: Forge authors "agent skills" and "skill distributions"  
+Complete framing: Forge enables teams to author agent skills that **can be packaged and distributed as GitHub Copilot plugins**
+
+**Status:** No documentation change required. Current framing is accurate but incomplete. The product already supports this; the narrative just needs expansion to explicitly connect to Copilot plugin distribution.
+
+**Decision:** Team should clarify in public-facing materials that Forge-authored skills support Copilot plugin distribution pathways. This positions Forge as enabling the full distribution stack, not just individual skill authoring.
+
+**Logged to:** `.squad/decisions/inbox/mon-mothma-copilot-plugin-boundary.md`
+
+## 2026-03-20: Copilot Plugin Research & Boundary Clarification
+
+**Session:** Copilot Plugin Research (2026-03-20T08:42:40Z)
+
+Researched and documented GitHub Copilot plugins in response to Stefan Broenner's directive. Established the boundary:
+
+- **GitHub Copilot Plugin:** Bundled distribution package containing one or more agent skills + agents/hooks/commands/MCP integrations
+- **Agent Skill:** Modular, reusable capability (what Forge authors)
+- **Relationship:** Skills are packaged into plugins for distribution
+
+**Key clarification:** Forge's scope is authoring and packaging agent skills; these skills become the building blocks of GitHub Copilot plugins when distributed through Copilot marketplaces.
+
+**Recommendation:** Expand Forge product narrative to clarify the value chain and reference Copilot plugin distribution as a target use case.
+
+**Status:** Documented; decision captured for team reference.
+
