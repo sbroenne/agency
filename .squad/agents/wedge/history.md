@@ -7,6 +7,7 @@
 - **Joined:** 2026-03-17T05:21:16.969Z
 - **Requested by:** Stefan Broenner
 - **Current stack:** Astro 5.7, Tailwind 4.1, Playwright for browser-based UX verification
+- **Last Summarized:** 2026-03-20 (core learnings consolidated; working sessions tracked below)
 
 ## Learnings
 
