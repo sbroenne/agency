@@ -56,3 +56,20 @@
 **Decision inbox status:** Entries from Mon Mothma and R2-D2 merged into decisions.md; archived in inbox (inbox now empty).
 
 ---
+
+### Marketplace Cleanup Consolidation (2026-03-19)
+
+**Event:** Leia executed approved marketplace cleanup  
+**Date:** 2026-03-19T12:04:36Z
+
+**Work:** Consolidated `scripts/`, `tests/`, `schema/`, `test/` → `tooling/` directory.
+
+**PR:** #1 `chore: marketplace cleanup consolidation`  
+**Status:** Merged; main @ 5acbabe  
+
+**Scribe work:**
+- Orchestration log: 2026-03-19T12:04:36Z-leia.md
+- Session log: 2026-03-19T12:04:36Z-pr-merge.md  
+- Cross-agent update: Appended to Leia's history.md
+
+---

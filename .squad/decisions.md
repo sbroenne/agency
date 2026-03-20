@@ -2738,3 +2738,479 @@ Both are agency-only (respecting user directive). Both have similar implementati
 - **User directive:** `.squad/decisions/inbox/copilot-directive-2026-03-19T11-00-31Z.md`
 - **Orchestration logs:** `.squad/orchestration-log/2026-03-19T11:21:22Z-{leia,mon-mothma}.md`
 - **Session log:** `.squad/log/2026-03-19T11:21:22Z-agency-reshape-proposal.md`
+
+---
+
+## View Link Destination: Squad-Specific Path Required
+
+**Authors:** Poe (UX Engineer) + Wedge (UX Tester) + Mon Mothma (Arbitration)  
+**Date:** 2026-03-19  
+**Status:** APPROVED (Mon Mothma verdict)
+
+### Summary
+
+Squad card "View →" links currently target `source.repository` for all squads, causing both Agency and Scout to navigate to the shared repo root. This is a UX bug. The link should target squad-specific folders using `source.directory`.
+
+### Finding
+
+**Current Implementation:**
+- `SquadCard.astro` line 61: `href={squad.source.repository}`
+- Result: Both squads link to `https://github.com/sbroenne/agency` (repo homepage)
+
+**Available Data:**
+- Each squad has `source.directory` (e.g., `squads/agency`, `squads/scout`)
+- This data exists in the registry but is not used by the View link
+
+### Verdict
+
+**Poe is correct.** This is a UX bug.
+
+**Wedge's argument** — that the two-action card pattern (modal + external link) makes the destination irrelevant — conflates internal navigation with external resource linking. The "View →" button should point to the resource being viewed, not to a generic repo container.
+
+### Correct Behavior
+
+Compose the GitHub URL from available manifest data:
+
+```
+{source.repository}/tree/main/{source.directory}
+```
+
+**Examples:**
+- Agency: `https://github.com/sbroenne/agency/tree/main/squads/agency`
+- Scout: `https://github.com/sbroenne/agency/tree/main/squads/scout`
+
+### Design Principle
+
+Aligns with our **discovery-first doctrine**: deep-link to the actual resource, not to a landing page users must navigate from.
+
+### Implementation
+
+**Files to change:**
+
+1. **`src/components/SquadCard.astro`** (line 59–65)
+   - Replace `href={squad.source.repository}` with composed URL
+
+2. **`src/scripts/site.js`** (line 277–278, modal "View on GitHub" button)
+   - Apply same fix for consistency
+
+**Validation:**
+- Run `npm run build && npm test` to verify no regressions
+- Spot-check both squads in preview to confirm links are now distinct
+
+### References
+
+- **Orchestration logs:** `.squad/orchestration-log/2026-03-19T18:12:22Z-{poe,wedge,mon-mothma}.md`
+- **Session log:** `.squad/log/2026-03-19T18:12:22Z-view-link-verdict.md`
+- **Inbox (merged):** `poe-view-link.md`, `wedge-squad-view-link-audit.md`, `mon-view-link-verdict.md`
+
+### 2026-03-19T18:55:53Z: User directive
+**By:** Stefan Broenner (via Copilot)
+**What:** For small issues, do not ask for confirmation; just fix them directly.
+**Why:** User request — captured for team memory
+
+### 2026-03-19T19:00:00Z: Squad source deep-link behavior
+**By:** Poe
+**Decision:** Squad card and modal source actions now deep-link to `{repository}/tree/main/{source.directory}` when directory metadata is present on a GitHub repository. If directory metadata is missing or the repository URL is not GitHub, the action falls back to the repository root.
+**Why:** The visible View action is per-squad, so landing on the monorepo root hid the actual squad source. Matching the modal action to the same deep-link keeps the experience consistent and avoids two different destinations for the same mental model. The modal CTA label was updated to "View Source" so the copy matches a directory-level destination instead of implying the repo homepage.
+
+---
+
+## Decision: Forge Product Framing — Skill Authoring and Distribution
+
+**Author:** Mon Mothma  
+**Date:** 2026-03-20  
+**Status:** Implemented  
+
+### What
+
+Applied terminology cleanup across all Forge documentation and guides to establish a clear, consistent product story:
+
+> **Forge helps authors create reusable agent skills and package/distribute them for the squad ecosystem.**
+
+### Why
+
+Product clarity. The previous framing mixed "Forge plugin" language (an implementation detail) with "agent skill" language (the actual product unit). This created ambiguity:
+
+- "Forge plugin" is not a core product concept; it's an artifact of the `plugin.json` packaging format.
+- The product solves a real need: help teams build reusable skills (tools, prompts, agents) and distribute them.
+- Consistent terminology reduces friction for new skill authors and aligns with squad ecosystem language.
+
+### Terminology Decisions
+
+| Old | New | Rationale |
+|-----|-----|-----------|
+| "Forge plugin" | Removed (use "agent skill" or "skill distribution" in context) | Not a core concept; it's the packaging format |
+| "Library plugin" | "Library skill" | Skills-only, tools-focused |
+| "Customer-facing plugin" | "Customer-facing skill package" | Skills + agents + UI; "package" clarifies it's a collection |
+| "plugin.json" | Kept (technical implementation note) | Real technical detail; now framed as implementation, not product |
+| VS Code/CLI comparisons | Removed | Out of scope; not part of skill authoring story |
+
+### Files Updated
+
+1. **docs/README.md** — Updated intro, core concepts section, and all scenario examples
+2. **docs/FORGE.md** — Updated terminology section and architecture recommendation flow
+3. **docs/FORGE_SETUP.md** — Updated dev repo setup, script names (`validate:skills`, `build:skills`, `SKILLS.md`)
+4. **docs/FORGE_QUICK_REF.md** — Updated all decision trees, file structure examples, and section headers
+5. **squads/forge/PLUGINS.md** — Updated registry title to "Forge Skill Distribution Registry" and all section headers
+6. **.github/agents/forge.agent.md** — Removed VS Code extension comparisons
+
+### Validation
+
+- `npm run validate` ✓ (3 squad manifests clean)
+- `npm test` ✓ (12/12 tests pass)
+- `npm run build` ✓ (registry built, Astro build successful)
+
+### Result
+
+The product story is now concrete:
+
+**Before:** Forge is about "Forge plugins" for creating plugin architecture...  
+**After:** Forge helps you author reusable agent skills and package/distribute them for your team.
+
+Skills are the unit of reuse. Library skills are tools-only; customer-facing skills include agents and UI. The `plugin.json` is how they are packaged — an implementation detail, not the headline.
+
+### Team Impact
+
+- Skill authors get clearer guidance (less ambiguity about what they're building)
+- New squad members understand Forge's scope immediately
+- Documentation is internally consistent and uses terms correctly
+
+### Notes
+
+- The `plugin.json` file remains because it is a real technical detail of the packaging format. It just isn't the lead concept.
+- The Excel MCP Server reference skill remains the gold standard for library skills.
+- No structural changes to Forge; this is terminology and framing only.
+
+---
+
+## Decision: Forge Terminology Validation Surface Alignment
+
+**Date:** 2026-03-20  
+**Agent:** C-3PO (Schema Engineer)  
+**Type:** Terminology Clarification  
+**Status:** Implemented & Validated  
+
+### Context
+
+Mon Mothma shifted Forge's product-level boundary to focus on "authoring and distributing agent skills" rather than "Forge plugins". The terminology shift is:
+- **Primary Unit:** Agent Skill (reusable capability)
+- **Packaging Format:** `plugin.json` (implementation detail only)
+- **Distribution Concept:** skill distribution / package (how skills are organized)
+
+**Deprecated Term:** "Forge plugin" — removed from all validation surfaces and documentation.
+
+### What C-3PO Found
+
+**Terminology Inconsistencies (28 total occurrences across validation surfaces):**
+- Agent charter (`.github/agents/forge.agent.md`) — 8 references to "Forge plugin"
+- Forge squad charter (`squads/forge/CHARTER.md`) — 6 references 
+- Authoring guide (`squads/forge/EXCEL_MCP_AUTHORING.md`) — 3 references
+- Registry registry/plugin list (`squads/forge/PLUGINS.md`) — 2 references  
+- Release workflow documentation — 2 references
+- Docs files — 7 references
+
+**No Schema-Level Issues:** The `squad.schema.json` is product-agnostic and requires no changes.
+
+**Manifest Already Aligned:** `squads/forge/squad.json` already uses correct terminology (tagline, summary, mission, focus areas).
+
+### What C-3PO Did
+
+1. **Updated Agent Charter** (`.github/agents/forge.agent.md`)
+   - Replaced "Forge plugin" → "agent skill"
+   - Clarified "library plugins" → "library skills"
+   - Maintained working style and boundaries
+
+2. **Updated Forge Squad Charter** (`squads/forge/CHARTER.md`)
+   - Updated architecture diagram labels (LIBRARY SKILL / CUSTOMER-FACING SKILL)
+   - Updated team member expertise areas
+   - Clarified skill distribution type distinction
+
+3. **Updated User-Facing Documentation**
+   - `squads/forge/README.md` — Updated FAQ terminology
+   - `squads/forge/EXCEL_MCP_AUTHORING.md` — Clarified that `plugin.json` is the packaging format
+   - `squads/forge/RELEASE_WORKFLOW.md` — Updated workflow language
+   - `squads/forge/PLUGINS.md` — Updated registry headers
+
+4. **Updated Supporting Docs**
+   - `docs/FORGE.md` — Terminology consistency
+   - `docs/PLUGIN_MANIFEST.md` — Schema documentation clarity
+   - `docs/FORGE_QUICK_REF.md` — Quick reference updates
+   - `docs/FORGE_SETUP.md` — Setup guide language
+   - `docs/README.md` — Overview and structure clarification
+
+### Validation Results
+
+✅ **All checks pass:**
+- Schema validation: 3 squad manifests validated cleanly
+- Registry tests: All 12 tests pass (no regressions)
+- Build pipeline: Clean exit codes
+- Terminology sweep: Zero "Forge plugin" references remaining in validation surfaces
+
+### Risk Assessment
+
+**Risk Level: LOW**
+
+- No schema structural changes
+- No JSON payload changes
+- No build pipeline modifications
+- Changes are documentation and commentary only
+- Forge manifest already properly aligned
+- No backward compatibility impacts
+
+### Team Implications
+
+**For Squad Authors:** No impact — squad manifests unchanged, schema stable.
+
+**For Agents (Forge, Agency, Scout):** Agent charters updated with consistent terminology. All agents now speak the same language about agent skills and skill distributions.
+
+**For Documentation Readers:** Clear, consistent terminology throughout Forge guidance surfaces. Reduces confusion about what "plugin" means (now always refers to `plugin.json` packaging format, not the product concept).
+
+### Approval
+
+✅ **Approved & Implemented**
+
+Forge validation surfaces are now terminology-aligned with Mon Mothma's product-level boundary shift. No conflicts, no risks, no follow-up needed.
+
+---
+
+**Metrics:**
+- Files updated: 11
+- Terminology references corrected: 28
+- Tests passing: 12/12
+- Build status: Clean
+
+**Next:** This change is orthogonal to other Forge work. Safe to merge and propagate to dependent squads (Scout, Agency).
+
+---
+
+### User Directive: Copilot Plugin Research
+
+**By:** Stefan Broenner (via Copilot)  
+**Date:** 2026-03-20T08:37:25Z  
+**Status:** Captured & Researched
+
+#### What
+
+Forge creates GitHub Copilot plugins, not only agent skills. Research what that is and remember it.
+
+#### Why
+
+User correction — clarify team understanding of GitHub Copilot plugins and product scope.
+
+---
+
+### Decision: GitHub Copilot Plugins and Agent Skills Boundary
+
+**Date:** 2026-03-20  
+**Decision Owner:** Mon Mothma  
+**Status:** Documented for team knowledge  
+**Requested by:** Stefan Broenner
+
+#### What We Discovered
+
+##### GitHub Copilot Plugin
+
+A **GitHub Copilot plugin** is a **bundled distribution package** that enables teams to share complete Copilot customizations through marketplaces like `awesome-copilot`:
+
+- **Contents**: Custom agents, agent skills, slash commands, hooks, MCP server integrations
+- **Distribution**: Installed from marketplace or Git repo
+- **Scope**: Complete toolkit bundled as a single package
+- **Installation**: One-click install makes all bundled capabilities available
+
+Examples:
+- "Test Suite" plugin (bundles test-runner skill + test-reviewer agent + report hooks)
+- "Code Review" plugin (bundles code-analysis skills + reviewer agent + commenting hooks)
+
+##### Agent Skill
+
+An **agent skill** is a **single, reusable capability**:
+
+- **Scope**: Discrete piece of work (e.g., "unit testing", "GitHub Actions debugging")
+- **Contents**: Instructions, resources, scripts
+- **Discovery**: Auto-loaded by relevance from `.github/skills` folders
+- **Distribution**: Can stand alone or be bundled into a plugin
+
+##### The Relationship
+
+```
+Agent Skill  →  (can be packaged into)  →  GitHub Copilot Plugin
+   ↓                                              ↓
+ What you build                          How you distribute it
+ (single capability)                     (bundled toolkit)
+```
+
+A GitHub Copilot plugin **bundles one or more agent skills** (plus agents, hooks, commands) into a single installable package.
+
+#### Forge's Scope
+
+Forge currently focuses on **authoring and distributing agent skills**. The product narrative should expand to clarify:
+
+1. **Forge helps authors create agent skills** — the core reusable capability
+2. **These skills can be packaged as GitHub Copilot plugins** — the distribution mechanism for Copilot installations
+3. **The distinction matters for architecture**: Skill = modular unit; Plugin = distribution bundle
+
+**Current state**: Forge documentation acknowledges "skill distributions" but does not explicitly connect this to GitHub Copilot plugins as an end-state distribution target.
+
+#### Recommendation
+
+**No immediate action required**, but the team should consider:
+
+1. **Clarify the value chain**: "Forge helps author agent skills that can be packaged and distributed as GitHub Copilot plugins"
+2. **When documenting Copilot plugin distribution**, reference how Forge's skill packaging aligns with Copilot plugin requirements
+3. **Update focus areas in `squads/forge/squad.json`** to include "Copilot plugin distribution" alongside "skill distribution"
+
+#### Key Takeaway
+
+**Forge does not create only agent skills.** It creates **agent skills that can be bundled into GitHub Copilot plugins** for distribution through Copilot marketplaces. The distinction between agent skills (what you build) and Copilot plugins (how you bundle and distribute them) is important for product clarity.
+
+---
+
+
+---
+
+## Leia: Decisions from 2026-03-20 Session
+
+### Decision: Resolve Dangling APM Acronym in Forge Charter
+
+**By:** Leia (GitHub Integrator)  
+**Date:** 2026-03-20  
+**Status:** Implemented
+
+#### Problem
+
+The Forge squad charter (`squads/forge/CHARTER.md`) referenced **APM** twice without defining the acronym.
+
+#### Solution
+
+Added definition of APM (Advanced Plugin Management) to Forge charter with:
+- Glossary footer explaining APM scope and when it's needed
+- Clarified first mention in section heading
+- Cross-reference to `docs/FORGE.md` for architecture recommendation flow
+
+#### Rationale
+
+Ensures Forge readers understand APM without external context or leaving the charter.
+
+#### Files Changed
+
+- `squads/forge/CHARTER.md` — Added APM definition and clarified mention in section heading
+
+---
+
+### Decision: Forge Plugin Home Implementation
+
+**By:** Leia (GitHub Integrator)  
+**Date:** 2026-03-19  
+**Status:** Implemented
+
+#### Scope
+
+Implemented GitHub/workflow/documentation surfaces for Forge plugin ecosystem with Excel MCP Server as reference library plugin.
+
+#### Work Completed
+
+1. **Forge home area** (`forge/README.md`) — Central hub for plugin development
+2. **Plugin registry** (`forge/PLUGINS.md`) — Tracker for published plugins
+3. **Authoring guide** (`forge/EXCEL_MCP_AUTHORING.md`) — Step-by-step template using Excel MCP
+4. **Release workflow** (`forge/RELEASE_WORKFLOW.md`) — Publication process documentation
+5. **GitHub Actions** (`.github/workflows/forge-plugin-validate.yml`) — Automated registry validation
+
+#### Key Decisions
+
+- **Forge home structure**: `forge/` directory serves as plugin ecosystem hub
+- **PLUGINS.md as registry**: Human-writable, scannable table format with status field
+- **Reference plugin**: Excel MCP Server as first documented library plugin (skills-only, lean path, no APM needed)
+- **Two publication models**: Library plugins → npm; customer-facing → GitHub Pages or static hosting
+
+#### Principles Preserved
+
+✓ Lean by default — Excel MCP Server needs zero APM  
+✓ Standalone-first — Skills work independently  
+✓ APM only when required — Clear guidance on architecture decisions
+
+#### Files Created
+
+- `forge/README.md` (264 lines)
+- `forge/PLUGINS.md` (80 lines)
+- `forge/EXCEL_MCP_AUTHORING.md` (373 lines)
+- `forge/RELEASE_WORKFLOW.md` (323 lines)
+- `.github/workflows/forge-plugin-validate.yml` (2.8 KB)
+
+#### Verification
+
+✅ `npm run validate` passes  
+✅ All referenced documentation files exist  
+✅ Cross-document links verified
+
+---
+
+### Decision: Forge PR Branch Ready
+
+**By:** Leia (GitHub Integrator)  
+**Date:** 2026-03-20  
+**Status:** Complete
+
+#### Outcome
+
+Feature branch `feat/forge-docs-validated` is PR-ready with all Forge documentation and agent history changes staged and committed.
+
+#### Branch Details
+
+- **Branch:** `feat/forge-docs-validated`
+- **Commit SHA:** `ab4b126f0ddb42f82ac20c61773b5a7d28817f76`
+- **Files:** 14 committed (Forge squad docs, agent specs, documentation, registry update)
+- **Working tree:** Clean
+
+#### No Blockers
+
+- All modifications staged with Co-authored-by trailer
+- No uncommitted changes
+- Ready for push to origin and PR creation
+
+---
+
+### Decision: Forge Plugin Workflow & Documentation
+
+**By:** Leia (GitHub Integrator)  
+**Date:** 2026-03-19  
+**Status:** Implemented
+
+#### What
+
+Created comprehensive Forge plugin architecture documentation covering classification, repo topology, registry, manifest schema, release workflow, and architecture recommendation flow.
+
+#### Why
+
+Teams need lean, clear guidance on plugin architecture without forcing unnecessary complexity (APM). Documentation clarifies distinction between library and customer-facing plugins, provides concrete workflows, and uses Excel MCP Server as real-world reference.
+
+#### Key Decisions
+
+- **Plugin classification**: Library plugins (skills-only) vs customer-facing (skills + agents + prompts)
+- **Repo topology**: Dev repo (central), published repo (distributed), plugin home repo (registry)
+- **PLUGINS.md tracking**: Human-readable registry, auto-generated from plugin.json entries
+- **APM flow**: Lean questionnaire to determine when APM is needed (often it's not)
+- **Reference**: Excel MCP Server as exemplar library plugin (no APM required)
+
+#### Principles
+
+✓ Lean by default  
+✓ Standalone-first  
+✓ APM only when required  
+✓ Real-world grounding (concrete example vs abstract)
+
+#### Files Created/Updated
+
+- `docs/FORGE.md` — Architecture overview with Excel reference
+- `docs/PLUGIN_MANIFEST.md` — Schema with library example
+- `docs/FORGE_SETUP.md` — Setup guide with Excel walkthrough
+- `docs/FORGE_QUICK_REF.md` — Quick reference
+- `docs/FORGE_DESIGN_PHILOSOPHY.md` — Design rationale
+- `docs/README.md` — Index with Excel MCP Server reference
+- `README.md` — Link to Forge documentation
+
+#### Next Steps
+
+- Interactive CLI for plugin architecture recommendations
+- Plugin home repo template
+- Excel MCP Server as working reference plugin (if needed)
+

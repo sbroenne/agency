@@ -1,0 +1,40 @@
+{
+  "name": "excel-mcp-server-authoring-workflow",
+  "referenceTarget": {
+    "name": "Excel MCP Server",
+    "homepage": "https://excelmcpserver.dev"
+  },
+  "questions": [
+    "What workbook or spreadsheet task are you trying to automate?",
+    "Will other agents consume these capabilities directly, or do end users need guided prompts and agents?",
+    "Do you need persistent workflow state across multiple Excel operations?"
+  ],
+  "recommendation": {
+    "pluginType": "library",
+    "reason": "Excel MCP Server is best introduced as reusable spreadsheet skills before adding customer-facing orchestration.",
+    "shape": "skills-only",
+    "runtime": "standalone-mcp-server",
+    "apm": {
+      "required": false,
+      "introduceWhen": [
+        "plugin-owned state becomes necessary",
+        "routing between multiple agents belongs inside the plugin",
+        "workflows need durable coordination beyond single Excel operations"
+      ]
+    }
+  },
+  "outputs": [
+    {
+      "kind": "scaffold",
+      "path": "squads/forge/scaffolds/excel-mcp-server/"
+    },
+    {
+      "kind": "release-workflow",
+      "path": "squads/forge/workflows/excel-mcp-server/release-plugin-repo.yml"
+    },
+    {
+      "kind": "tracker-entry",
+      "path": "squads/forge/home/catalog.json"
+    }
+  ]
+}

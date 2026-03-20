@@ -138,3 +138,138 @@ Implemented root-level squad discovery aliases. Added symlinks from `agency/squa
 
 **Logged to:** `.squad/orchestration-log/2026-03-19T11:47:28Z-c-3po.md`
 
+---
+
+## 2026-03-20: Forge Terminology Alignment — Validation Surface Update
+
+**Event:** Reviewed and corrected Forge-facing manifests and validation surfaces for terminology shift from "Forge plugin" (implementation detail) to "agent skill" (primary unit) with `plugin.json` as packaging format only.
+
+**Status:** ✅ COMPLETE
+
+**Files Updated (11 total):**
+- `.github/agents/forge.agent.md` — Updated charter to use "agent skill" terminology
+- `squads/forge/CHARTER.md` — Updated mission, diagrams, and terminology throughout
+- `squads/forge/README.md` — Updated FAQ to distinguish "agent skill" from "skill distribution"
+- `squads/forge/EXCEL_MCP_AUTHORING.md` — Aligned guide language with new terminology
+- `squads/forge/RELEASE_WORKFLOW.md` — Updated to reference "skill distributions" instead of "Forge plugins"
+- `squads/forge/PLUGINS.md` — Updated registry header and description
+- `docs/README.md` — Verified existing alignment; no major changes needed
+- `docs/FORGE.md` — Updated terminology for clarity
+- `docs/PLUGIN_MANIFEST.md` — Updated schema documentation
+- `docs/FORGE_QUICK_REF.md` — Updated quick reference
+- `docs/FORGE_SETUP.md` — Updated setup guide language
+
+**Key Alignment Points:**
+- **Primary Unit:** Agent Skill (reusable capability with tools/resources)
+- **Packaging Format:** `plugin.json` only when discussing manifest/technical specs
+- **Distribution Concept:** "skill distribution" or "package" for organizational/publishing concept
+- **Out of Scope:** "Forge plugin" term eliminated from all validation surfaces
+
+**Validation Results:**
+- ✅ All 3 squad manifests validate cleanly (schema compliance maintained)
+- ✅ All 12 registry tests pass (no schema-level impacts)
+- ✅ Zero deprecated terminology remaining in validation/agent-facing surfaces
+- ✅ Forge manifest (`squads/forge/squad.json`) already properly aligned
+
+**Risk Assessment:** LOW
+- Schema itself is product-agnostic (doesn't encode Forge terminology)
+- Changes are documentation/commentary only; no JSON structure or logic changes
+- Manifest remains valid and unchanged
+- Build pipeline unaffected
+
+**Learnings:**
+- Terminology shifts should propagate through: (1) squad manifests, (2) agent charters, (3) documentation, (4) validation surfaces
+- Forge's charter and agent definition are critical coherence points for team vocabulary
+- Schema stays separate from business terminology — schema documents data structure, not product concepts
+## 2026-03-20: Forge Terminology Validation — Surface Alignment
+
+**Event:** Validated terminology shift across Forge validation/publication surfaces  
+**Date:** 2026-03-20T08:35:59Z  
+**Status:** Implemented & Validated
+
+**What:** Confirmed Mon Mothma's product framing shift ("agent skills" vs "Forge plugins") does not break published surfaces or schema contracts.
+
+**Findings:**
+- **Terminology inconsistencies:** 28 occurrences across 11 files
+- **Schema impact:** None — `squad.schema.json` is product-agnostic
+- **Manifest impact:** None — `squads/forge/squad.json` already aligned
+- **Risk level:** LOW (documentation/commentary only)
+
+**Corrected Surfaces:**
+1. **Agent charter** (`.github/agents/forge.agent.md`) — 8 references
+2. **Forge squad charter** (`squads/forge/CHARTER.md`) — 6 references  
+3. **Authoring guide** (`squads/forge/EXCEL_MCP_AUTHORING.md`) — 3 references
+4. **Registry** (`squads/forge/PLUGINS.md`) — 2 references
+5. **Release workflow** — 2 references
+6. **Docs** (6 files) — 7 references
+
+**Validation Results:**
+- ✅ Schema validation: 3 squad manifests pass
+- ✅ Regression tests: 12/12 pass
+- ✅ Build pipeline: Clean
+- ✅ Terminology sweep: Zero "Forge plugin" references remain in validation surfaces
+
+**Team Implications:**
+- **Squad authors:** No impact; manifests stable, schema unchanged
+- **Agents (Forge/Scout/Agency):** All now speak consistent language about agent skills and distributions
+- **Documentation readers:** Clear, unambiguous terminology; "plugin" now always refers to `plugin.json` format only
+
+**Assessment:** Safe to merge and propagate to dependent squads (Scout, Agency). No follow-up needed.
+
+---
+
+## 2026-03-20: Forge Validation Surface PR Readiness
+
+**Event:** Comprehensive review of Forge-facing validation surfaces for PR readiness under Mon Mothma's product boundary correction  
+**Date:** 2026-03-20T10:00:00Z  
+**Status:** ✅ COMPLETE
+
+**Scope Verified:**
+- Forge owns authoring prompts, custom agents, and agent skills; packaging into distributions; optionally bundling into GitHub Copilot plugins
+- Forge does NOT own VSCode extensions, GitHub CLI extensions, or other ecosystems
+
+**Work Performed:**
+1. **Manifest check** — `squads/forge/squad.json` already aligned (tagline, summary, mission use "agent skills" and "distributions")
+2. **Agent definition** — `.github/agents/forge.agent.md` already updated with correct scope
+3. **Validation surface clarification** — `docs/PLUGIN_MANIFEST.md` updated to explicitly state that `plugin.json` is the *technical packaging format*, not a product concept
+   - Replaced confusing "Terminology Note" about VSCode/CLI with clear product distinction
+   - Changed section headers from "Library Plugin" → "Library Distribution" for clarity
+   - Updated validation rules: "Library distributions" / "Customer-facing distributions" (vs. "plugins")
+   - Added key distinction: "plugin.json is how you package skills for distribution; agent skills are what you build"
+4. **Documentation validation** — Confirmed all other Forge docs already aligned (FORGE.md, FORGE_SETUP.md, squad README, CHARTER, etc.)
+
+**Validation Results (All Pass):**
+- `npm run validate` ✅ (3 manifests valid)
+- `npm test` ✅ (12/12 tests pass)
+- `npm run build` ✅ (registry + Astro build clean)
+- Published registry output ✅ (Forge entry consistent)
+
+**Risk Assessment:** LOW
+- No schema changes (squad.schema.json is product-agnostic)
+- No manifest structure changes
+- No breaking changes to build pipeline or validation logic
+- Changes are documentation clarity only
+
+**Decision:** APPROVED for merge. Forge validation surfaces are PR-ready and internally consistent with product boundary correction.
+
+**Team Learnings:**
+1. **Product terminology must propagate through all surfaces** — Squad manifests, agent definitions, validation surfaces, and documentation all need to speak the same language
+2. **Schema stays separate from product framing** — The JSON schema (squad.schema.json, plugin.json schema) is implementation-neutral; product terminology belongs in docs and charter
+3. **Technical formats (like plugin.json) need explicit framing** — When a format name could be confused with a product concept, clarification must be explicit and visible
+4. **Validation surfaces are team communication tools** — They document expectations for authors and should use consistent, unambiguous terminology
+
+---
+
+---
+
+## 2026-03-20: Orchestration Logging (Scribe Session)
+
+**Event:** Final orchestration logging for Forge validation session  
+**Date:** 2026-03-20T09:08:16Z
+
+**Context:** Scribe merged all session decisions and created orchestration/session logs for handoff to team.
+
+**Your Record:** C-3PO's Forge validation audit (schema alignment, terminology audit) was logged as contributing to PR-readiness outcome. No further action needed from your role.
+
+**Team Outcome:** Feature branch `feat/forge-docs-validated` (commit `ab4b126f0ddb42f82ac20c61773b5a7d28817f76`) is fully documented and PR-ready.
+

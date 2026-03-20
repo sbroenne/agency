@@ -1,0 +1,38 @@
+{
+  "name": "excel-mcp-server-reference",
+  "version": "0.1.0",
+  "type": "library",
+  "description": "Standalone-first reference plugin for wrapping Excel MCP Server workbook automation as reusable skills.",
+  "homepage": "https://excelmcpserver.dev",
+  "maintainer": {
+    "name": "Forge",
+    "email": "forge@example.com"
+  },
+  "status": "dev",
+  "skills": [
+    {
+      "name": "readWorkbookRange",
+      "description": "Read values from a worksheet range through Excel MCP Server."
+    },
+    {
+      "name": "writeWorkbookRange",
+      "description": "Write values into a worksheet range through Excel MCP Server."
+    },
+    {
+      "name": "runWorkbookFormula",
+      "description": "Execute an Excel formula and return the calculated result."
+    },
+    {
+      "name": "createPivotTable",
+      "description": "Create and configure a pivot table from workbook data."
+    },
+    {
+      "name": "refreshWorkbook",
+      "description": "Refresh workbook calculations, queries, or linked data before downstream automation."
+    }
+  ],
+  "dependencies": {
+    "excelmcpserver": "^1.0.0"
+  },
+  "tags": ["excel", "mcp", "automation", "windows", "reference"]
+}
