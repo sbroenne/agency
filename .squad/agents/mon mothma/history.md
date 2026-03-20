@@ -220,3 +220,88 @@ Wedge correctly identified that the two-action pattern (modal + external link) i
 **Design Alignment:** This honors discovery-first doctrine by deep-linking to the specific resource (squad folder), not a generic landing page.
 
 **Status:** Approved. Awaiting implementation and validation.
+
+---
+
+## 2026-03-20: Forge Product Framing — Terminology Cleanup
+
+**Event:** Applied comprehensive terminology cleanup to establish clear Forge product story  
+**Date:** 2026-03-20T09:32:30Z
+
+**Decision:** Reframe Forge around "agent skills" and "skill distribution" as core concepts. Remove "Forge plugin" language as it conflates packaging format with product unit. Keep `plugin.json` as a technical implementation detail, not as the lead concept.
+
+**Rationale:**
+- "Forge plugin" is ambiguous and not a core product concept
+- "Agent skill" is the actual reusable unit the product enables
+- Consistent terminology reduces author friction
+- Aligns with squad ecosystem language
+
+**Changes made:**
+1. docs/README.md — Updated intro and scenarios
+2. docs/FORGE.md — Updated core messaging and architecture flow
+3. docs/FORGE_SETUP.md — Updated dev repo setup and script names (build:skills, validate:skills, SKILLS.md)
+4. docs/FORGE_QUICK_REF.md — Updated all examples and decision trees
+5. squads/forge/PLUGINS.md — Updated to "Forge Skill Distribution Registry"
+6. .github/agents/forge.agent.md — Removed VS Code comparisons (out of scope)
+
+**Terminology updates:**
+- "Library plugin" → "Library skill"
+- "Customer-facing plugin" → "Customer-facing skill package"
+- "Forge plugin" → Removed (use "agent skill" or "skill distribution")
+- `plugin.json` → Retained as technical format (not as product concept)
+
+**Validation:**
+- npm run validate ✓ (3 squad manifests)
+- npm test ✓ (12/12 tests pass)
+- npm run build ✓ (successful)
+
+**Product story now:**
+Forge helps teams author reusable agent skills and package/distribute them for the squad ecosystem. Skills can be library (tools-only) or customer-facing (with agents and UI). The `plugin.json` file is the implementation format for packaging.
+
+**Decision recorded to:** `.squad/decisions/inbox/mon-mothma-forge-skill-framing.md`
+
+---
+
+## Key Patterns
+
+- **Terminology: use skill as the primary reusable unit** — It's what the product enables. Plugin.json is how it's packaged, not what it is.
+- **Product framing: concrete > abstract** — "Author and distribute skills" is clearer than "Forge plugins."
+- **Validation discipline: always run full check** — Terminology changes can pass validation but break discovery if not complete.
+
+
+## 2026-03-20: Forge Product Framing — Skill Authoring & Distribution
+
+**Event:** Reframed Forge product boundary and documentation  
+**Date:** 2026-03-20T08:35:59Z  
+**Status:** Implemented & Validated
+
+**What:** Refined Forge's product story to focus on "authoring and distributing agent skills" — removing ambiguous "Forge plugin" terminology.
+
+**Why:** Product clarity. "Forge plugin" was an implementation detail confusing the core product message. Team needed consistent terminology across all Forge surfaces.
+
+**Core Message:** 
+> "Forge helps authors create reusable agent skills and package/distribute them for the squad ecosystem."
+
+**Terminology Shift:**
+| Old | New | Context |
+|-----|-----|---------|
+| "Forge plugin" | "agent skill" / "skill distribution" | Core product concept |
+| "Library plugin" | "Library skill" | Tools-focused skill packages |
+| "Customer-facing plugin" | "Customer-facing skill package" | Multi-component packages (skills + agents + UI) |
+| "plugin.json" | Kept | Technical implementation detail only |
+
+**Files Updated:** 11
+- Docs: `docs/FORGE.md`, `docs/FORGE_SETUP.md`, `docs/FORGE_QUICK_REF.md`, `docs/PLUGIN_MANIFEST.md`, `docs/README.md`
+- Manifests: `.github/agents/forge.agent.md`, `squads/forge/CHARTER.md`, `squads/forge/PLUGINS.md`
+- Guides: `squads/forge/EXCEL_MCP_AUTHORING.md`, `squads/forge/README.md`, `squads/forge/RELEASE_WORKFLOW.md`
+
+**Validation:**
+- ✅ Schema validation: 3 squads pass
+- ✅ Test suite: 12/12 pass
+- ✅ Build: Clean exit
+
+**Team Impact:** Skill authors get clearer guidance; new squad members understand Forge scope immediately; documentation is internally consistent.
+
+**Cross-Agent:** C-3PO validated terminology shift; zero schema-level issues; all 28 terminology references corrected; propagation ready for Scout and Agency squads.
+
+---

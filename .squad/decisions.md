@@ -2812,3 +2812,171 @@ Aligns with our **discovery-first doctrine**: deep-link to the actual resource, 
 **By:** Poe
 **Decision:** Squad card and modal source actions now deep-link to `{repository}/tree/main/{source.directory}` when directory metadata is present on a GitHub repository. If directory metadata is missing or the repository URL is not GitHub, the action falls back to the repository root.
 **Why:** The visible View action is per-squad, so landing on the monorepo root hid the actual squad source. Matching the modal action to the same deep-link keeps the experience consistent and avoids two different destinations for the same mental model. The modal CTA label was updated to "View Source" so the copy matches a directory-level destination instead of implying the repo homepage.
+
+---
+
+## Decision: Forge Product Framing — Skill Authoring and Distribution
+
+**Author:** Mon Mothma  
+**Date:** 2026-03-20  
+**Status:** Implemented  
+
+### What
+
+Applied terminology cleanup across all Forge documentation and guides to establish a clear, consistent product story:
+
+> **Forge helps authors create reusable agent skills and package/distribute them for the squad ecosystem.**
+
+### Why
+
+Product clarity. The previous framing mixed "Forge plugin" language (an implementation detail) with "agent skill" language (the actual product unit). This created ambiguity:
+
+- "Forge plugin" is not a core product concept; it's an artifact of the `plugin.json` packaging format.
+- The product solves a real need: help teams build reusable skills (tools, prompts, agents) and distribute them.
+- Consistent terminology reduces friction for new skill authors and aligns with squad ecosystem language.
+
+### Terminology Decisions
+
+| Old | New | Rationale |
+|-----|-----|-----------|
+| "Forge plugin" | Removed (use "agent skill" or "skill distribution" in context) | Not a core concept; it's the packaging format |
+| "Library plugin" | "Library skill" | Skills-only, tools-focused |
+| "Customer-facing plugin" | "Customer-facing skill package" | Skills + agents + UI; "package" clarifies it's a collection |
+| "plugin.json" | Kept (technical implementation note) | Real technical detail; now framed as implementation, not product |
+| VS Code/CLI comparisons | Removed | Out of scope; not part of skill authoring story |
+
+### Files Updated
+
+1. **docs/README.md** — Updated intro, core concepts section, and all scenario examples
+2. **docs/FORGE.md** — Updated terminology section and architecture recommendation flow
+3. **docs/FORGE_SETUP.md** — Updated dev repo setup, script names (`validate:skills`, `build:skills`, `SKILLS.md`)
+4. **docs/FORGE_QUICK_REF.md** — Updated all decision trees, file structure examples, and section headers
+5. **squads/forge/PLUGINS.md** — Updated registry title to "Forge Skill Distribution Registry" and all section headers
+6. **.github/agents/forge.agent.md** — Removed VS Code extension comparisons
+
+### Validation
+
+- `npm run validate` ✓ (3 squad manifests clean)
+- `npm test` ✓ (12/12 tests pass)
+- `npm run build` ✓ (registry built, Astro build successful)
+
+### Result
+
+The product story is now concrete:
+
+**Before:** Forge is about "Forge plugins" for creating plugin architecture...  
+**After:** Forge helps you author reusable agent skills and package/distribute them for your team.
+
+Skills are the unit of reuse. Library skills are tools-only; customer-facing skills include agents and UI. The `plugin.json` is how they are packaged — an implementation detail, not the headline.
+
+### Team Impact
+
+- Skill authors get clearer guidance (less ambiguity about what they're building)
+- New squad members understand Forge's scope immediately
+- Documentation is internally consistent and uses terms correctly
+
+### Notes
+
+- The `plugin.json` file remains because it is a real technical detail of the packaging format. It just isn't the lead concept.
+- The Excel MCP Server reference skill remains the gold standard for library skills.
+- No structural changes to Forge; this is terminology and framing only.
+
+---
+
+## Decision: Forge Terminology Validation Surface Alignment
+
+**Date:** 2026-03-20  
+**Agent:** C-3PO (Schema Engineer)  
+**Type:** Terminology Clarification  
+**Status:** Implemented & Validated  
+
+### Context
+
+Mon Mothma shifted Forge's product-level boundary to focus on "authoring and distributing agent skills" rather than "Forge plugins". The terminology shift is:
+- **Primary Unit:** Agent Skill (reusable capability)
+- **Packaging Format:** `plugin.json` (implementation detail only)
+- **Distribution Concept:** skill distribution / package (how skills are organized)
+
+**Deprecated Term:** "Forge plugin" — removed from all validation surfaces and documentation.
+
+### What C-3PO Found
+
+**Terminology Inconsistencies (28 total occurrences across validation surfaces):**
+- Agent charter (`.github/agents/forge.agent.md`) — 8 references to "Forge plugin"
+- Forge squad charter (`squads/forge/CHARTER.md`) — 6 references 
+- Authoring guide (`squads/forge/EXCEL_MCP_AUTHORING.md`) — 3 references
+- Registry registry/plugin list (`squads/forge/PLUGINS.md`) — 2 references  
+- Release workflow documentation — 2 references
+- Docs files — 7 references
+
+**No Schema-Level Issues:** The `squad.schema.json` is product-agnostic and requires no changes.
+
+**Manifest Already Aligned:** `squads/forge/squad.json` already uses correct terminology (tagline, summary, mission, focus areas).
+
+### What C-3PO Did
+
+1. **Updated Agent Charter** (`.github/agents/forge.agent.md`)
+   - Replaced "Forge plugin" → "agent skill"
+   - Clarified "library plugins" → "library skills"
+   - Maintained working style and boundaries
+
+2. **Updated Forge Squad Charter** (`squads/forge/CHARTER.md`)
+   - Updated architecture diagram labels (LIBRARY SKILL / CUSTOMER-FACING SKILL)
+   - Updated team member expertise areas
+   - Clarified skill distribution type distinction
+
+3. **Updated User-Facing Documentation**
+   - `squads/forge/README.md` — Updated FAQ terminology
+   - `squads/forge/EXCEL_MCP_AUTHORING.md` — Clarified that `plugin.json` is the packaging format
+   - `squads/forge/RELEASE_WORKFLOW.md` — Updated workflow language
+   - `squads/forge/PLUGINS.md` — Updated registry headers
+
+4. **Updated Supporting Docs**
+   - `docs/FORGE.md` — Terminology consistency
+   - `docs/PLUGIN_MANIFEST.md` — Schema documentation clarity
+   - `docs/FORGE_QUICK_REF.md` — Quick reference updates
+   - `docs/FORGE_SETUP.md` — Setup guide language
+   - `docs/README.md` — Overview and structure clarification
+
+### Validation Results
+
+✅ **All checks pass:**
+- Schema validation: 3 squad manifests validated cleanly
+- Registry tests: All 12 tests pass (no regressions)
+- Build pipeline: Clean exit codes
+- Terminology sweep: Zero "Forge plugin" references remaining in validation surfaces
+
+### Risk Assessment
+
+**Risk Level: LOW**
+
+- No schema structural changes
+- No JSON payload changes
+- No build pipeline modifications
+- Changes are documentation and commentary only
+- Forge manifest already properly aligned
+- No backward compatibility impacts
+
+### Team Implications
+
+**For Squad Authors:** No impact — squad manifests unchanged, schema stable.
+
+**For Agents (Forge, Agency, Scout):** Agent charters updated with consistent terminology. All agents now speak the same language about agent skills and skill distributions.
+
+**For Documentation Readers:** Clear, consistent terminology throughout Forge guidance surfaces. Reduces confusion about what "plugin" means (now always refers to `plugin.json` packaging format, not the product concept).
+
+### Approval
+
+✅ **Approved & Implemented**
+
+Forge validation surfaces are now terminology-aligned with Mon Mothma's product-level boundary shift. No conflicts, no risks, no follow-up needed.
+
+---
+
+**Metrics:**
+- Files updated: 11
+- Terminology references corrected: 28
+- Tests passing: 12/12
+- Build status: Clean
+
+**Next:** This change is orthogonal to other Forge work. Safe to merge and propagate to dependent squads (Scout, Agency).

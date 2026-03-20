@@ -138,3 +138,82 @@ Implemented root-level squad discovery aliases. Added symlinks from `agency/squa
 
 **Logged to:** `.squad/orchestration-log/2026-03-19T11:47:28Z-c-3po.md`
 
+---
+
+## 2026-03-20: Forge Terminology Alignment — Validation Surface Update
+
+**Event:** Reviewed and corrected Forge-facing manifests and validation surfaces for terminology shift from "Forge plugin" (implementation detail) to "agent skill" (primary unit) with `plugin.json` as packaging format only.
+
+**Status:** ✅ COMPLETE
+
+**Files Updated (11 total):**
+- `.github/agents/forge.agent.md` — Updated charter to use "agent skill" terminology
+- `squads/forge/CHARTER.md` — Updated mission, diagrams, and terminology throughout
+- `squads/forge/README.md` — Updated FAQ to distinguish "agent skill" from "skill distribution"
+- `squads/forge/EXCEL_MCP_AUTHORING.md` — Aligned guide language with new terminology
+- `squads/forge/RELEASE_WORKFLOW.md` — Updated to reference "skill distributions" instead of "Forge plugins"
+- `squads/forge/PLUGINS.md` — Updated registry header and description
+- `docs/README.md` — Verified existing alignment; no major changes needed
+- `docs/FORGE.md` — Updated terminology for clarity
+- `docs/PLUGIN_MANIFEST.md` — Updated schema documentation
+- `docs/FORGE_QUICK_REF.md` — Updated quick reference
+- `docs/FORGE_SETUP.md` — Updated setup guide language
+
+**Key Alignment Points:**
+- **Primary Unit:** Agent Skill (reusable capability with tools/resources)
+- **Packaging Format:** `plugin.json` only when discussing manifest/technical specs
+- **Distribution Concept:** "skill distribution" or "package" for organizational/publishing concept
+- **Out of Scope:** "Forge plugin" term eliminated from all validation surfaces
+
+**Validation Results:**
+- ✅ All 3 squad manifests validate cleanly (schema compliance maintained)
+- ✅ All 12 registry tests pass (no schema-level impacts)
+- ✅ Zero deprecated terminology remaining in validation/agent-facing surfaces
+- ✅ Forge manifest (`squads/forge/squad.json`) already properly aligned
+
+**Risk Assessment:** LOW
+- Schema itself is product-agnostic (doesn't encode Forge terminology)
+- Changes are documentation/commentary only; no JSON structure or logic changes
+- Manifest remains valid and unchanged
+- Build pipeline unaffected
+
+**Learnings:**
+- Terminology shifts should propagate through: (1) squad manifests, (2) agent charters, (3) documentation, (4) validation surfaces
+- Forge's charter and agent definition are critical coherence points for team vocabulary
+- Schema stays separate from business terminology — schema documents data structure, not product concepts
+## 2026-03-20: Forge Terminology Validation — Surface Alignment
+
+**Event:** Validated terminology shift across Forge validation/publication surfaces  
+**Date:** 2026-03-20T08:35:59Z  
+**Status:** Implemented & Validated
+
+**What:** Confirmed Mon Mothma's product framing shift ("agent skills" vs "Forge plugins") does not break published surfaces or schema contracts.
+
+**Findings:**
+- **Terminology inconsistencies:** 28 occurrences across 11 files
+- **Schema impact:** None — `squad.schema.json` is product-agnostic
+- **Manifest impact:** None — `squads/forge/squad.json` already aligned
+- **Risk level:** LOW (documentation/commentary only)
+
+**Corrected Surfaces:**
+1. **Agent charter** (`.github/agents/forge.agent.md`) — 8 references
+2. **Forge squad charter** (`squads/forge/CHARTER.md`) — 6 references  
+3. **Authoring guide** (`squads/forge/EXCEL_MCP_AUTHORING.md`) — 3 references
+4. **Registry** (`squads/forge/PLUGINS.md`) — 2 references
+5. **Release workflow** — 2 references
+6. **Docs** (6 files) — 7 references
+
+**Validation Results:**
+- ✅ Schema validation: 3 squad manifests pass
+- ✅ Regression tests: 12/12 pass
+- ✅ Build pipeline: Clean
+- ✅ Terminology sweep: Zero "Forge plugin" references remain in validation surfaces
+
+**Team Implications:**
+- **Squad authors:** No impact; manifests stable, schema unchanged
+- **Agents (Forge/Scout/Agency):** All now speak consistent language about agent skills and distributions
+- **Documentation readers:** Clear, unambiguous terminology; "plugin" now always refers to `plugin.json` format only
+
+**Assessment:** Safe to merge and propagate to dependent squads (Scout, Agency). No follow-up needed.
+
+---
