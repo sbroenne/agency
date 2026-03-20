@@ -3324,3 +3324,119 @@ Anthropic's Skill Creator is a reference implementation for authoring modular sk
 **Anthropic's model validates Forge's foundational concepts without requiring redesign.**
 
 ---
+
+---
+
+## Decision: Forge Plugin Terminology Implementation Complete
+
+**Date:** 2026-03-20  
+**Status:** ✅ IMPLEMENTED  
+**Impact:** Product messaging, user onboarding clarity  
+**Author:** Mon Mothma (Lead)  
+
+### What Was Done
+
+Updated Forge-facing documentation to use **"plugin"** as the primary user-facing term, replacing "distribution." This aligns Forge terminology with official GitHub Copilot and Claude Code plugin marketplace language (Feb-Mar 2025 docs).
+
+#### Changes Made (4 surgical edits across 3 files)
+
+**docs/FORGE.md**
+- Line 7: "organize them into distributions" → "package them as plugins"
+- Lines 25-27: Terminology section redefined
+  - "Plugin" = user-facing deliverable
+  - "distribution type" = internal classification (library vs. customer-facing)
+  - Removed artificial distinction between "Forge distributions" and "GitHub Copilot Plugins"
+
+**squads/forge/README.md**
+- Lines 23-24: Unified "Plugin" definition (previously dual "Distribution" + "GitHub Copilot Plugin")
+- Clarified "Distribution Type" as internal taxonomy
+
+**docs/PLUGIN_MANIFEST.md**
+- Line 3: Redefined manifest purpose — from "technical packaging format" to "defines a plugin"
+- Line 5: Key distinction — from "how you package" to "manifest for a plugin"
+
+### What Was Preserved
+
+- ✅ Internal taxonomy ("distribution type": library vs. customer-facing) — unchanged
+- ✅ "Agent Skill" terminology — unchanged
+- ✅ Directory structure (`/skills/`, etc.) — unchanged
+- ✅ `plugin.json` filename — unchanged
+
+### Validation Results
+
+All safety gates passed:
+- ✅ `npm run validate` — 3 squad manifests validated
+- ✅ `npm test` — 12/12 tests pass
+- ✅ `npm run build` — Registry + Astro build successful
+
+### Outcome
+
+**User-facing narrative:** "Forge helps teams author assets and package them as plugins" (aligns with GitHub/Claude ecosystem terminology)
+
+**Internal clarity:** "Distribution types" remain useful for architecture communication (library, customer-facing)
+
+**Onboarding improved:** Users no longer encounter ambiguity about whether they're publishing a "distribution" or a "plugin"
+
+### Branch Status
+
+Changes committed to `feat/forge-messaging-fixes`. Leia merged after this patch landed in PR #4.
+
+---
+
+## Terminology Audit: Cassian Charter Correction
+
+**Date:** 2026-03-20  
+**Author:** Cassian  
+**Topic:** Plugin ecosystem boundaries
+
+### Finding
+
+Cassian's charter incorrectly listed **VS Code extensions** as an owned domain. The repo does not deal with VS Code extensions. "VS Code extensions" appear in documentation only as a **terminology boundary** to keep separate from Forge plugins—they are not part of this project's scope.
+
+### Correction
+
+Updated Cassian's domain from:
+- ~~GitHub CLI extensions, VS Code extensions, Claude plugins~~
+- → **GitHub CLI plugins, Claude plugins**
+
+Updated charter and routing to reflect:
+- **What Cassian owns:** Forge plugin ecosystem, GitHub CLI plugins, Claude plugins, terminology boundaries keeping these ecosystems distinct
+- **What Cassian does NOT own:** VS Code extension knowledge (out of scope)
+
+### Terminology Affirmed
+
+The repo's terminology boundary is **correct and remains unchanged**:
+- **Forge plugin** = `plugin.json` package model (this repo's concept)
+- **GitHub CLI plugin** = `gh` custom command (separate ecosystem, kept distinct)
+- **Claude plugin** = Claude Code plugin bundle (related ecosystem, kept distinct)
+- **VS Code extension** = VS Code editor extension (separate ecosystem, **not in scope**)
+
+### Files Updated
+
+- `.squad/agents/cassian/charter.md` — Removed VS Code from expertise and boundaries
+- `.squad/routing.md` — Updated routing table rows for Cassian (2 rows)
+
+### Impact
+
+No behavioral impact. Cassian's role and routing remain clear. This correction prevents hallucination about VS Code scope in future work.
+
+---
+
+## Decision: Cassian — Forge terminology boundary
+
+**Date:** 2026-03-20
+
+Keep these terms distinct in squad and Forge surfaces: **VS Code extensions**, **GitHub CLI extensions**, **Claude plugins**, **Forge plugins**, and **Agent Skills**.
+
+### Guidance:
+- Use **extension** for VS Code and GitHub CLI ecosystems.
+- Use **Claude plugin** for Claude Code plugin bundles.
+- Use **Forge plugin** for this repo's `plugin.json` package model.
+- Use **Agent Skill** for reusable skill folders/capabilities, whether standalone or packaged inside a plugin.
+
+### Why it matters
+
+Forge was drifting into "plugin" as a catch-all label, which made VS Code extensions sound like plugins and blurred the difference between a package and the skills it ships. The repo now treats terminology as part of the architecture boundary.
+
+---
+

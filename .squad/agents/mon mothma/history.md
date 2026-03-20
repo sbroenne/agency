@@ -741,3 +741,39 @@ Messaging is now balanced and consistent. New users reading docs will see:
 
 
 
+
+## 2026-03-20: Plugin Terminology Implementation — Research to Verification (Spawn Session)
+
+**Event:** Investigated plugin vs. distribution terminology, patched docs, verified validations  
+**Date:** 2026-03-20  
+**Status:** ✅ COMPLETE  
+**Spawn Agent:** Mon Mothma (Lead)  
+
+### Work Summary
+
+1. **Research phase:** Verified GitHub Copilot, Claude Code, and GitHub CLI official terminology (Feb-Mar 2025 docs)
+2. **Decision written:** Plugin terminology decision drafted and filed to decisions/inbox
+3. **Implementation:** Patched 3 core files with surgical edits (4 locations):
+   - docs/FORGE.md (redefined user-facing narrative)
+   - squads/forge/README.md (unified plugin definition)
+   - docs/PLUGIN_MANIFEST.md (clarified manifest semantics)
+4. **Validation:** npm run validate ✅ | npm test (12/12) ✅ | npm run build ✅
+5. **Revalidation:** After patch applied by Leia, verified all safety gates pass
+
+### Key Learnings
+
+1. **Cross-platform terminology alignment matters:** User-facing terms should match upstream platforms (GitHub Copilot, Claude Code) to reduce onboarding friction and increase adoption confidence.
+
+2. **Internal taxonomy orthogonal to user narrative:** "Distribution types" (library vs. customer-facing) remain useful for architecture communication even when user-facing term changes to "plugin." This separation prevents over-correction.
+
+3. **Decision documentation enables precision implementation:** Writing the decision with explicit "What NOT to change" section allowed surgical edits without risk of unintended refactoring or scope creep.
+
+4. **Validation-driven confidence:** Full npm test + build pass after edits confirms that terminology change is cosmetic and architecture-preserving.
+
+### Branch & PR Status
+
+- **Research branch:** (completed, merged as part of spawn session)
+- **Patch branch:** feat/forge-messaging-fixes
+- **PR:** #4 (created by Leia after Mon Mothma's patch)
+- **Final status:** Awaiting merge decision
+
