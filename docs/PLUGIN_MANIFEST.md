@@ -1,8 +1,8 @@
 # Plugin Manifest Schema
 
-The `plugin.json` manifest defines a **plugin** — the user-facing deliverable of prompts, custom agents, and/or agent skills. It describes an agent skill's metadata, capabilities, and publishing details.
+The `plugin.json` manifest is the **technical packaging format** for skill distributions. It describes the metadata, capabilities, and publishing details of a bundled skill distribution—which may contain one or more agent skills, custom agents, and supporting resources.
 
-**Key distinction:** `plugin.json` is the manifest for a **plugin**; **agent skills** are reusable capabilities within it.
+**Key distinction:** `plugin.json` is the **packaging format** (how you distribute skill collections); **agent skills** are the primary reusable units (what you author). A skill distribution can be packaged as a GitHub Copilot plugin for marketplace installation.
 
 ## Schema Definition
 
@@ -379,3 +379,39 @@ Teams can extend this schema with org-specific fields under a `_custom` namespac
   }
 }
 ```
+
+---
+
+## Relationship Between Skill Authoring and Skill Packaging
+
+### Skill Authoring (SKILL.md)
+- **What:** Portable skill documentation format (Markdown + YAML frontmatter)
+- **When:** You're authoring reusable capabilities that should work across agents
+- **Example:** `skills/unit-testing/SKILL.md` describes what the skill does, with example usage and links to implementation
+
+### Skill Packaging (plugin.json)
+- **What:** Technical manifest format for bundling and distributing skills
+- **When:** You're packaging one or more skills into a distribution for GitHub Copilot marketplace
+- **Example:** `plugin.json` declares which skills this distribution exports and how they're versioned
+
+### The Flow
+```
+┌─────────────────────────────────────────┐
+│ Author agent skills using SKILL.md      │
+│ (portable, cross-agent compatible)      │
+└─────────────────────────────────────────┘
+                    │
+                    ▼
+┌─────────────────────────────────────────┐
+│ Package skills into plugin.json         │
+│ (versioned, bundled distribution)       │
+└─────────────────────────────────────────┘
+                    │
+                    ▼
+┌─────────────────────────────────────────┐
+│ Publish to GitHub Copilot marketplace   │
+│ (installable skill distribution)        │
+└─────────────────────────────────────────┘
+```
+
+**Note:** You can author agent skills using SKILL.md format and still package them into distributions via plugin.json. The two formats serve different purposes: SKILL.md is for skill portability; plugin.json is for distribution packaging and marketplace metadata.

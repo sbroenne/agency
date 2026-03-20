@@ -46,7 +46,77 @@ Quick-reference guide for authoring and distribution decisions across prompts, c
            └─ Handles stateful workflows, routing, persistence
 ```
 
+## Agent Skill Authoring: SKILL.md Format
+
+Forge adopts **SKILL.md** as the portable, standard format for authoring agent skills. Each skill starts with its own SKILL.md file:
+
+```markdown
+---
+name: "Skill Name"
+description: "One-line description"
+tags: ["tag1", "tag2"]
+capabilities: ["what", "it", "enables"]
+---
+
+# Skill Name
+
+## Overview
+What it does and why it's useful.
+
+## Usage Example
+\`\`\`javascript
+// Example code
+\`\`\`
+
+## Input Schema
+...
+
+## Output Schema
+...
+```
+
+**Where it fits:**
+- **Layer 1:** Author individual skills → each in its own `skills/{skill-name}/SKILL.md`
+- **Layer 2:** Organize into distributions → use `plugin.json` to list skills + metadata
+- **Layer 3:** Publish → package as npm module or GitHub release
+
+**Key points:**
+- SKILL.md is portable (can be understood independently, reused elsewhere)
+- plugin.json coordinates skills, agents, and prompts for packaging
+- Layers serve different concerns; both matter
+
 ## File Structure Quick Reference
+
+### Single Agent Skill
+
+```
+skills/my-skill/
+├── SKILL.md              # Portable skill documentation
+├── index.js              # Implementation
+├── schema.json           # Tool schema (if complex)
+└── resources/            # Optional supporting files
+    └── template.txt
+```
+
+### Library Distribution (Multiple Skills)
+
+```
+skills/excel-mcp-server/
+├── plugin.json           # Distribution manifest
+├── package.json
+├── README.md
+├── skills/
+│   ├── excel-file-ops/
+│   │   ├── SKILL.md      # Portable skill docs
+│   │   ├── index.js
+│   │   └── schema.json
+│   └── excel-formatting/
+│       ├── SKILL.md
+│       ├── index.js
+│       └── schema.json
+└── tests/
+
+```
 
 ### Minimal Prompt Library
 
@@ -62,15 +132,6 @@ my-prompts/
 ```
 my-agent/
 ├── agent.md
-├── package.json
-└── README.md
-```
-
-### Minimal Library Distribution (Skills-Only)
-
-```
-my-skill/
-├── plugin.json
 ├── package.json
 └── README.md
 ```

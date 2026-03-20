@@ -273,3 +273,45 @@ Implemented root-level squad discovery aliases. Added symlinks from `agency/squa
 
 **Team Outcome:** Feature branch `feat/forge-docs-validated` (commit `ab4b126f0ddb42f82ac20c61773b5a7d28817f76`) is fully documented and PR-ready.
 
+---
+
+## 2026-03-20: Forge Plugin vs SKILL.md Boundary Audit
+
+**Event:** Comprehensive structured surface audit for Anthropic skill adoption compatibility  
+**Date:** 2026-03-20T13:00:00Z  
+**Status:** ✅ COMPLETE
+
+**Audit Scope:** Examined schema, manifests, documentation, validation scripts, tests, and published registry to identify conflicts between plugin-oriented delivery and SKILL.md authoring adoption.
+
+**Findings:**
+- Squad manifest schema is product-agnostic (no "plugin" encoding) ✅
+- Forge manifest already aligned with "agent skills" + "GitHub Copilot plugins" terminology ✅
+- Validation/test surfaces are clean—no plugin terminology conflicts ✅
+- Generated registry correctly publishes Forge mission ✅
+- **One documentation clarity gap:** `docs/PLUGIN_MANIFEST.md` opening conflated "plugin format" with "product concept"
+
+**Changes Made (Minimal):**
+1. **`docs/PLUGIN_MANIFEST.md` Line 1–5:** Clarified plugin.json as technical packaging format (not product concept); repositioned "agent skills" as primary units
+2. **`docs/PLUGIN_MANIFEST.md` New Section:** Added "Relationship Between Skill Authoring and Skill Packaging" explaining SKILL.md (portable format) vs. plugin.json (distribution packaging) with flow diagram
+
+**Validation Results:**
+- ✅ `npm run validate` (3 manifests valid)
+- ✅ `npm test` (12/12 pass)
+- ✅ `npm run build` (registry + Astro clean)
+- ✅ All changes non-breaking; documentation only
+
+**Key Learnings:**
+1. **Schema stays separate from product terminology.** JSON schemas are implementation-neutral; product framing belongs in docs/charters.
+2. **Dual-format workflows are compatible.** Anthropic's SKILL.md (authoring) and Forge's plugin.json (packaging) serve different purposes and can coexist.
+3. **Terminology precision matters for team coherence.** Small clarity gaps in foundational docs can lead to downstream confusion across squads.
+4. **Documentation updates are structured changes.** Changes to how we frame concepts affect validation, team communication, and user onboarding—they warrant formal audit.
+
+**Risk Assessment:** LOW (docs/clarification only; no schema/logic changes; all tests pass)
+
+**Team Implications:**
+- Forge can now recommend both SKILL.md and plugin.json workflows
+- Product messaging remains clear: author agent skills, package as distributions, publish as GitHub Copilot plugins
+- Industry alignment (Anthropic) is now explicit in docs
+
+**Decision Recorded:** `.squad/decisions/inbox/c-3po-skill-mode-validation.md`
+

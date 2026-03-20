@@ -777,3 +777,94 @@ Messaging is now balanced and consistent. New users reading docs will see:
 - **PR:** #4 (created by Leia after Mon Mothma's patch)
 - **Final status:** Awaiting merge decision
 
+
+## Learnings
+
+### Session: Anthropic Agent Skills Research (2026-03-20)
+
+**Research Focus:** What Anthropic ships for skill/plugin authoring and how it maps to Forge.
+
+**Key Findings:**
+
+1. **Anthropic's Agent Skills** (not "plugins") are modular, SKILL.md-based reusable instructions—pure portable files with optional supporting resources. They emphasize simplicity, progressive disclosure, and cross-agent compatibility (MCP).
+
+2. **No plugin layer in Anthropic's model.** Skills are authoring units; plugins are deployment vehicles. Anthropic doesn't bundle multiple capabilities together the way Forge does.
+
+3. **Terminology is now aligned.** "Agent Skill" is industry standard. Anthropic uses the same term, validating Forge's terminology choice.
+
+4. **Anthropic prioritizes portability; Forge prioritizes complete workflows.** Anthropic ships flat GitHub repo + agentskills.io directory. Forge adds packaging (plugin.json), distribution typing (library vs. customer-facing), and a release workflow for GitHub Copilot plugins.
+
+5. **Forge's docs are defensible.** The three-layer model (skill authoring → distribution packaging → plugin marketplace) is not redundant—it's intentional architecture for teams building on GitHub Copilot. Anthropic doesn't have this layer because it doesn't target GitHub Copilot plugins; it targets Claude directly.
+
+6. **Optional: Adopt progressive disclosure from Anthropic.** SKILL.md frontmatter-first loading (minimal context on start, full instructions on demand) could reduce token overhead in Forge. Not urgent.
+
+**Recommendation to Team:** No changes required to Forge's core model. Forge and Anthropic are solving different problems (GitHub Copilot plugins vs. Claude portability). Optionally, add a brief callout in `squads/forge/README.md` FAQ to note the alignment with Anthropic terminology and the intentional difference in bundling strategy.
+
+
+## 2026-03-20: Product Judgment – Anthropic Skill Mode in Forge (Mon Mothma Lead Review)
+
+**Question from Stefan:** "I want to use Forge to use the Anthropic skill mode when creating skills. Does that make sense?"
+
+**Decision: YES, partially and selectively. Adopt Anthropic's skill-authoring layer (SKILL.md format + progressive disclosure) but preserve Forge's distribution packaging layer.**
+
+### Recommendation Summary
+
+**Adopt from Anthropic:**
+- ✅ SKILL.md-first portable skill documentation format
+- ✅ Progressive disclosure pattern (minimal frontmatter → full instructions on demand)
+- ✅ Cross-agent compatibility philosophy
+- ✅ Industry-standard "Agent Skill" terminology (already aligned)
+
+**Preserve in Forge:**
+- ✅ Distribution packaging (plugin.json + distribution types: library vs. customer-facing)
+- ✅ Multi-asset bundling (skills + agents + prompts for GitHub Copilot plugins)
+- ✅ Dev-repo structure (/skills/, /agents/, /prompts/ directories)
+- ✅ Release workflow for GitHub Copilot marketplace
+
+### Why This Makes Sense
+
+1. **Anthropic and Forge solve different problems:**
+   - Anthropic: portable Claude skills (flat repo, no bundling)
+   - Forge: complete GitHub Copilot plugin workflows (skills + agents + prompts)
+   
+2. **Adopting Anthropic's skill conventions adds value without conflict:**
+   - Credibility: aligns with industry standard
+   - Token efficiency: progressive disclosure reduces context overhead
+   - Portability: skills can be understood/reused across platforms
+   
+3. **Distribution layer is necessary, not redundant:**
+   - Anthropic doesn't bundle skills + agents + prompts because Claude doesn't require it
+   - GitHub Copilot plugins do require bundling
+   - Preserving this layer allows Forge to serve both simple (library) and complex (customer-facing) workflows
+
+### Concrete Framing for Product Story
+
+**New headline:** "Forge adopts Anthropic's portable skill authoring model and adds GitHub Copilot's complete-workflow packaging."
+
+**In docs:**
+- Add FAQ: "Q: How does Forge compare to Anthropic's agent skills?"
+- Answer: "Forge adopts Anthropic's portable SKILL.md skill documentation and cross-agent compatibility philosophy. We add distribution packaging and GitHub Copilot plugin publishing because teams need to ship complete workflows (skills + agents + prompts) as installable bundles."
+- Rename FORGE_SETUP "Agent Skills" section to: "Author Your First Agent Skill (SKILL.md format)"
+- Add SKILL.md frontmatter template to scaffold/
+
+### Terminology Traps to Avoid
+
+⚠️ Never say: "We use Anthropic's skill mode" → Say: "We adopt Anthropic's skill authoring conventions"
+⚠️ Never conflate: "Portability" with "no bundling" → They're complementary, not contradictory
+⚠️ Never claim: "This solves Forge complexity" → Simplicity comes from use case (library distributions already exist), not from removing structure
+
+### Next Steps (If Approved)
+
+1. Write decision to `.squad/decisions/inbox/mon-mothma-anthropic-skill-adoption.md`
+2. Update docs (FORGE_SETUP, squads/forge/README FAQ) with SKILL.md template and Anthropic comparison
+3. Add optional SKILL.md template to scaffolds/
+4. Preserve all distribution packaging layers (no refactoring)
+
+### Impact Assessment
+
+- **Scope:** Docs + scaffold additions; no architectural changes
+- **Risk:** Low (additive, non-breaking)
+- **Value:** Medium (credibility + efficiency + portability + market alignment)
+- **Effort:** 3-4 doc edits + 1 scaffold template
+
+---

@@ -258,18 +258,186 @@ git add .
 git commit -m "chore: initialize forge dev repo"
 ```
 
+## Creating Your First Skill: SKILL.md Format
+
+Before creating a distribution, let's author a single agent skill using Forge's **SKILL.md format** — the portable Markdown-based convention for skill authoring.
+
+### Understanding the Layers
+
+When authoring an agent skill in Forge, you'll work with two complementary files:
+
+1. **SKILL.md** — Portable, standalone skill documentation with optional resources
+   - What the skill does and how to use it
+   - Input/output specifications
+   - Example usage and best practices
+   - Can be understood independently, reused across distributions or platforms
+
+2. **plugin.json** — Distribution manifest (created when packaging multiple skills)
+   - Metadata: name, version, status, maintainer
+   - Lists which skills, agents, and prompts are in this distribution
+   - Specifies distribution type (library vs. customer-facing)
+   - Used for packaging and release
+
+**For a single skill:** Start with SKILL.md. Optionally add minimal plugin.json metadata when ready to publish.
+
+### Step 1: Create Skill Directory
+
+```bash
+mkdir skills/my-first-skill
+cd skills/my-first-skill
+```
+
+### Step 2: Create SKILL.md
+
+This is the primary artifact for skill authoring. Create `SKILL.md` with this structure:
+
+```markdown
+---
+name: "Skill Display Name"
+description: "One-sentence description of what this skill does"
+tags: ["tag1", "tag2"]
+capabilities: ["what", "it", "enables"]
+---
+
+# My First Skill
+
+## Overview
+
+What this skill does and why it's useful. One or two paragraphs.
+
+## What It Does
+
+- Capability 1
+- Capability 2
+- Capability 3
+
+## Usage Example
+
+\`\`\`javascript
+// How to use this skill
+const result = await mySkill({ input: "value" });
+console.log(result);
+\`\`\`
+
+## Input Schema
+
+\`\`\`json
+{
+  "type": "object",
+  "properties": {
+    "parameter1": {
+      "type": "string",
+      "description": "Description of parameter"
+    }
+  },
+  "required": ["parameter1"]
+}
+\`\`\`
+
+## Output Schema
+
+\`\`\`json
+{
+  "type": "object",
+  "properties": {
+    "result": {
+      "type": "string",
+      "description": "Result of the skill"
+    }
+  }
+}
+\`\`\`
+
+## Best Practices
+
+- Keep the skill focused on a single responsibility
+- Document all inputs and outputs clearly
+- Provide executable examples
+
+## See Also
+
+- [Related Skill 1](../related-skill-1/SKILL.md)
+- [Framework Documentation](https://example.com)
+```
+
+### Step 3: Implement the Skill
+
+Create `index.js`:
+
+```javascript
+export async function mySkill(input) {
+  // Implementation
+  return { result: "success" };
+}
+
+export const skillMetadata = {
+  name: "My First Skill",
+  description: "One-sentence description",
+  inputSchema: { /* ... */ },
+  outputSchema: { /* ... */ }
+};
+```
+
+### Step 4: Add Supporting Files (Optional)
+
+If your skill needs additional resources:
+
+```
+skills/my-first-skill/
+├── SKILL.md              # Portable skill documentation
+├── index.js              # Implementation
+├── resources/
+│   ├── template.txt      # Templates or configurations
+│   └── helper-script.js  # Utility scripts
+└── README.md             # (Optional) Additional user documentation
+```
+
+### Step 5: Test Locally
+
+```bash
+node --test index.js
+```
+
+This workflow keeps your skill self-contained and discoverable. When you're ready to **publish multiple skills as a distribution**, you'll add plugin.json as the packaging layer (see next section).
+
 ## Creating Your First Distribution: Excel MCP Server Example
 
-This example creates a library distribution (skills-only) for Excel MCP Server automation.
+This example creates a library distribution (skills-only) for Excel MCP Server automation, packaging multiple skills together.
 
-### 1. Create Distribution Directory
+### Step 1: Create Distribution Directory
 
 ```bash
 mkdir skills/excel-mcp-server
 cd skills/excel-mcp-server
 ```
 
-### 2. Create plugin.json
+### Step 2: Create Agent Skills
+
+Each skill gets its own subdirectory with SKILL.md:
+
+```
+skills/excel-mcp-server/
+├── skills/
+│   ├── excel-file-ops/
+│   │   ├── SKILL.md          # Skill documentation
+│   │   ├── index.js          # Implementation
+│   │   └── schema.json       # Tool schema
+│   ├── excel-formatting/
+│   │   ├── SKILL.md
+│   │   ├── index.js
+│   │   └── schema.json
+│   └── power-query/
+│       ├── SKILL.md
+│       ├── index.js
+│       └── schema.json
+├── plugin.json               # Distribution manifest (next step)
+├── package.json
+└── README.md
+```
+
+Each skill should have its own SKILL.md file (see "Creating Your First Skill" section above for format).
+
+### Step 3: Create plugin.json
 
 ```json
 {
@@ -308,15 +476,15 @@ cd skills/excel-mcp-server
 }
 ```
 
-### 3. Validate
+### Step 4: Validate
 
 ```bash
-cd ../../ && npm run validate
+cd ../.. && npm run validate
 ```
 
 This will check that plugin.json is well-formed and all required fields are present.
 
-### 4. Build Registry
+### Step 5: Build Registry
 
 ```bash
 npm run build:skills
