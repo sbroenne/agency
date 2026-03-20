@@ -24,8 +24,8 @@ Use these terms consistently:
 - **Prompt** — System prompt, few-shot example, or conversation starter for agent use cases
 - **Custom Agent** — AGENT.md-style agent definition with instructions and behavior
 - **Agent Skill** — Reusable capability with tools and resources that stands alone or is packaged
-- **Skill Distribution** — Organized package of one or more agent skills, optionally with prompts and custom agents
-- **GitHub Copilot Plugin** — Installable bundle that includes skill distributions, custom agents, prompts, hooks, and commands for Copilot marketplace installation
+- **Distribution** — Organized package of prompts, custom agents, and/or agent skills
+- **GitHub Copilot Plugin** — Installable bundle that includes one or more Forge distributions, custom agents, prompts, hooks, and commands for Copilot marketplace installation
 - Use **`plugin.json`** only when discussing the specific packaging format
 
 ## Operating Model
@@ -53,7 +53,7 @@ Forge always begins by asking what you want to author:
                     │                           │
                     ▼                           ▼
         ┌───────────────────┐       ┌───────────────────────────┐
-        │  LIBRARY SKILL   │       │  CUSTOMER-FACING SKILL   │
+        │ LIBRARY DISTRIB. │       │ CUSTOMER-FACING DIST.    │
         │  (skills only)    │       │  (skills + agents + UX)   │
         └───────────────────┘       └───────────────────────────┘
                     │                           │
@@ -82,7 +82,7 @@ Forge knowledge stays here, but authoring happens in a working repository on the
 - You need agent-to-agent coordination
 - The complexity justifies the overhead
 
-### 5. Skill Distribution Type Distinction
+### 5. Distribution Type Distinction
 
 | Type | Contains | Use Case |
 |------|----------|----------|
@@ -96,7 +96,7 @@ Forge knowledge stays here, but authoring happens in a working repository on the
 ## What Forge Tracks Here
 
 - Reusable reference scaffolds and workflows
-- The living skill distribution registry in `squads/forge/PLUGINS.md`
+- The living distribution registry in `squads/forge/PLUGINS.md`
 - Reference artifacts and reuse signals in `squads/forge/home/catalog.json`
 - The operating rules that decide when to stay lean vs. when to introduce more structure
 

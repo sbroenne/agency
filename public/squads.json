@@ -1,9 +1,9 @@
 {
-  "generatedAt": "2026-03-20T09:05:39.039Z",
+  "generatedAt": "2026-03-20T11:58:55.412Z",
   "counts": {
     "squads": 3,
     "members": 9,
-    "focusAreas": 13
+    "focusAreas": 14
   },
   "squads": [
     {
@@ -98,15 +98,16 @@
       "status": "live",
       "sourceLabel": "sbroenne/agency",
       "location": "squads/forge",
-      "tagline": "Helps you author and package agent skills for AI workflows.",
-      "summary": "Forge guides you from concept to a working agent skill. It asks what you want to build, recommends the right architecture, and helps you package skills into distributions for reuse.",
-      "howTheyWork": "Accelerate agent skill authoring by providing architecture guidance, skill organization patterns, and reference examples like Excel MCP Server.",
+      "tagline": "Author and distribute prompts, custom agents, and agent skills for Copilot.",
+      "summary": "Forge guides you from concept to working reusable assets. It asks what you want to build—prompts, custom agents, or agent skills—recommends the right architecture, and helps you package them into distributions for GitHub Copilot plugins and other use cases.",
+      "howTheyWork": "Accelerate authoring of prompts, custom agents, and agent skills by providing architecture guidance, organization patterns, reference examples like Excel MCP Server, and distribution workflows.",
       "focus": [
-        "asset tracking",
-        "MCP integration",
-        "reference scaffolding",
-        "skill authoring",
-        "skill distribution"
+        "agent skill authoring",
+        "Copilot plugin packaging",
+        "custom agent authoring",
+        "distribution patterns",
+        "prompt authoring",
+        "reference scaffolding"
       ],
       "links": [
         {

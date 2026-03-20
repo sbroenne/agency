@@ -1,12 +1,12 @@
-# Forge Plugin Release Workflow
+# Forge Distribution Release Workflow
 
-This guide describes the release process for skill distributions from development through publication and registry updates. Here, **plugin** means the Forge package model tracked in `plugin.json`.
+This guide describes the release process for distributions from development through publication and registry updates. Here, **plugin** means the Forge package model tracked in `plugin.json`.
 
 ## Release Phases
 
-All skill distributions follow three phases:
+All distributions follow three phases:
 
-1. **Development** — Plugin development in dev repo
+1. **Development** — Distribution development in dev repo
 2. **Publishing** — Release to public npm/GitHub registry
 3. **Registration** — Update Forge PLUGINS.md registry
 
@@ -14,18 +14,20 @@ All skill distributions follow three phases:
 
 ### Environment
 
-Plugins are developed in a dedicated dev repository with a Forge-compliant structure:
+Distributions are developed in a dedicated dev repository with a Forge-compliant structure. This works for library distributions (skills-only) or customer-facing distributions (skills + agents + prompts):
 
 ```
 my-forge-dev/
-├── plugins/
-│   ├── plugin-a/
+├── distributions/
+│   ├── dist-a/
 │   │   ├── plugin.json
 │   │   ├── package.json
-│   │   ├── skills/
+│   │   ├── skills/           (for library or customer-facing distributions)
+│   │   ├── agents/           (for customer-facing distributions only)
+│   │   ├── prompts/          (for customer-facing distributions only)
 │   │   ├── tests/
 │   │   └── README.md
-│   └── plugin-b/
+│   └── dist-b/
 │       └── ...
 ├── package.json (workspace root)
 └── tooling/
@@ -37,10 +39,10 @@ my-forge-dev/
 
 Before moving to publication, ensure:
 
-1. **Structure validation** — Plugin files follow Forge layout
+1. **Structure validation** — Distribution files follow Forge layout
 2. **Manifest validation** — `plugin.json` is complete and valid
-3. **Unit tests** — All skills have passing tests
-4. **Documentation** — README covers all skills with examples
+3. **Unit tests** — All skills/agents/prompts have passing tests
+4. **Documentation** — README covers all assets with examples
 
 Run validation locally:
 

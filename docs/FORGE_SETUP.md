@@ -1,8 +1,8 @@
 # Setting Up a Forge Dev Repo
 
-This guide walks through creating a new Forge dev repository to build and track reusable agent skills. The `plugin.json` file is the implementation format for skill packaging — this guide demonstrates how to use it.
+This guide walks through creating a new Forge dev repository to author and distribute reusable prompts, custom agents, and agent skills. The `plugin.json` file is the implementation format for packaging these authoring units — this guide demonstrates how to use it.
 
-> Want a concrete starting point first? Copy the in-repo Excel reference scaffold at `squads/forge/scaffolds/excel-mcp-server/` and use `squads/forge/workflows/excel-mcp-server/workflow.json` before expanding into the local working repo Forge creates for your skill.
+> Want a concrete starting point first? Copy the in-repo Excel reference scaffold at `squads/forge/scaffolds/excel-mcp-server/` and use `squads/forge/workflows/excel-mcp-server/workflow.json` before expanding into the local working repo Forge creates for your distribution.
 
 ## Prerequisites
 
@@ -15,28 +15,28 @@ This guide walks through creating a new Forge dev repository to build and track 
 ### 1. Create Repository Structure
 
 ```bash
-mkdir my-org-skills && cd my-org-skills
+mkdir my-org-forge && cd my-org-forge
 git init
 
-# Create skill directory
-mkdir skills
+# Create distribution asset directories
+mkdir skills agents prompts
 
 # Create tooling directory
 mkdir -p tooling/scripts tooling/tests
 
 # Create root files
-touch package.json SKILLS.md README.md
+touch package.json PLUGINS.md README.md
 ```
 
 ### 2. Initialize Package.json
 
 ```json
 {
-  "name": "@myorg/skills",
+  "name": "@myorg/forge-distributions",
   "version": "1.0.0",
   "private": true,
   "type": "module",
-  "description": "Forge skill development repository",
+  "description": "Forge distribution development repository",
   "scripts": {
     "validate": "node tooling/scripts/validate-skills.mjs",
     "build:skills": "node tooling/scripts/build-skills.mjs",
@@ -53,14 +53,14 @@ touch package.json SKILLS.md README.md
 }
 ```
 
-### 3. Create Skill Manifest Schema
+### 3. Create Distribution Manifest Schema
 
-Save as `tooling/schema/skill-manifest.json`:
+Save as `tooling/schema/distribution-manifest.json`:
 
 ```json
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "title": "Forge Skill Manifest",
+  "title": "Forge Distribution Manifest",
   "type": "object",
   "required": ["name", "version", "description", "type"],
   "properties": {
@@ -90,9 +90,9 @@ Save as `tooling/schema/skill-manifest.json`:
 
 See `docs/PLUGIN_MANIFEST.md` for full schema.
 
-### 4. Create Validation Script
+### 4. Create Distribution Validation Script
 
-Save as `tooling/scripts/validate-skills.mjs`:
+Save as `tooling/scripts/validate-distributions.mjs`:
 
 ```javascript
 import { readFileSync, readdirSync } from 'fs';
@@ -103,19 +103,19 @@ import addFormats from 'ajv-formats';
 const ajv = new Ajv();
 addFormats(ajv);
 
-const schemaPath = resolve('tooling/schema/skill-manifest.json');
+const schemaPath = resolve('tooling/schema/distribution-manifest.json');
 const schema = JSON.parse(readFileSync(schemaPath, 'utf-8'));
 const validate = ajv.compile(schema);
 
-const skillsDir = resolve('skills');
-const skillDirs = readdirSync(skillsDir, { withFileTypes: true })
+const distributionsDir = resolve('skills');
+const distributionDirs = readdirSync(distributionsDir, { withFileTypes: true })
   .filter(d => d.isDirectory())
   .map(d => d.name);
 
 let errors = 0;
 
-for (const dir of skillDirs) {
-  const manifestPath = join(skillsDir, dir, 'plugin.json');
+for (const dir of distributionDirs) {
+  const manifestPath = join(distributionsDir, dir, 'plugin.json');
   try {
     const manifest = JSON.parse(readFileSync(manifestPath, 'utf-8'));
     
@@ -133,16 +133,16 @@ for (const dir of skillDirs) {
 }
 
 if (errors > 0) {
-  console.error(`\n${errors} skill(s) failed validation.`);
+  console.error(`\n${errors} distribution(s) failed validation.`);
   process.exit(1);
 } else {
-  console.log(`\n✓ All skills passed validation.`);
+  console.log(`\n✓ All distributions passed validation.`);
 }
 ```
 
 ### 5. Create Build Script
 
-Save as `tooling/scripts/build-skills.mjs`:
+Save as `tooling/scripts/build-distributions.mjs`:
 
 ```javascript
 import { readFileSync, readdirSync, writeFileSync } from 'fs';
@@ -155,8 +155,8 @@ const skillDirs = readdirSync(skillsDir, { withFileTypes: true })
 
 const registry = {
   lastUpdated: new Date().toISOString(),
-  librarySkills: [],
-  customerFacingSkills: [],
+  libraryDistributions: [],
+  customerFacingDistributions: [],
   all: []
 };
 
@@ -167,42 +167,42 @@ for (const dir of skillDirs) {
   registry.all.push(manifest);
   
   if (manifest.type === 'library') {
-    registry.librarySkills.push(manifest);
+    registry.libraryDistributions.push(manifest);
   } else {
-    registry.customerFacingSkills.push(manifest);
+    registry.customerFacingDistributions.push(manifest);
   }
 }
 
-// Generate SKILLS.md
+// Generate PLUGINS.md
 const now = new Date().toLocaleString();
-const md = `# Skills Registry
+const md = `# Distribution Registry
 
 > Last updated: ${now}
 
-## Library Skills
+## Library Distributions
 
 | Name | Version | Status | Maintainer |
 |------|---------|--------|-----------|
-${registry.librarySkills.map(p => `| \`${p.name}\` | ${p.version} | ${p.status} | ${p.maintainer?.name || 'N/A'} |`).join('\n')}
+${registry.libraryDistributions.map(p => `| \`${p.name}\` | ${p.version} | ${p.status} | ${p.maintainer?.name || 'N/A'} |`).join('\n')}
 
-## Customer-Facing Skills
+## Customer-Facing Distributions
 
 | Name | Version | Status | Maintainer |
 |------|---------|--------|-----------|
-${registry.customerFacingSkills.map(p => `| \`${p.name}\` | ${p.version} | ${p.status} | ${p.maintainer?.name || 'N/A'} |`).join('\n')}
+${registry.customerFacingDistributions.map(p => `| \`${p.name}\` | ${p.version} | ${p.status} | ${p.maintainer?.name || 'N/A'} |`).join('\n')}
 
 ---
 
-Generated by \`npm run build:skills\`
+Generated by \`npm run build:distributions\`
 `;
 
-writeFileSync('SKILLS.md', md);
-console.log('✓ Generated SKILLS.md');
+writeFileSync('PLUGINS.md', md);
+console.log('✓ Generated PLUGINS.md');
 ```
 
 ### 6. Create Test Suite
 
-Save as `tooling/tests/skills.test.mjs`:
+Save as `tooling/tests/distributions.test.mjs`:
 
 ```javascript
 import { test } from 'node:test';
@@ -215,7 +215,7 @@ const skillDirs = readdirSync(skillsDir, { withFileTypes: true })
   .filter(d => d.isDirectory())
   .map(d => d.name);
 
-test('Skill manifests exist and are valid JSON', async (t) => {
+test('Distribution manifests exist and are valid JSON', async (t) => {
   for (const dir of skillDirs) {
     await t.test(`${dir}/plugin.json is valid`, () => {
       const manifestPath = join(skillsDir, dir, 'plugin.json');
@@ -230,7 +230,7 @@ test('Skill manifests exist and are valid JSON', async (t) => {
   }
 });
 
-test('Library skills have no agents', async (t) => {
+test('Library distributions have no agents', async (t) => {
   for (const dir of skillDirs) {
     const manifestPath = join(skillsDir, dir, 'plugin.json');
     const manifest = JSON.parse(readFileSync(manifestPath, 'utf-8'));
@@ -238,7 +238,7 @@ test('Library skills have no agents', async (t) => {
     if (manifest.type === 'library') {
       await t.test(`${dir} (library) has no agents`, () => {
         assert.ok(!manifest.agents || manifest.agents.length === 0,
-          'Library skills must not have agents');
+          'Library distributions must not have agents');
       });
     }
   }
@@ -258,18 +258,186 @@ git add .
 git commit -m "chore: initialize forge dev repo"
 ```
 
-## Creating Your First Skill: Excel MCP Server Example
+## Creating Your First Skill: SKILL.md Format
 
-This example creates a library skill wrapper for Excel MCP Server automation.
+Before creating a distribution, let's author a single agent skill using Forge's **SKILL.md format** — the portable Markdown-based convention for skill authoring.
 
-### 1. Create Skill Directory
+### Understanding the Layers
+
+When authoring an agent skill in Forge, you'll work with two complementary files:
+
+1. **SKILL.md** — Portable, standalone skill documentation with optional resources
+   - What the skill does and how to use it
+   - Input/output specifications
+   - Example usage and best practices
+   - Can be understood independently, reused across distributions or platforms
+
+2. **plugin.json** — Distribution manifest (created when packaging multiple skills)
+   - Metadata: name, version, status, maintainer
+   - Lists which skills, agents, and prompts are in this distribution
+   - Specifies distribution type (library vs. customer-facing)
+   - Used for packaging and release
+
+**For a single skill:** Start with SKILL.md. Optionally add minimal plugin.json metadata when ready to publish.
+
+### Step 1: Create Skill Directory
+
+```bash
+mkdir skills/my-first-skill
+cd skills/my-first-skill
+```
+
+### Step 2: Create SKILL.md
+
+This is the primary artifact for skill authoring. Create `SKILL.md` with this structure:
+
+```markdown
+---
+name: "Skill Display Name"
+description: "One-sentence description of what this skill does"
+tags: ["tag1", "tag2"]
+capabilities: ["what", "it", "enables"]
+---
+
+# My First Skill
+
+## Overview
+
+What this skill does and why it's useful. One or two paragraphs.
+
+## What It Does
+
+- Capability 1
+- Capability 2
+- Capability 3
+
+## Usage Example
+
+\`\`\`javascript
+// How to use this skill
+const result = await mySkill({ input: "value" });
+console.log(result);
+\`\`\`
+
+## Input Schema
+
+\`\`\`json
+{
+  "type": "object",
+  "properties": {
+    "parameter1": {
+      "type": "string",
+      "description": "Description of parameter"
+    }
+  },
+  "required": ["parameter1"]
+}
+\`\`\`
+
+## Output Schema
+
+\`\`\`json
+{
+  "type": "object",
+  "properties": {
+    "result": {
+      "type": "string",
+      "description": "Result of the skill"
+    }
+  }
+}
+\`\`\`
+
+## Best Practices
+
+- Keep the skill focused on a single responsibility
+- Document all inputs and outputs clearly
+- Provide executable examples
+
+## See Also
+
+- [Related Skill 1](../related-skill-1/SKILL.md)
+- [Framework Documentation](https://example.com)
+```
+
+### Step 3: Implement the Skill
+
+Create `index.js`:
+
+```javascript
+export async function mySkill(input) {
+  // Implementation
+  return { result: "success" };
+}
+
+export const skillMetadata = {
+  name: "My First Skill",
+  description: "One-sentence description",
+  inputSchema: { /* ... */ },
+  outputSchema: { /* ... */ }
+};
+```
+
+### Step 4: Add Supporting Files (Optional)
+
+If your skill needs additional resources:
+
+```
+skills/my-first-skill/
+├── SKILL.md              # Portable skill documentation
+├── index.js              # Implementation
+├── resources/
+│   ├── template.txt      # Templates or configurations
+│   └── helper-script.js  # Utility scripts
+└── README.md             # (Optional) Additional user documentation
+```
+
+### Step 5: Test Locally
+
+```bash
+node --test index.js
+```
+
+This workflow keeps your skill self-contained and discoverable. When you're ready to **publish multiple skills as a distribution**, you'll add plugin.json as the packaging layer (see next section).
+
+## Creating Your First Distribution: Excel MCP Server Example
+
+This example creates a library distribution (skills-only) for Excel MCP Server automation, packaging multiple skills together.
+
+### Step 1: Create Distribution Directory
 
 ```bash
 mkdir skills/excel-mcp-server
 cd skills/excel-mcp-server
 ```
 
-### 2. Create plugin.json
+### Step 2: Create Agent Skills
+
+Each skill gets its own subdirectory with SKILL.md:
+
+```
+skills/excel-mcp-server/
+├── skills/
+│   ├── excel-file-ops/
+│   │   ├── SKILL.md          # Skill documentation
+│   │   ├── index.js          # Implementation
+│   │   └── schema.json       # Tool schema
+│   ├── excel-formatting/
+│   │   ├── SKILL.md
+│   │   ├── index.js
+│   │   └── schema.json
+│   └── power-query/
+│       ├── SKILL.md
+│       ├── index.js
+│       └── schema.json
+├── plugin.json               # Distribution manifest (next step)
+├── package.json
+└── README.md
+```
+
+Each skill should have its own SKILL.md file (see "Creating Your First Skill" section above for format).
+
+### Step 3: Create plugin.json
 
 ```json
 {
@@ -308,15 +476,15 @@ cd skills/excel-mcp-server
 }
 ```
 
-### 3. Validate
+### Step 4: Validate
 
 ```bash
-cd ../../ && npm run validate
+cd ../.. && npm run validate
 ```
 
 This will check that plugin.json is well-formed and all required fields are present.
 
-### 4. Build Registry
+### Step 5: Build Registry
 
 ```bash
 npm run build:skills

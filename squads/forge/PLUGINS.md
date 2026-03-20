@@ -1,8 +1,8 @@
-# Forge Skill Distribution Registry
+# Forge Distribution Registry
 
-Registry of skill distributions created and tracked by the Forge system. Each entry shows distribution name, type, version, status, and publishing details.
+Registry of prompts, custom agents, and distributions created and tracked by the Forge system. Each entry shows distribution name, type, version, status, and publishing details.
 
-This registry tracks reusable skill distributions—packages of agent skills with optional custom agents and prompts—for the squad ecosystem.
+This registry tracks reusable distributions—packages of prompts, custom agents, and/or agent skills—for the squad ecosystem.
 
 **Last Updated:** 2026-03-19
 
@@ -42,7 +42,7 @@ Distributions currently under development or in planning phase:
 
 ---
 
-## How to Add a Skill Distribution
+## How to Add a Distribution
 
 1. Develop your distribution in a dev repo with the directory structure defined in [`docs/FORGE.md`](../../docs/FORGE.md).
 2. Validate locally using the distribution validation script: `npm run validate:plugins` (if present in dev repo).

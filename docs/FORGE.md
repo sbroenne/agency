@@ -4,7 +4,7 @@ Forge is a structured system for creating, tracking, and publishing reusable pro
 
 ## Overview
 
-Forge helps teams author three types of reusable assets and organize them into skill distributions:
+Forge helps teams author three types of reusable assets and package them as plugins:
 
 - **Prompts** — System prompts, few-shot examples, and conversation starters for agent use cases
 - **Custom Agents** — AGENT.md-style agent definitions with instructions, behaviors, and tool bindings
@@ -14,7 +14,7 @@ These can be organized into two distribution types:
 - **Library Distributions** — agent skills only (tools-only packages, no custom agents or prompts)
 - **Customer-Facing Distributions** — agent skills + custom agents + prompts (complete workflows)
 
-Forge distinguishes between **dev repos** (where assets are authored and tested) and **published distributions** (where they are versioned and released).
+Forge distinguishes between **dev repos** (where assets are authored and tested) and **published plugins** (where they are versioned and released).
 
 ## Terminology
 
@@ -22,9 +22,63 @@ When discussing Forge:
 - Use **Prompt** for system prompts and few-shot examples
 - Use **Custom Agent** (or **agent**) for AGENT.md-style definitions
 - Use **Agent Skill** as the primary unit of reusable capability
-- Use **Skill Distribution** or **distribution** for how authoring units are organized and packaged
+- Use **Plugin** for the user-facing deliverable; **distribution type** (library vs. customer-facing) is the internal classification
 - Use **`plugin.json`** only when referencing the specific packaging format (it's an implementation detail)
-- Refer to bundled Copilot installations as **GitHub Copilot Plugins** (distinct from skill distributions)
+- All Forge plugins are distributed as **GitHub Copilot Plugins** through the marketplace
+
+## Agent Skill Authoring: SKILL.md Format
+
+Forge adopts Anthropic's portable **SKILL.md** format for authoring agent skills. This provides:
+
+- **Portable documentation** — Skills documented as standalone Markdown with optional supporting resources
+- **Progressive disclosure** — Minimal frontmatter on first load, full instructions available on demand
+- **Cross-agent compatibility** — Skills designed to work with any agent, not tightly coupled to specific personas
+- **Industry alignment** — Aligns with Anthropic's agent skills standard and ecosystem conventions
+
+### Three-Layer Architecture
+
+Agent skill development in Forge follows a three-layer model:
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│ Layer 1: Author Agent Skills (SKILL.md format)                 │
+│ ────────────────────────────────────────────────────────────────│
+│ • Portable documentation (Markdown-first)                       │
+│ • Optional resources/ directory (scripts, templates)            │
+│ • Progressive disclosure (summary + full docs)                  │
+│ • Example: skills/excel-file-ops/SKILL.md                       │
+└─────────────────────────────────────────────────────────────────┘
+                              │
+                              ▼
+┌─────────────────────────────────────────────────────────────────┐
+│ Layer 2: Organize into Distributions (plugin.json manifest)    │
+│ ────────────────────────────────────────────────────────────────│
+│ • Metadata, versioning, distribution type                       │
+│ • Lists skills, agents, prompts included                        │
+│ • Distinguishes library vs. customer-facing                     │
+│ • Example: skills/excel-mcp-server/plugin.json                  │
+└─────────────────────────────────────────────────────────────────┘
+                              │
+                              ▼
+┌─────────────────────────────────────────────────────────────────┐
+│ Layer 3: Publish as GitHub Copilot Plugin                      │
+│ ────────────────────────────────────────────────────────────────│
+│ • Installable bundle (npm package or GitHub release)            │
+│ • Marketplace registration and discovery                        │
+│ • User-facing delivery mechanism                                │
+│ • Example: @myorg/excel-mcp-server                              │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+**Key insight:** These layers serve different concerns. SKILL.md is *what* you build (portable, agent-independent). plugin.json is *how* you organize it (distribution metadata). GitHub Copilot Plugin is *where* you ship it (user-facing bundle).
+
+### Why This Matters
+
+**Without SKILL.md layer:** Skill definitions get buried in plugin.json or code comments. Not discoverable, not portable.
+
+**With SKILL.md layer:** Each skill is self-contained documentation that can be understood independently, used in multiple distributions, or ported to other platforms (Claude, Anthropic's agent skills marketplace, etc.).
+
+**plugin.json still matters:** It coordinates skills, agents, prompts, and metadata for packaging and distribution. SKILL.md doesn't replace it; they serve complementary purposes.
 
 ## Canonical Forge Knowledge in This Repo
 
