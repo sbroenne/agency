@@ -11,13 +11,16 @@ on:
     paths:
       - "squads/forge/**"
 
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 jobs:
   validate-plugins:
     runs-on: ubuntu-latest
     name: Validate Plugin Registry
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: Check PLUGINS.md exists
         run: |
@@ -29,14 +32,14 @@ jobs:
 
       - name: Validate PLUGINS.md format
         run: |
-          # Check for required sections
-          grep -q "## Library Plugins" squads/forge/PLUGINS.md || (echo "❌ Missing '## Library Plugins' section"; exit 1)
-          echo "✅ Library Plugins section present"
-          
-          # Check for registry table
-          grep -q "| Plugin Name |" squads/forge/PLUGINS.md || (echo "❌ Missing plugin registry table"; exit 1)
-          echo "✅ Plugin registry table present"
-          
+          # Accept both legacy plugin terminology and newer distribution terminology.
+          grep -Eq "## Library (Plugins|Distributions)" squads/forge/PLUGINS.md || (echo "❌ Missing '## Library Plugins' or '## Library Distributions' section"; exit 1)
+          echo "✅ Library section present"
+
+          # Accept both legacy and current table headers.
+          grep -Eq "\| (Plugin|Distribution) Name \|" squads/forge/PLUGINS.md || (echo "❌ Missing plugin/distribution registry table"; exit 1)
+          echo "✅ Registry table present"
+
           # Check for status definitions
           grep -q "## Status Definitions" squads/forge/PLUGINS.md || (echo "❌ Missing '## Status Definitions' section"; exit 1)
           echo "✅ Status Definitions section present"
@@ -45,11 +48,11 @@ jobs:
         run: |
           # Extract plugin entries from PLUGINS.md and validate each
           echo "Validating plugin entries..."
-          
-          # Check for at least one library plugin entry (Excel MCP Server)
+
+          # Check for at least one library plugin/distribution entry (Excel MCP Server)
           grep -q "excel-mcp-server" squads/forge/PLUGINS.md || (echo "❌ Excel MCP Server entry missing"; exit 1)
           echo "✅ Excel MCP Server entry found"
-          
+
           # Validate status field (must be one of: dev, beta, stable, deprecated)
           if grep "excel-mcp-server" squads/forge/PLUGINS.md | grep -qE "\| (dev|beta|stable|deprecated) \|"; then
             echo "✅ Excel MCP Server status is valid"
@@ -63,7 +66,7 @@ jobs:
           # Verify that FORGE.md and FORGE_SETUP.md are referenced
           grep -q "FORGE.md" squads/forge/PLUGINS.md || (echo "⚠️  FORGE.md not referenced in PLUGINS.md"; exit 1)
           echo "✅ FORGE.md referenced"
-          
+
           grep -q "FORGE_SETUP.md" squads/forge/PLUGINS.md || (echo "⚠️  FORGE_SETUP.md not referenced in PLUGINS.md"; exit 1)
           echo "✅ FORGE_SETUP.md referenced"
 
@@ -73,6 +76,6 @@ jobs:
           echo ""
           echo "Plugin Registry Validation Complete"
           echo "- Registry file: squads/forge/PLUGINS.md"
-          echo "- Library plugins registered: ✓"
+          echo "- Library plugins/distributions registered: ✓"
           echo "- Plugin entries validated: ✓"
           echo "- Documentation links verified: ✓"
