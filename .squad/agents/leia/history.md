@@ -213,3 +213,111 @@ Scribe conducted orchestration logging for completed Forge documentation session
 Feature branch `feat/forge-docs-validated` (commit `ab4b126f0ddb42f82ac20c61773b5a7d28817f76`) is fully logged and ready for team handoff. All validation passes; no blockers remain.
 
 ---
+
+## 2026-03-20: Forge PR #3 Created and Merged
+
+**Event:** Created PR #3 from `feat/forge-docs-validated` to `main` and merged  
+**Date:** 2026-03-20T{TIMESTAMP}Z  
+**Status:** ✅ Complete
+
+**Work:**
+- Pushed branch `feat/forge-docs-validated` to remote
+- Created PR #3 with title "docs: Forge documentation and plugin architecture validated"
+- Attempted merge with `gh pr merge 3 --auto --delete-branch`
+- Selected merge commit strategy (GitHub default)
+- Auto-deleted both local and remote branch on merge
+
+**Result:**
+- **PR #3 URL:** https://github.com/sbroenne/agency/pull/3
+- **Merge Commit SHA:** `fa23984`
+- **Parent Commit:** `5acbabe` (previous main)
+- **Files Changed:** 16 files, +5120−349 lines (776 net insertions)
+- **Branch State:** Cleaned up; working tree clean on `main`, up to date with `origin/main`
+
+**Blockers:** None. Merge succeeded without auth, CI protection, or permission issues.
+
+**Decision Record:** Written to `.squad/decisions/inbox/leia-forge-pr-merge.md`
+
+---
+
+## 2026-03-20: Forge PR #3 Merge Complete (Session Log)
+
+**Event:** Scribe finalization for Forge PR #3 merge and session close  
+**Date:** 2026-03-20T09:59:51Z  
+**Status:** ✅ Complete
+
+**Session Outcome:**
+- Orchestration log created: `.squad/orchestration-log/2026-03-20T09:59:51Z-leia.md`
+- Session log created: `.squad/log/2026-03-20T09:59:51Z-forge-pr-merge.md`
+- Decision inbox merged: `leia-forge-pr-merge.md` → `decisions.md` (deduplicated, no duplicates found)
+- Team updates: Session summary appended to Leia's history
+- Repository state: All `.squad/` changes staged and committed to `main`
+
+**Artifacts:**
+- Merge commit: `fa23984` (PR #3, 16 files, +5120−349 lines)
+- Orchestration log: Complete
+- Session log: Complete
+- Repository: Clean, all decisions and logs recorded
+
+**Team Signal:** Forge documentation and plugin architecture now live on production main; feature branch cleaned up; all session logs archived. Repository is publication-ready.
+
+---
+
+## 2026-03-20: Forge Messaging Fixes PR #4 Created
+
+**Event:** Created and pushed PR for Forge terminology refinements  
+**Date:** 2026-03-20T{TIMESTAMP}Z  
+**Status:** ✅ Complete
+
+**Work Completed:**
+- Reviewed git status: 11 modified Forge-related files in working tree
+- Created feature branch: `feat/forge-messaging-fixes`
+- Staged all changes and committed with Co-authored-by trailer
+- Pushed branch to origin: `feat/forge-messaging-fixes`
+- Created PR #4 with concise messaging and detailed change description
+
+**Result:**
+- **Branch:** `feat/forge-messaging-fixes`
+- **Commit SHA:** `c3a7c016ff402630807c0dddad6bd054d8a701aa`
+- **PR Number:** 4
+- **PR URL:** https://github.com/sbroenne/agency/pull/4
+- **Files Changed:** 11 (Forge docs, squad.json)
+- **Summary:** Refines Forge terminology (distributions vs. skill distributions), clarifies distinction from GitHub Copilot Plugins
+
+**Blockers:** None. Workflow completed safely without conflicts or errors.
+
+---
+
+## 2026-03-20: Plugin Terminology PR Merge (Spawn Session)
+
+**Event:** Created and updated PR #4 with plugin terminology refinements  
+**Date:** 2026-03-20  
+**Status:** ✅ COMPLETE  
+**Spawn Agent:** Leia (Documentation & Release)  
+
+### Work Summary
+
+1. **PR Creation:** Created PR #4 "docs: Forge plugin terminology and clarity refinements"
+2. **Branch:** feat/forge-messaging-fixes (based on Mon Mothma's research & decision)
+3. **PR Updates:** After plugin terminology decision finalized, updated PR with full decision context
+4. **Scope:** 7 surgical edits across docs/FORGE.md, squads/forge/README.md, docs/PLUGIN_MANIFEST.md
+5. **Validation:** All safety gates confirmed passing (npm validate ✅ | npm test 12/12 ✅ | npm build ✅)
+6. **PR Status:** Ready for Stefan's merge decision
+
+### Key Learnings
+
+1. **Decision-driven PRs improve review clarity:** Linking PR changes directly to filed decisions (with rationale, impact, what-not-to-change sections) makes review faster and decisions reversible.
+
+2. **Multi-agent refinement workflow:** PR created by Leia, refined after Mon Mothma's decision, validated by independent runs — this parallel workflow surfaces issues early and maintains quality gates.
+
+3. **Documentation PRs benefit from surgical edits:** Small, targeted changes across multiple docs are easier to review and reason about than large refactors.
+
+### PR Details
+
+- **PR #4:** https://github.com/sbroenne/agency/pull/4
+- **Title:** "docs: Forge plugin terminology and clarity refinements"
+- **Branch:** feat/forge-messaging-fixes
+- **Base:** main
+- **Commits:** Updated with terminology decision implementation
+- **Status:** Awaiting merge
+

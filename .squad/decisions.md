@@ -3214,3 +3214,229 @@ Teams need lean, clear guidance on plugin architecture without forcing unnecessa
 - Plugin home repo template
 - Excel MCP Server as working reference plugin (if needed)
 
+
+---
+
+### Forge PR #3: Merge Complete
+
+**Agent:** Leia (GitHub Integrator)  
+**Date:** 2026-03-20  
+**Status:** ✅ Complete
+
+#### Event
+
+Created and merged PR #3 from `feat/forge-docs-validated` to `main`. All Forge documentation changes, plugin validation, and decision records published on main.
+
+#### Work
+
+- **Branch:** `feat/forge-docs-validated` (commit `ab4b126`)
+- **PR Title:** "docs: Forge documentation and plugin architecture validated"
+- **Merge Method:** Merge commit (GitHub default)
+- **Merge Commit SHA:** `fa23984`
+- **Branch Cleanup:** Auto-deleted local and remote branches
+- **Working Tree:** Clean, on `main`, up to date with `origin/main`
+
+#### Files Merged
+
+16 files changed, +5120−349 lines (776 net insertions):
+- Forge documentation (FORGE.md, CHARTER.md, PLUGINS.md, README.md)
+- Plugin authoring and release workflows  
+- Agent histories (Forge, C-3PO, Mon Mothma updates)
+- Decisions archive and squad records
+- Registry metadata (public/squads.json)
+
+#### Outcome
+
+**PR #3 merged to `main`; feature branch cleaned up; remote and local synchronized. Forge documentation and plugin architecture now live on production main branch.**
+
+**Decision Record:** `leia-forge-pr-merge.md` (merged 2026-03-20T09:59:51Z)
+
+---
+
+### Anthropic Skill Creator Investigation: No Changes Required
+
+**Author:** Mon Mothma  
+**Date:** 2026-03-20  
+**Status:** Team Reference (No Action Required)
+
+#### Context
+
+Anthropic publishes a Skill Creator meta-skill — a Claude tool for building Claude skills. Question: Does this change Forge's architecture or conflict with our skill model?
+
+#### What We Found
+
+Anthropic's Skill Creator provides an interactive workflow for building Claude skills with four modes:
+1. **Create** — Start a new skill from scratch
+2. **Eval** — Run test prompts and measure outputs
+3. **Improve** — Analyze results and get suggestions
+4. **Benchmark** — Compare skill versions
+
+Anthropic skills use this structure:
+```
+skill-name/
+├── SKILL.md (metadata + instructions)
+├── scripts/ (optional executables)
+├── references/ (optional docs)
+└── assets/ (optional templates)
+```
+
+#### Technical Mapping
+
+| Forge Concept | Anthropic Equivalent | Relationship |
+|---|---|---|
+| Agent Skill | Claude Skill | Exact match — both reusable capability units |
+| `plugin.json` manifest | Not used | Forge adds packaging/distribution layer |
+| Skill Distribution | Anthropic skills repo | Anthropic publishes examples; Forge adds versioning & registry |
+| GitHub Copilot Plugin | Not Anthropic's concern | GitHub-specific scope |
+
+#### Key Differences
+
+1. **Model focus:** Anthropic builds for Claude; Forge abstracts for Copilot + Squad ecosystem
+2. **Scope:** Anthropic's Skill Creator is 100% evaluation/iteration; Forge spans full authoring → distribution → registry
+3. **Persona:** Anthropic skills are stateless utility modules; Forge distinguishes library (skills-only) from customer-facing (skills + agents + prompts)
+4. **Distribution:** Anthropic relies on open-source repos; Forge uses `plugin.json` + npm/GitHub Pages + PLUGINS.md registry
+
+#### Decision
+
+**No Forge changes required.** Our model is orthogonal to Anthropic's, not contradictory:
+
+- Forge's agent skill concept already matches Anthropic's Claude skill structure (SKILL.md + resources)
+- Forge's `plugin.json` adds a distribution/packaging layer (non-conflicting)
+- Forge's skill types add business framing; Anthropic doesn't define this
+- Forge's registry adds discoverability; Anthropic uses GitHub repos
+
+#### Possible Future Inspiration (Non-Blocking)
+
+1. **Skill Creator workflow** (Create → Eval → Improve → Benchmark) could inspire future skill scaffolding tooling in Forge
+   - Currently Forge recommends manual SKILL.md + Excel MCP template
+   - Optional for v1; already well-scoped
+
+2. **Progressive disclosure pattern** already adopted by Forge (metadata + instructions + optional resources)
+   - No change needed — both systems converge
+
+3. **Evaluation framework** could inform future skill testing guides
+   - Out of scope for v1; could be optional best practice doc
+
+#### Conclusion
+
+Anthropic's Skill Creator is a reference implementation for authoring modular skills that Forge already defines architecturally. Forge's framing goes further by adding skill distributions, packaging/versioning layers, and a registry — but these are complementary, not contradictory.
+
+**Anthropic's model validates Forge's foundational concepts without requiring redesign.**
+
+---
+
+---
+
+## Decision: Forge Plugin Terminology Implementation Complete
+
+**Date:** 2026-03-20  
+**Status:** ✅ IMPLEMENTED  
+**Impact:** Product messaging, user onboarding clarity  
+**Author:** Mon Mothma (Lead)  
+
+### What Was Done
+
+Updated Forge-facing documentation to use **"plugin"** as the primary user-facing term, replacing "distribution." This aligns Forge terminology with official GitHub Copilot and Claude Code plugin marketplace language (Feb-Mar 2025 docs).
+
+#### Changes Made (4 surgical edits across 3 files)
+
+**docs/FORGE.md**
+- Line 7: "organize them into distributions" → "package them as plugins"
+- Lines 25-27: Terminology section redefined
+  - "Plugin" = user-facing deliverable
+  - "distribution type" = internal classification (library vs. customer-facing)
+  - Removed artificial distinction between "Forge distributions" and "GitHub Copilot Plugins"
+
+**squads/forge/README.md**
+- Lines 23-24: Unified "Plugin" definition (previously dual "Distribution" + "GitHub Copilot Plugin")
+- Clarified "Distribution Type" as internal taxonomy
+
+**docs/PLUGIN_MANIFEST.md**
+- Line 3: Redefined manifest purpose — from "technical packaging format" to "defines a plugin"
+- Line 5: Key distinction — from "how you package" to "manifest for a plugin"
+
+### What Was Preserved
+
+- ✅ Internal taxonomy ("distribution type": library vs. customer-facing) — unchanged
+- ✅ "Agent Skill" terminology — unchanged
+- ✅ Directory structure (`/skills/`, etc.) — unchanged
+- ✅ `plugin.json` filename — unchanged
+
+### Validation Results
+
+All safety gates passed:
+- ✅ `npm run validate` — 3 squad manifests validated
+- ✅ `npm test` — 12/12 tests pass
+- ✅ `npm run build` — Registry + Astro build successful
+
+### Outcome
+
+**User-facing narrative:** "Forge helps teams author assets and package them as plugins" (aligns with GitHub/Claude ecosystem terminology)
+
+**Internal clarity:** "Distribution types" remain useful for architecture communication (library, customer-facing)
+
+**Onboarding improved:** Users no longer encounter ambiguity about whether they're publishing a "distribution" or a "plugin"
+
+### Branch Status
+
+Changes committed to `feat/forge-messaging-fixes`. Leia merged after this patch landed in PR #4.
+
+---
+
+## Terminology Audit: Cassian Charter Correction
+
+**Date:** 2026-03-20  
+**Author:** Cassian  
+**Topic:** Plugin ecosystem boundaries
+
+### Finding
+
+Cassian's charter incorrectly listed **VS Code extensions** as an owned domain. The repo does not deal with VS Code extensions. "VS Code extensions" appear in documentation only as a **terminology boundary** to keep separate from Forge plugins—they are not part of this project's scope.
+
+### Correction
+
+Updated Cassian's domain from:
+- ~~GitHub CLI extensions, VS Code extensions, Claude plugins~~
+- → **GitHub CLI plugins, Claude plugins**
+
+Updated charter and routing to reflect:
+- **What Cassian owns:** Forge plugin ecosystem, GitHub CLI plugins, Claude plugins, terminology boundaries keeping these ecosystems distinct
+- **What Cassian does NOT own:** VS Code extension knowledge (out of scope)
+
+### Terminology Affirmed
+
+The repo's terminology boundary is **correct and remains unchanged**:
+- **Forge plugin** = `plugin.json` package model (this repo's concept)
+- **GitHub CLI plugin** = `gh` custom command (separate ecosystem, kept distinct)
+- **Claude plugin** = Claude Code plugin bundle (related ecosystem, kept distinct)
+- **VS Code extension** = VS Code editor extension (separate ecosystem, **not in scope**)
+
+### Files Updated
+
+- `.squad/agents/cassian/charter.md` — Removed VS Code from expertise and boundaries
+- `.squad/routing.md` — Updated routing table rows for Cassian (2 rows)
+
+### Impact
+
+No behavioral impact. Cassian's role and routing remain clear. This correction prevents hallucination about VS Code scope in future work.
+
+---
+
+## Decision: Cassian — Forge terminology boundary
+
+**Date:** 2026-03-20
+
+Keep these terms distinct in squad and Forge surfaces: **VS Code extensions**, **GitHub CLI extensions**, **Claude plugins**, **Forge plugins**, and **Agent Skills**.
+
+### Guidance:
+- Use **extension** for VS Code and GitHub CLI ecosystems.
+- Use **Claude plugin** for Claude Code plugin bundles.
+- Use **Forge plugin** for this repo's `plugin.json` package model.
+- Use **Agent Skill** for reusable skill folders/capabilities, whether standalone or packaged inside a plugin.
+
+### Why it matters
+
+Forge was drifting into "plugin" as a catch-all label, which made VS Code extensions sound like plugins and blurred the difference between a package and the skills it ships. The repo now treats terminology as part of the architecture boundary.
+
+---
+

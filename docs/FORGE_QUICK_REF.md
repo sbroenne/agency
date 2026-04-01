@@ -1,27 +1,41 @@
 # Forge Quick Reference
 
-Quick-reference guide for agent skill decisions and workflows.
+Quick-reference guide for authoring and distribution decisions across prompts, custom agents, and agent skills.
 
 **Concrete starter in this repo:** `squads/forge/workflows/excel-mcp-server/workflow.json` + `squads/forge/scaffolds/excel-mcp-server/` + `squads/forge/home/catalog.json`
 
-**Boundary:** Forge knowledge stays here in `agency`; the actual skill working repo gets created locally when authoring starts.
+**Boundary:** Forge knowledge stays here in `agency`; the actual working repo gets created locally when authoring starts.
 
-## Skill Type Decision Tree
+## Distribution Type Decision Tree
 
 ```
 ┌─ What are you building?
 │
+├─ Reusable prompts or system instructions for agent workflows
+│  └─→ PROMPT LIBRARY ✓
+│      • System prompts, few-shot examples, conversation starters
+│      • No agents, no skills; just guidance
+│      • Share as markdown files or `.txt` prompts
+│      • Example: specialized review prompt for code reviewer agent
+│
+├─ A custom agent persona with specialized behavior
+│  └─→ CUSTOM AGENT (AGENT.md) ✓
+│      • Instructions, behaviors, tool bindings
+│      • Optionally paired with prompts and skills
+│      • Publishable as standalone or within a distribution
+│      • Example: Code Reviewer agent with review expertise
+│
 ├─ Single reusable utility (Excel automation, JSON formatter, HTTP client, etc.)
-│  └─→ LIBRARY SKILL ✓
-│      • Skills only, no agents/prompts
+│  └─→ LIBRARY DISTRIBUTION (Skills-Only) ✓
+│      • Agent skills only, no agents/prompts
 │      • No UI, purely functional
 │      • Publish to npm or private registry
 │      • Example: excel-mcp-server (Excel MCP Server wrapper)
 │      • Example: @myorg/skill-json-parser
 │
-└─ Complete workflow with agent behavior (code reviewer, doc generator, etc.)
-   └─→ CUSTOMER-FACING SKILL PACKAGE ✓
-       • Skills + agents + system prompts
+└─ Complete workflow with multiple assets (skills + agents + prompts)
+   └─→ CUSTOMER-FACING DISTRIBUTION ✓
+       • Skills + custom agents + system prompts
        • May include UI/UX decisions
        • Does it need complex state/routing?
        │
@@ -32,18 +46,97 @@ Quick-reference guide for agent skill decisions and workflows.
            └─ Handles stateful workflows, routing, persistence
 ```
 
+## Agent Skill Authoring: SKILL.md Format
+
+Forge adopts **SKILL.md** as the portable, standard format for authoring agent skills. Each skill starts with its own SKILL.md file:
+
+```markdown
+---
+name: "Skill Name"
+description: "One-line description"
+tags: ["tag1", "tag2"]
+capabilities: ["what", "it", "enables"]
+---
+
+# Skill Name
+
+## Overview
+What it does and why it's useful.
+
+## Usage Example
+\`\`\`javascript
+// Example code
+\`\`\`
+
+## Input Schema
+...
+
+## Output Schema
+...
+```
+
+**Where it fits:**
+- **Layer 1:** Author individual skills → each in its own `skills/{skill-name}/SKILL.md`
+- **Layer 2:** Organize into distributions → use `plugin.json` to list skills + metadata
+- **Layer 3:** Publish → package as npm module or GitHub release
+
+**Key points:**
+- SKILL.md is portable (can be understood independently, reused elsewhere)
+- plugin.json coordinates skills, agents, and prompts for packaging
+- Layers serve different concerns; both matter
+
 ## File Structure Quick Reference
 
-### Minimal Library Skill
+### Single Agent Skill
 
 ```
-my-skill/
-├── plugin.json
+skills/my-skill/
+├── SKILL.md              # Portable skill documentation
+├── index.js              # Implementation
+├── schema.json           # Tool schema (if complex)
+└── resources/            # Optional supporting files
+    └── template.txt
+```
+
+### Library Distribution (Multiple Skills)
+
+```
+skills/excel-mcp-server/
+├── plugin.json           # Distribution manifest
+├── package.json
+├── README.md
+├── skills/
+│   ├── excel-file-ops/
+│   │   ├── SKILL.md      # Portable skill docs
+│   │   ├── index.js
+│   │   └── schema.json
+│   └── excel-formatting/
+│       ├── SKILL.md
+│       ├── index.js
+│       └── schema.json
+└── tests/
+
+```
+
+### Minimal Prompt Library
+
+```
+my-prompts/
+├── system-prompt.txt
+├── examples.md
+└── README.md
+```
+
+### Minimal Custom Agent
+
+```
+my-agent/
+├── agent.md
 ├── package.json
 └── README.md
 ```
 
-### Minimal Customer-Facing Skill Package
+### Minimal Customer-Facing Distribution
 
 ```
 my-skill/

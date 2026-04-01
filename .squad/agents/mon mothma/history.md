@@ -457,3 +457,481 @@ These are organized into **skill distributions** (library or customer-facing) us
 
 **Team Outcome:** Feature branch `feat/forge-docs-validated` (commit `ab4b126f0ddb42f82ac20c61773b5a7d28817f76`) addresses all Forge surface alignment and is PR-ready.
 
+---
+
+## 2026-03-20: Anthropic Skill Creator Investigation
+
+**Event:** Research on Anthropic's Skill Creator tool  
+**Date:** 2026-03-20T10:12:35Z  
+**Request Origin:** Stefan Broenner  
+**Status:** ✅ Complete — Merged to decisions.md
+
+### Finding
+
+Anthropic's Skill Creator is a Claude skill-authoring workflow tool. Comparison with Forge reveals architectural alignment with no conflicts:
+
+- Forge's agent skill concept matches Anthropic's Claude skill structure (SKILL.md + resources)
+- Forge's `plugin.json` adds packaging/distribution layer (non-conflicting)
+- Forge's skill types add business framing; Anthropic doesn't define this
+- Forge's registry adds discoverability; Anthropic uses GitHub repos
+
+### Decision
+
+**No changes required.** Forge's model is orthogonal to Anthropic's. Both use progressive disclosure, modular skills with metadata, and resource bundling — but Forge extends scope (distribution, registry, business framing).
+
+### Possible Future Inspiration (Non-Blocking)
+
+1. **Skill Creator workflow** (Create → Eval → Improve → Benchmark) could inspire future skill scaffolding tooling
+2. **Progressive disclosure pattern** already adopted by Forge (no change needed)
+3. **Evaluation framework** could inform future skill testing guides (out of scope for v1)
+
+### Conclusion
+
+Anthropic's Skill Creator is a reference implementation validating Forge's foundational concepts. No redesign required. The decision has been merged into the team record.
+
+**Decision Record:** `.squad/decisions.md` (2026-03-20T10:12:35Z)
+- Available as Claude.ai plugin + open-source skill in `anthropics/skills` GitHub repo
+- Provides interactive workflow: Create → Eval → Improve → Benchmark
+
+**Technical Model:**
+- Uses SKILL.md (YAML frontmatter + Markdown instructions)
+- Optional bundled resources: `scripts/`, `references/`, `assets/`
+- Progressive disclosure pattern (metadata first, full instructions on trigger, resources on demand)
+
+**Relationship to Forge:**
+- **Conceptually aligned, not contradictory** — Both systems converge on same agent skill structure
+- Anthropic focuses on workflow tooling (create/eval/improve); Forge adds packaging (`plugin.json`) + registry + distribution types
+- Forge's "agent skill" definition matches Anthropic's "Claude skill" exactly
+- Forge goes further: skill distributions (library vs. customer-facing) + versioning + plugin.json + PLUGINS.md registry
+
+**Key Insight:**
+Anthropic's Skill Creator is a **reference implementation of the authoring workflow** for the kind of modular skills Forge already defines architecturally. No redesign needed.
+
+### Implications for Forge
+
+**None.** No changes required to Forge:
+- ✅ Forge's SKILL.md + resources model already matches Anthropic's pattern
+- ✅ Forge's plugin.json adds a distribution layer Anthropic doesn't define (not a conflict)
+- ✅ Forge's library vs. customer-facing distinction is business-level framing, not architectural
+
+**Future inspiration points (non-blocking):**
+1. Skill Creator's create/eval/improve/benchmark workflow could inspire future Forge tooling
+2. Progressive disclosure pattern is already adopted — nothing to change
+3. Evaluation framework could inform future skill testing guides (out of scope for v1)
+
+### Team Takeaway
+
+Forge and Anthropic are **orthogonal, not competitive.** We're aligned on skill structure; Forge's value is in packaging, versioning, and ecosystem integration for GitHub Copilot plugins. No documentation or implementation changes needed.
+
+---
+
+## Learnings
+
+### 2026-03-20: Forge Messaging Overemphasis on "Skills"
+
+**Problem Identified:**
+Squad manifest (`squad.json`) and public-facing docs were overemphasizing "agent skills" as Forge's sole focus, obscuring that Forge also authoring **prompts** and **custom agents** (AGENT.md-style). Messaging collapsed the full authoring scope into "skills terminology," which confused what Forge offers.
+
+**Root Cause:**
+Messaging evolved toward implementation details (skills as distribution unit) rather than author-centric framing (prompts, agents, skills as three equal authoring types).
+
+**Fixes Applied:**
+
+1. **squad.json manifest updates** (both canonical and marketplace alias):
+   - Tagline: "Helps you author and package agent skills..." → **"Author and distribute prompts, custom agents, and agent skills for Copilot."**
+   - Summary: Narrowly focused on "agent skill" → **Explicitly mentions prompts, agents, skills as three equal choices**
+   - Mission: Reduced "accelerate agent skill authoring" → **"Accelerate authoring of prompts, custom agents, and agent skills"**
+   - Focus: Changed "skill authoring, skill distribution, MCP integration, asset tracking" → **"prompt authoring, custom agent authoring, agent skill authoring, distribution patterns, Copilot plugin packaging, reference scaffolding"**
+
+2. **FORGE_SETUP.md documentation:**
+   - Title and intro still accurately described scope (no change needed)
+   - Directory structure updated to include `agents/` and `prompts/` alongside `skills/`
+   - Package name: `@myorg/skills` → **`@myorg/forge-distributions`** (more honest about what the repo contains)
+   - Example directory: `my-org-skills` → **`my-org-forge`** (same reason)
+   - Description: "Forge skill development repository" → **"Forge distribution development repository"**
+   - Registry file: `SKILLS.md` → **`PLUGINS.md`** (matches Forge's actual registry naming)
+
+**Impact:**
+- ✅ Marketing now truthfully reflects Forge's three authoring types
+- ✅ New users won't assume Forge is only for skills
+- ✅ Focus list emphasizes equal weight: prompts, agents, skills, distribution patterns, Copilot plugin packaging
+- ✅ All existing tests pass (`npm run validate`, `npm test`, `npm run build`)
+- ✅ No breaking changes to internal architecture or tooling
+
+**Verification:**
+- `npm run validate` — ✓ All 3 squad manifests validated
+- `npm test` — ✓ All 12 registry tests passed
+- `npm run build` — ✓ Build completed, public/squads.json regenerated with updated Forge messaging
+
+**Message is now crisp and accurate without being verbose.**
+
+
+---
+
+### 2026-03-20: Second Audit Pass — Broader Forge Messaging Rebalance (Turn 2)
+
+**Problem Extended:**
+First pass fixed the squad manifests but user audit found messaging imbalance persisted across **seven additional critical surfaces**: FORGE_QUICK_REF, squads/forge/README, PLUGINS.md, RELEASE_WORKFLOW.md, FORGE_SETUP.md details, and FORGE_DESIGN_PHILOSOPHY. These were still leading with "skills" language, obscuring that Forge handles prompts, agents, and skills equally.
+
+**Root Cause:**
+Messaging had drifted toward implementation/technical details (skills as packaging unit, skills-only registry, skill validation scripts) rather than authoring-centric framing.
+
+**Comprehensive Fixes Applied:**
+
+1. **docs/FORGE_QUICK_REF.md** — Restructured decision tree:
+   - Removed: "Skill Type Decision Tree" → **Added: "Distribution Type Decision Tree"**
+   - Added explicit branches for **prompts** (library) and **custom agents** (AGENT.md)
+   - Reordered to show prompts → agents → skills → combined distributions
+   - Added file structure examples for prompts and agents alongside skills
+   - Changed narrative: "agent skill decisions" → **"authoring and distribution decisions"**
+
+2. **squads/forge/README.md** — Rebalanced CTAs and registry language:
+   - Changed file table: "Registry of all published skills" → **"Registry of all published distributions"**
+   - Updated section: "Skill Distribution Types" → **"Distribution Types"**
+   - Renamed: "Skill Distribution Registry" → **"Distribution Registry"**
+   - Changed file descriptions to mention distributions (plural, not skills-only)
+
+3. **squads/forge/PLUGINS.md** — Reframed registry itself:
+   - Title: "Forge Skill Distribution Registry" → **"Forge Distribution Registry"**
+   - Intro: "packages of agent skills with optional custom agents and prompts" → **"packages of prompts, custom agents, and/or agent skills"**
+   - Updated section header explanations to reflect equal weight
+
+4. **squads/forge/RELEASE_WORKFLOW.md** — Rebalanced release process framing:
+   - Title: "Forge Plugin Release Workflow (for skill distributions)" → **"Forge Distribution Release Workflow"**
+   - Changed: "All skill distributions follow three phases" → **"All distributions follow three phases"**
+   - Updated example directory structure to show `agents/` and `prompts/` alongside `skills/`
+   - Changed validation checklist: "All skills have passing tests" → **"All skills/agents/prompts have passing tests"**
+
+5. **docs/FORGE_SETUP.md** — Rebalanced technical narrative:
+   - Intro: "build and track reusable agent skills" → **"author and distribute reusable prompts, custom agents, and agent skills"**
+   - Section 3: "Create Skill Manifest Schema" → **"Create Distribution Manifest Schema"**
+   - Section 4: "Create Validation Script" → **"Create Distribution Validation Script"**
+   - Updated script filenames in narrative (but kept code accurate): validate-skills → validate-distributions, build-skills → build-distributions, skills.test → distributions.test
+   - Updated generated output filenames and descriptions: SKILLS.md → PLUGINS.md
+   - Updated variable names in code examples: `librarySkills`/`customerFacingSkills` → `libraryDistributions`/`customerFacingDistributions`
+   - Example section: "Creating Your First Skill" → **"Creating Your First Distribution"**
+   - NOTE: Kept technical code accuracy; only rebalanced the surrounding narrative context
+
+6. **docs/FORGE_DESIGN_PHILOSOPHY.md** — Light consistency pass:
+   - Example: "library plugin" + clarified → **"library distribution (skills-only)"**
+   - Example: "multi-turn code review agent" context expanded → **"custom agent with specialized behavior and system prompts (customer-facing distribution)"**
+
+**Impact of Broader Pass:**
+- ✅ All seven hotspot files now use balanced language across prompts, agents, and skills
+- ✅ Decision trees and CTAs no longer default-lead with "skills" terminology
+- ✅ Registry descriptions now accurately reflect mixed-asset distributions
+- ✅ Release and setup workflows describe full distribution model, not skills-only
+- ✅ Technical accuracy maintained; only narrative framing improved
+- ✅ Product story is now consistent: **Forge = author prompts, agents, skills → organize into distributions → package for Copilot plugins**
+
+**Verification (Pass 2):**
+- `npm run validate` — ✓ All 3 squad manifests validated (no regressions)
+- `npm test` — ✓ All 12 registry tests passed (no regressions)
+- `npm run build` — ✓ Build completed successfully, public/squads.json regenerated
+- **Files Changed:** 7 files (docs/FORGE_QUICK_REF.md, FORGE_SETUP.md, FORGE_DESIGN_PHILOSOPHY.md, squads/forge/{README.md, PLUGINS.md, RELEASE_WORKFLOW.md, squad.json})
+- **Statistics:** 121 insertions, 84 deletions (net +37 lines; mostly clarification and structure)
+
+**Key Result:**
+Messaging is now balanced and consistent. New users reading docs will see:
+- Prompts, agents, and skills as three equal authoring options
+- Distributions as organizational packaging, not skills-specific containers
+- GitHub Copilot plugins as the final distribution target, not the lead story
+- Library distributions (skills-only) and customer-facing distributions (mixed assets) as equally valid patterns
+
+## Learnings
+
+### Plugin vs. Distribution Terminology (Research Pass, Mar 2025)
+
+**Finding:** User correctly identified terminology gap. Latest official docs (GitHub Copilot, Claude Code, GitHub CLI) all use **"plugin"** as the user-facing term for distributable packages.
+
+**Evidence:**
+- **GitHub CLI**: Official docs use only "extension" (not plugin)
+- **GitHub Copilot**: "Plugin" = marketplace-installable bundle; "Skill" = capability; "Agent" = assistant persona
+- **Claude Code**: "Plugin" = distribution wrapper for extensions (skills, hooks, MCP)
+
+**Current Forge state:**
+- Uses "distribution" as primary term (internal organizing concept)
+- Mentions "plugin" only as "implementation detail" in `plugin.json`
+- Creates ambiguity: users don't know "Am I publishing a distribution or a plugin?"
+
+**Decision:** Plugin is the correct user-facing term. Distribution is architecture-internal. Recommendation level: HIGH (affects product messaging, user onboarding).
+
+**Affected files identified:**
+- docs/FORGE.md (lines 7, 13, 25-26, 34-35)
+- squads/forge/README.md (lines 4, 23-24, 45-50)
+- docs/PLUGIN_MANIFEST.md (lines 1-2, 5)
+
+**What NOT to change:**
+- "Distribution type" (library vs. customer-facing) — internal classification, correct as-is
+- "Agent Skill" terminology — distinct unit term, correct
+- Directory structure `/skills/` — no migration needed
+
+**Status:** Recommendation documented; awaiting decision before code changes.
+
+---
+
+## 2026-03-20: Forge Plugin Terminology Fix
+
+**Event:** Implemented user-facing terminology correction: "distribution" → "plugin"  
+**Date:** 2026-03-20T12:15:00Z  
+**Status:** ✅ COMPLETE  
+**Validation:** npm run validate ✅ | npm test (12/12 pass) ✅ | npm run build ✅  
+
+**Changes made (4 surgical edits):**
+
+1. **docs/FORGE.md** — Overview section
+   - Line 7: "organize them into distributions" → "package them as plugins"
+   - Line 25-27: Terminology block — redefined "Plugin" as user-facing deliverable; "distribution type" as internal classification
+   - Removed artificial distinction between "Forge distributions" and "GitHub Copilot Plugins" (they're the same thing)
+
+2. **squads/forge/README.md** — Core Concepts
+   - Lines 23-24: Replaced dual "Distribution" + "GitHub Copilot Plugin" definitions with unified "Plugin" definition
+   - Clarified internal taxonomy: "Distribution Type" is the internal classification
+
+3. **docs/PLUGIN_MANIFEST.md** — Introduction
+   - Line 3: Redefined manifest purpose: "technical packaging format" → "defines a **plugin** (user-facing deliverable)"
+   - Line 5: Key distinction reframed from "how you package" → "manifest for a plugin"
+
+**Architectural decisions preserved:**
+- ✅ Internal taxonomy ("distribution type": library vs. customer-facing) unchanged
+- ✅ "Agent Skill" terminology intact
+- ✅ Directory structure (`/skills/`, etc.) unchanged
+- ✅ `plugin.json` filename correct
+
+**Outcome:** Top-level user narrative now aligns with GitHub Copilot & Claude Code official terminology (Feb-Mar 2025 docs). Users see "plugin" as the primary deliverable; internal architecture clarity maintained.
+
+**PR branch:** feat/forge-messaging-fixes (updated)  
+**Next:** Leia will merge after this patch lands.
+
+## Learnings
+
+1. **Plugin vs. Distribution**: The user-facing top-level term should match upstream platform terminology (GitHub Copilot plugins, Claude Code plugins). Internal taxonomy (distribution types) remains useful for architecture communication.
+
+2. **Terminology precision in product docs**: Ambiguity between user-facing deliverables and internal implementation details creates onboarding friction. A clear, unified user narrative reduces cognitive load and increases adoption confidence.
+
+3. **Minimal targeted edits > structural refactoring**: When correcting terminology, surgical edits (4 locations across 3 files) are safer and faster than restructuring directories or renaming patterns. Validation run confirms integrity.
+
+4. **Decision documentation drives implementation confidence**: Having the decision.md clearly written with "What NOT to change" section allowed me to implement with precision and confidence that architectural integrity was maintained.
+
+---
+
+## 2026-03-20: Forge Plugin Terminology — Final Consistency Pass
+
+**Event:** Surgical pass to eliminate remaining "distribution" language from top-level entry points  
+**Date:** 2026-03-20T12:20:00Z  
+**Status:** ✅ COMPLETE  
+**Validation:** npm run validate ✅ | npm test (12/12 pass) ✅ | npm run build ✅  
+
+**Changes made (3 additional surgical edits):**
+
+1. **squads/forge/README.md** Line 1: Title
+   - "for Distribution" → "for Plugins"
+
+2. **squads/forge/README.md** Line 3-5: Intro (2 edits)
+   - "authoring and distribution system" → "authoring and plugin system"
+   - "organizing them into distributions, and packaging them for GitHub Copilot plugins" → "packaging them as plugins for GitHub Copilot"
+   - "distribution registry" → "plugin registry"
+
+3. **docs/FORGE.md** Line 17: Published state
+   - "published distributions" → "published plugins"
+
+**Result:** Top-level user-facing language now consistently uses "plugin" as primary term. All entry-point lines (title, intro, section headers) align. Internal "distribution type" classification preserved for architecture communication.
+
+**Total patch scope:** 7 edits across 2 files, all validation gates pass.
+
+
+
+
+## 2026-03-20: Plugin Terminology Implementation — Research to Verification (Spawn Session)
+
+**Event:** Investigated plugin vs. distribution terminology, patched docs, verified validations  
+**Date:** 2026-03-20  
+**Status:** ✅ COMPLETE  
+**Spawn Agent:** Mon Mothma (Lead)  
+
+### Work Summary
+
+1. **Research phase:** Verified GitHub Copilot, Claude Code, and GitHub CLI official terminology (Feb-Mar 2025 docs)
+2. **Decision written:** Plugin terminology decision drafted and filed to decisions/inbox
+3. **Implementation:** Patched 3 core files with surgical edits (4 locations):
+   - docs/FORGE.md (redefined user-facing narrative)
+   - squads/forge/README.md (unified plugin definition)
+   - docs/PLUGIN_MANIFEST.md (clarified manifest semantics)
+4. **Validation:** npm run validate ✅ | npm test (12/12) ✅ | npm run build ✅
+5. **Revalidation:** After patch applied by Leia, verified all safety gates pass
+
+### Key Learnings
+
+1. **Cross-platform terminology alignment matters:** User-facing terms should match upstream platforms (GitHub Copilot, Claude Code) to reduce onboarding friction and increase adoption confidence.
+
+2. **Internal taxonomy orthogonal to user narrative:** "Distribution types" (library vs. customer-facing) remain useful for architecture communication even when user-facing term changes to "plugin." This separation prevents over-correction.
+
+3. **Decision documentation enables precision implementation:** Writing the decision with explicit "What NOT to change" section allowed surgical edits without risk of unintended refactoring or scope creep.
+
+4. **Validation-driven confidence:** Full npm test + build pass after edits confirms that terminology change is cosmetic and architecture-preserving.
+
+### Branch & PR Status
+
+- **Research branch:** (completed, merged as part of spawn session)
+- **Patch branch:** feat/forge-messaging-fixes
+- **PR:** #4 (created by Leia after Mon Mothma's patch)
+- **Final status:** Awaiting merge decision
+
+
+## Learnings
+
+### Session: Anthropic Agent Skills Research (2026-03-20)
+
+**Research Focus:** What Anthropic ships for skill/plugin authoring and how it maps to Forge.
+
+**Key Findings:**
+
+1. **Anthropic's Agent Skills** (not "plugins") are modular, SKILL.md-based reusable instructions—pure portable files with optional supporting resources. They emphasize simplicity, progressive disclosure, and cross-agent compatibility (MCP).
+
+2. **No plugin layer in Anthropic's model.** Skills are authoring units; plugins are deployment vehicles. Anthropic doesn't bundle multiple capabilities together the way Forge does.
+
+3. **Terminology is now aligned.** "Agent Skill" is industry standard. Anthropic uses the same term, validating Forge's terminology choice.
+
+4. **Anthropic prioritizes portability; Forge prioritizes complete workflows.** Anthropic ships flat GitHub repo + agentskills.io directory. Forge adds packaging (plugin.json), distribution typing (library vs. customer-facing), and a release workflow for GitHub Copilot plugins.
+
+5. **Forge's docs are defensible.** The three-layer model (skill authoring → distribution packaging → plugin marketplace) is not redundant—it's intentional architecture for teams building on GitHub Copilot. Anthropic doesn't have this layer because it doesn't target GitHub Copilot plugins; it targets Claude directly.
+
+6. **Optional: Adopt progressive disclosure from Anthropic.** SKILL.md frontmatter-first loading (minimal context on start, full instructions on demand) could reduce token overhead in Forge. Not urgent.
+
+**Recommendation to Team:** No changes required to Forge's core model. Forge and Anthropic are solving different problems (GitHub Copilot plugins vs. Claude portability). Optionally, add a brief callout in `squads/forge/README.md` FAQ to note the alignment with Anthropic terminology and the intentional difference in bundling strategy.
+
+
+## 2026-03-20: Product Judgment – Anthropic Skill Mode in Forge (Mon Mothma Lead Review)
+
+**Question from Stefan:** "I want to use Forge to use the Anthropic skill mode when creating skills. Does that make sense?"
+
+**Decision: YES, partially and selectively. Adopt Anthropic's skill-authoring layer (SKILL.md format + progressive disclosure) but preserve Forge's distribution packaging layer.**
+
+### Recommendation Summary
+
+**Adopt from Anthropic:**
+- ✅ SKILL.md-first portable skill documentation format
+- ✅ Progressive disclosure pattern (minimal frontmatter → full instructions on demand)
+- ✅ Cross-agent compatibility philosophy
+- ✅ Industry-standard "Agent Skill" terminology (already aligned)
+
+**Preserve in Forge:**
+- ✅ Distribution packaging (plugin.json + distribution types: library vs. customer-facing)
+- ✅ Multi-asset bundling (skills + agents + prompts for GitHub Copilot plugins)
+- ✅ Dev-repo structure (/skills/, /agents/, /prompts/ directories)
+- ✅ Release workflow for GitHub Copilot marketplace
+
+### Why This Makes Sense
+
+1. **Anthropic and Forge solve different problems:**
+   - Anthropic: portable Claude skills (flat repo, no bundling)
+   - Forge: complete GitHub Copilot plugin workflows (skills + agents + prompts)
+   
+2. **Adopting Anthropic's skill conventions adds value without conflict:**
+   - Credibility: aligns with industry standard
+   - Token efficiency: progressive disclosure reduces context overhead
+   - Portability: skills can be understood/reused across platforms
+   
+3. **Distribution layer is necessary, not redundant:**
+   - Anthropic doesn't bundle skills + agents + prompts because Claude doesn't require it
+   - GitHub Copilot plugins do require bundling
+   - Preserving this layer allows Forge to serve both simple (library) and complex (customer-facing) workflows
+
+### Concrete Framing for Product Story
+
+**New headline:** "Forge adopts Anthropic's portable skill authoring model and adds GitHub Copilot's complete-workflow packaging."
+
+**In docs:**
+- Add FAQ: "Q: How does Forge compare to Anthropic's agent skills?"
+- Answer: "Forge adopts Anthropic's portable SKILL.md skill documentation and cross-agent compatibility philosophy. We add distribution packaging and GitHub Copilot plugin publishing because teams need to ship complete workflows (skills + agents + prompts) as installable bundles."
+- Rename FORGE_SETUP "Agent Skills" section to: "Author Your First Agent Skill (SKILL.md format)"
+- Add SKILL.md frontmatter template to scaffold/
+
+### Terminology Traps to Avoid
+
+⚠️ Never say: "We use Anthropic's skill mode" → Say: "We adopt Anthropic's skill authoring conventions"
+⚠️ Never conflate: "Portability" with "no bundling" → They're complementary, not contradictory
+⚠️ Never claim: "This solves Forge complexity" → Simplicity comes from use case (library distributions already exist), not from removing structure
+
+### Next Steps (If Approved)
+
+1. Write decision to `.squad/decisions/inbox/mon-mothma-anthropic-skill-adoption.md`
+2. Update docs (FORGE_SETUP, squads/forge/README FAQ) with SKILL.md template and Anthropic comparison
+3. Add optional SKILL.md template to scaffolds/
+4. Preserve all distribution packaging layers (no refactoring)
+
+### Impact Assessment
+
+- **Scope:** Docs + scaffold additions; no architectural changes
+- **Risk:** Low (additive, non-breaking)
+- **Value:** Medium (credibility + efficiency + portability + market alignment)
+- **Effort:** 3-4 doc edits + 1 scaffold template
+
+---
+
+## Learnings
+
+### Implementation: Anthropic Skill-Authoring Mode for Forge (2026-03-20)
+
+**Decision:** Adopted Anthropic's SKILL.md portable format as the primary authoring layer for Forge skills while preserving plugin.json as the distribution packaging layer.
+
+**What was implemented:**
+
+1. **FORGE.md** — Added comprehensive three-layer architecture section:
+   - Layer 1: Agent skills authored with SKILL.md (portable, self-contained)
+   - Layer 2: Organized into distributions with plugin.json (metadata, coordination)
+   - Layer 3: Published as GitHub Copilot plugins (user-facing delivery)
+   - Clarified why all three layers matter despite potential redundancy perception
+
+2. **FORGE_SETUP.md** — Restructured guide to teach skill-first authoring:
+   - New section: "Creating Your First Skill: SKILL.md Format" (details frontmatter, structure, example)
+   - Renamed distribution creation section to clarify the progression
+   - Added explicit relationship map between SKILL.md and plugin.json
+
+3. **FORGE_QUICK_REF.md** — Added SKILL.md formatting section:
+   - Progressive disclosure pattern with frontmatter example
+   - Clarified where SKILL.md fits in the three-layer model
+   - Updated file structure examples to show SKILL.md in each skill directory
+
+4. **squads/forge/EXCEL_MCP_AUTHORING.md** — Reframed as three-layer walkthrough:
+   - Updated title and overview to emphasize portable skills + distribution packaging
+   - Added complete SKILL.md example for "Excel File Operations" skill
+   - Expanded plugin.json section to clarify its complementary role
+   - Added "Relationship to SKILL.md" callout
+
+5. **squads/forge/README.md** — Enhanced with layering clarity:
+   - Updated "I want to author an agent skill" section to teach three-layer model
+   - Expanded FAQ with five new Q&As covering SKILL.md/plugin.json relationships
+   - Clarified skill authoring as Layer 1 before distribution packaging
+
+6. **squads/forge/scaffolds/excel-mcp-server/skills/SKILL.md.template** — Created:
+   - Template demonstrating frontmatter, sections, and progressive disclosure
+   - Shows input/output schema patterns
+   - Includes best practices and error handling guidance
+
+**Key terminology preserved:**
+- "Agent Skill" remains the core unit (aligns with Anthropic/industry standard)
+- "Distribution" remains organizational layer (Forge-specific, valuable for GitHub Copilot)
+- "GitHub Copilot Plugin" remains user-facing deliverable
+- No changes to existing file names or directory structures
+
+**Architecture impact:**
+- Zero architectural changes to Forge itself
+- Docs and examples now teach skills-first mindset
+- plugin.json remains unchanged in schema and purpose
+- All existing tools (npm scripts, validation) continue working
+- Risk: Low (additive, non-breaking, docs-focused)
+
+**Validation:**
+- ✅ `npm run validate` passes
+- ✅ `npm test` passes (12/12 tests)
+- ✅ `npm run build` succeeds
+- ✅ All GitHub Copilot plugin vs. skill boundary knowledge preserved
+- ✅ No regression in existing Forge workflows
+
+**Team value:**
+- Aligns with Anthropic's portable skill model (ecosystem credibility)
+- Clearer mental model for skill authors (layer 1 vs. layer 2 concerns)
+- Lower cognitive load with progressive disclosure (SKILL.md frontmatter → full docs)
+- Portable skills can be understood independently or ported to other platforms
+- Validates our three-layer architecture as intentional, not accidental

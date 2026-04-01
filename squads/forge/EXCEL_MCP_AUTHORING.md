@@ -1,15 +1,36 @@
 # Excel MCP Server Agent Skill Authoring Guide
 
-This guide walks you through authoring a library distribution using **Excel MCP Server** as the template. Excel MCP Server is a production-ready example of a lean, tools-only library distribution. The `plugin.json` file is Forge's packaging format for organizing and distributing reusable agent skills.
+This guide walks you through authoring agent skills for a library distribution using **Excel MCP Server** as the template. You'll learn both **Forge's portable SKILL.md format** (Layer 1: what you author) and **plugin.json packaging** (Layer 2: how you organize).
 
 ## Overview
 
-**Excel MCP Server** provides Windows Excel automation via MCP (Model Context Protocol). It's a **library distribution** — meaning it contains agent skills only with no custom agents or prompts. The distribution is distributed as an npm package and integrated into workflows that need Excel capabilities.
+**Excel MCP Server** provides Windows Excel automation via MCP (Model Context Protocol). It's a **library distribution** — meaning it contains agent skills only with no custom agents or prompts. The distribution is published as an npm package and integrated into workflows that need Excel capabilities.
+
+### The Three-Layer Model in Action
+
+```
+Layer 1: Author Skills with SKILL.md
+  ├─ skills/excel-file-ops/SKILL.md
+  ├─ skills/excel-formatting/SKILL.md
+  ├─ skills/power-query/SKILL.md
+  └─ skills/dax-formulas/SKILL.md
+          │
+          ▼
+Layer 2: Organize into Distribution with plugin.json
+  └─ plugin.json (lists all skills + metadata)
+          │
+          ▼
+Layer 3: Publish as GitHub Copilot Plugin
+  └─ @bradygaster/excel-mcp-server (npm package)
+```
+
+**Key insight:** Each skill is independently portable (SKILL.md format). plugin.json coordinates them for packaging. Users install the npm package and get all skills together.
 
 ### Why This Template?
 
 - ✅ **Lean by default** — minimal dependencies, no complex state management
 - ✅ **Skills-focused** — pure utility distribution, reusable anywhere
+- ✅ **Portable skills** — each skill documented with SKILL.md, can be reused elsewhere
 - ✅ **Windows-native** — uses COM interop for native Excel API access
 - ✅ **Production-ready** — published to npm, stable version released
 
@@ -20,19 +41,23 @@ Excel MCP Server follows the Forge library distribution layout:
 ```
 excel-mcp-server/
 ├── package.json              # Distribution metadata and dependencies
-├── plugin.json               # Distribution manifest
+├── plugin.json               # Distribution manifest (coordinates skills)
 ├── README.md                 # Usage documentation
 ├── skills/
 │   ├── excel-file-ops/
-│   │   ├── index.js         # File operations agent skill
+│   │   ├── SKILL.md         # Portable skill documentation
+│   │   ├── index.js         # File operations implementation
 │   │   └── schema.json      # Tool schema
 │   ├── excel-formatting/
-│   │   ├── index.js         # Formatting agent skill
+│   │   ├── SKILL.md         # Portable skill documentation
+│   │   ├── index.js         # Formatting implementation
 │   │   └── schema.json
 │   ├── power-query/
+│   │   ├── SKILL.md         # Portable skill documentation
 │   │   ├── index.js         # Power Query M code generator
 │   │   └── schema.json
 │   └── dax-formulas/
+│       ├── SKILL.md         # Portable skill documentation
 │       ├── index.js         # DAX formula builder
 │       └── schema.json
 ├── tests/
@@ -44,7 +69,96 @@ excel-mcp-server/
 
 ### Key Files
 
-#### `plugin.json`
+#### `skills/excel-file-ops/SKILL.md` (Portable Skill Documentation)
+
+Each skill starts with SKILL.md—a self-contained, portable documentation file:
+
+```markdown
+---
+name: "Excel File Operations"
+description: "Create, open, save, and manage Excel workbooks and sheets"
+tags: ["excel", "windows", "file-operations", "workbooks"]
+capabilities: ["create workbook", "open workbook", "save workbook", "add sheet", "close workbook"]
+---
+
+# Excel File Operations
+
+## Overview
+
+This skill provides core Excel file operations for creating, opening, and managing workbooks and sheets. It's the foundational skill for any Excel automation workflow.
+
+## What It Does
+
+- Create new Excel workbooks
+- Open existing workbooks from disk
+- Save workbooks with various formats
+- Add new worksheets
+- Close workbooks and free resources
+
+## Usage Example
+
+\`\`\`javascript
+import { createWorkbook, addSheet, saveWorkbook } from "excel-file-ops";
+
+// Create a new workbook
+const wb = await createWorkbook("report.xlsx");
+
+// Add a worksheet
+await addSheet(wb, { name: "Data", index: 0 });
+
+// Save to disk
+await saveWorkbook(wb, "C:\\Reports\\report.xlsx");
+\`\`\`
+
+## Input Schema
+
+\`\`\`json
+{
+  "createWorkbook": {
+    "type": "object",
+    "properties": {
+      "filename": { "type": "string", "description": "Name for new workbook" }
+    },
+    "required": ["filename"]
+  },
+  "openWorkbook": {
+    "type": "object",
+    "properties": {
+      "path": { "type": "string", "description": "Full path to workbook" }
+    },
+    "required": ["path"]
+  }
+}
+\`\`\`
+
+## Output Schema
+
+\`\`\`json
+{
+  "type": "object",
+  "properties": {
+    "workbookId": { "type": "string", "description": "Handle to opened/created workbook" },
+    "success": { "type": "boolean" },
+    "path": { "type": "string" }
+  }
+}
+\`\`\`
+
+## Best Practices
+
+- Always close workbooks after you're done to free COM resources
+- Use absolute paths for reliability
+- Handle errors gracefully in multi-sheet operations
+\`\`\`
+
+This SKILL.md is:
+- **Portable:** Can be understood independently, shared, or migrated to other platforms
+- **Self-contained:** Includes everything a user needs to understand the skill
+- **Progressive:** Basic summary up top, detailed input/output schemas below
+
+#### `plugin.json` (Distribution Manifest)
+
+The `plugin.json` coordinates all skills in the distribution. It lists metadata, skills, and publishing information:
 
 ```json
 {
@@ -87,6 +201,13 @@ excel-mcp-server/
   },
   "status": "stable"
 }
+```
+
+**Relationship to SKILL.md:**
+- Each skill listed in `plugin.json` has a corresponding `skills/{skill-id}/SKILL.md` file
+- SKILL.md provides portable, detailed documentation
+- plugin.json provides distribution-level coordination and metadata
+- Together, they make skills both discoverable (SKILL.md) and packagable (plugin.json)
 ```
 
 #### `package.json`
